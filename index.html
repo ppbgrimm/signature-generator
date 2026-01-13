@@ -7,8 +7,12 @@
     <style>
         /* --- GLOBAL SETTINGS --- */
         :root {
-            --header-gap: 25px; /* ระยะห่างจากขอบจอ และ ระยะห่างระหว่างกล่อง */
-            --header-height-est: 82px; /* ความสูงโดยประมาณของ Pill (50+30+2) */
+            --body-side-padding: 20px;
+            
+            /* Header Height Components */
+            --logo-min-h: 30px;
+            --logo-pref-h: 5vw;
+            --logo-max-h: 50px;
         }
 
         body {
@@ -18,67 +22,98 @@
             flex-direction: column;
             align-items: center;
             
-            /* Calculated Padding: Top Gap + Header Height + Bottom Gap */
-            padding-top: calc(var(--header-gap) + var(--header-height-est) + var(--header-gap));
+            /* Initial Padding */
+            padding-top: 120px; 
+            
             padding-bottom: 30px;
-            padding-left: 30px;
-            padding-right: 30px;
+            padding-left: var(--body-side-padding);
+            padding-right: var(--body-side-padding);
             
             color: #63666F;
             min-height: 100vh;
+            box-sizing: border-box;
         }
         
         input, button, .tab-btn, h1, h2, h3, h4, .sub-header, li, p {
             font-family: Arial, sans-serif;
         }
 
-        /* --- GLASSMORPHISM PILL HEADER --- */
+        /* --- GLASSMORPHISM HEADER (ELASTIC MORPH) --- */
         .main-header {
             position: fixed;
             
-            /* Equal Top Spacing */
-            top: var(--header-gap);
-            
+            /* START STATE: Full Width */
+            top: 0;
             left: 50%;
             transform: translateX(-50%);
-            width: 90%;
-            max-width: 1100px;
+            width: 100%;
+            
             display: flex;
             justify-content: space-between;
             align-items: center;
             
-            /* Glassmorphism Style */
+            /* Glassmorphism */
             background: rgba(255, 255, 255, 0.75);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.6);
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
             
-            border-radius: 12px; /* Initial Radius matches Container */
-            padding: 15px 30px; /* Top/Bottom Padding */
+            /* Initial Border */
+            border: 1px solid transparent; 
+            border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+            
+            /* Shape: Rectangle */
+            border-radius: 0; 
+            
+            /* Padding Logic */
+            padding: 20px max(20px, calc((100% - 1100px) / 2));
             
             z-index: 2000;
             
-            /* Smooth transition */
-            transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+            /* === KEY CHANGE: ELASTIC ANIMATION === */
+            /* Using custom bezier for "Spring/Bounce" effect */
+            transition: 
+                top 0.7s cubic-bezier(0.34, 1.56, 0.64, 1),
+                width 0.7s cubic-bezier(0.34, 1.56, 0.64, 1),
+                border-radius 0.7s cubic-bezier(0.34, 1.56, 0.64, 1),
+                padding 0.7s cubic-bezier(0.34, 1.56, 0.64, 1),
+                background 0.5s ease,
+                box-shadow 0.5s ease;
+                
+            will-change: top, width, border-radius, padding; /* Optimization */
+            box-sizing: border-box;
         }
 
-        /* Scrolled State (Shrink + Morph to Pill) */
+        /* SCROLLED STATE: PILL */
         .main-header.scrolled {
-            top: 15px; /* Shrink top gap when scrolling */
-            padding: 10px 25px; 
-            background: rgba(255, 255, 255, 0.85); 
-            box-shadow: 0 10px 30px 0 rgba(31, 38, 135, 0.15);
-            width: 85%;
-            max-width: 900px;
-            border-radius: 50px; 
+            /* Drop down */
+            top: 20px;
+            
+            /* Shrink Width (Elastic will overshoot slightly then settle) */
+            width: 90%;
+            max-width: 1100px;
+            
+            /* Morph to Pill */
+            border-radius: 60px;
+            
+            /* Full Border */
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            
+            /* Shadow */
+            box-shadow: 0 15px 40px rgba(31, 38, 135, 0.12);
+            
+            background: rgba(255, 255, 255, 0.9);
+            
+            /* Adjust Padding */
+            padding: 10px 30px; 
         }
 
         .header-logo img {
-            height: clamp(30px, 5vw, 50px);
+            height: clamp(var(--logo-min-h), var(--logo-pref-h), var(--logo-max-h));
             width: auto;
             display: block;
-            transition: height 0.4s ease;
+            /* Smooth size transition matches header */
+            transition: height 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
         .main-header.scrolled .header-logo img {
@@ -87,21 +122,23 @@
 
         .header-titles {
             text-align: right;
-            transition: all 0.4s ease;
+            transition: all 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
             white-space: nowrap;
             display: flex;
             flex-direction: column;
             justify-content: center;
         }
 
-        /* === VIVID SLOW MOLTEN ORANGE ANIMATION === */
+        /* === VIVID MOLTEN ORANGE ANIMATION === */
         .header-title-en {
             font-size: clamp(14px, 2.5vw, 26px);
             font-weight: 700;
             margin-bottom: 2px;
             letter-spacing: -0.5px;
             line-height: 1.2;
-            transition: font-size 0.4s ease;
+            
+            /* Elastic font resize */
+            transition: font-size 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
             
             background: linear-gradient(
                 120deg, 
@@ -140,7 +177,7 @@
             font-size: clamp(10px, 1.5vw, 16px);
             font-weight: 400;
             line-height: 1.2;
-            transition: font-size 0.4s ease, opacity 0.4s ease;
+            transition: font-size 0.7s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.5s ease;
         }
 
         .main-header.scrolled .header-title-th {
@@ -156,10 +193,13 @@
             padding: 30px;
             border-radius: 12px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            max-width: 1100px;
+            
             width: 100%;
+            max-width: 1100px;
+            
             flex-wrap: wrap;
             margin-bottom: 40px;
+            margin-top: 0;
         }
 
         /* --- FLOATING BUBBLE --- */
@@ -533,8 +573,7 @@
             .float-guide-btn { bottom: 20px; right: 20px; padding: 10px 20px; font-size: 12px; }
             /* Adjusted for fixed header mobile */
             .main-header {
-                width: 95%; /* Wider on mobile */
-                padding: 10px 20px;
+                /* padding-left/right already calculated dynamically by max() */
             }
             .header-titles { text-align: left; }
         }
@@ -894,6 +933,8 @@
             setTimeout(() => { firstBtn.classList.add('active'); firstPanel.classList.add('show'); }, 600);
         }
     }
+    
+    // --- SCROLL: STICKY HEADER & BUBBLE HIDE ---
     window.addEventListener('scroll', function() {
         // Sticky Header Logic
         const header = document.getElementById('stickyHeader');
@@ -943,13 +984,31 @@
     let currentMode = 'person';
     let currentTab = 'desktop';
     
-    // Init sliders position
+    // Init sliders position and Layout
     window.onload = function() {
         const desktopBtn = document.getElementById('btnDesktop');
         const personBtn = document.getElementById('btnPerson');
         moveSlider(desktopBtn, 'previewSlider');
         moveSlider(personBtn, 'modeSlider');
+        
+        // Initial Layout Calculation
+        adjustLayout();
     };
+
+    // Recalculate layout on resize
+    window.onresize = adjustLayout;
+
+    // === FUNCTION TO ADJUST PADDING DYNAMICALLY ===
+    function adjustLayout() {
+        const header = document.querySelector('.main-header');
+        const headerHeight = header.offsetHeight;
+        
+        // Use predefined CSS Variable value for consistent gap (30px)
+        const bottomGap = 30; 
+        
+        // Body Padding Top = Header Height + Bottom Gap (since Top: 0)
+        document.body.style.paddingTop = (headerHeight + bottomGap) + 'px';
+    }
 
     function moveSlider(element, sliderId) {
         const slider = document.getElementById(sliderId);
