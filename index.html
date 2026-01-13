@@ -17,7 +17,7 @@
             min-height: 100vh;
         }
         
-        input, button, .tab-btn, .mode-selector label, h1, h2, h3, h4, .sub-header, li, p {
+        input, button, .tab-btn, h1, h2, h3, h4, .sub-header, li, p {
             font-family: Arial, sans-serif;
         }
 
@@ -43,23 +43,49 @@
             text-align: right;
         }
 
+        /* === UPDATED: VIVID SLOW MOLTEN ORANGE === */
         .header-title-en {
             font-size: 26px;
             font-weight: 700;
             margin-bottom: 5px;
             letter-spacing: -0.5px;
-            background: linear-gradient(110deg, #FF6727 30%, #F8E6B8 45%, #C8B273 50%, #F8E6B8 55%, #FF6727 70%);
-            background-size: 250% auto;
-            color: #FF6727;
+            
+            /* NEW: More vivid orange gradient with brighter highlights and deeper reds */
+            background: linear-gradient(
+                120deg, 
+                #FF6727 0%,    /* Base B.Grimm Orange */
+                #FF8C00 15%,   /* Vivid Dark Orange */
+                #FF6727 30%,   /* Base */
+                #FFE3B3 45%,   /* Super Bright Glowing Highlight */
+                #FF6727 60%,   /* Base */
+                #FF4500 75%,   /* Deep rich orange-red */
+                #FF6727 90%    /* Base */
+            );
+            
+            /* Very large background size for chaotic movement space */
+            background-size: 400% 400%;
+            
+            /* Clip to text */
+            color: #FF6727; /* Fallback */
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
-            animation: smoothShine 5s linear infinite;
+            
+            /* NEW: Slower duration (25s) for more majestic flow */
+            animation: moltenChaos 25s ease infinite;
         }
 
-        @keyframes smoothShine {
-            to { background-position: -250% center; }
+        /* Keyframes moving randomly across the large background grid */
+        @keyframes moltenChaos {
+            0%   { background-position: 10% 15%; }
+            20%  { background-position: 85% 30%; }
+            35%  { background-position: 60% 85%; }
+            50%  { background-position: 15% 60%; }
+            70%  { background-position: 90% 90%; }
+            85%  { background-position: 40% 20%; }
+            100% { background-position: 10% 15%; } /* Loop back smoothly */
         }
+        /* ==================================================================== */
 
         .header-title-th {
             color: #63666F;
@@ -292,7 +318,7 @@
         label { display: block; margin-bottom: 5px; font-weight: 700; font-size: 13px; color: #666; }
         
         input {
-            width: 100%; padding: 10px; padding-right: 35px; /* Add space for checkmark */
+            width: 100%; padding: 10px; padding-right: 35px;
             border: 1px solid #ccc;
             border-radius: 8px; font-size: 14px; box-sizing: border-box; transition: all 0.3s ease;
             color: #63666F;
@@ -311,23 +337,49 @@
             font-weight: bold;
         }
 
-        .mode-selector, .preview-tabs {
-            display: flex; background: #f5f5f5; padding: 6px;
-            border-radius: 12px; margin-bottom: 25px; gap: 8px;
+        /* === UNIFIED SLIDING TABS STYLE === */
+        .toggle-container {
+            position: relative; /* For absolute slider */
+            display: flex; 
+            background: #f5f5f5; 
+            padding: 6px;
+            border-radius: 12px; 
+            margin-bottom: 25px; 
         }
-        .mode-selector label, .tab-btn {
-            flex: 1; text-align: center; padding: 10px; cursor: pointer;
-            border-radius: 8px; margin: 0; font-size: 14px; color: #666;
-            font-weight: 400 !important; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            border: 1px solid transparent; background: transparent;
+
+        .tab-btn {
+            flex: 1; 
+            text-align: center; 
+            padding: 10px; 
+            cursor: pointer;
+            border-radius: 8px; 
+            margin: 0; 
+            font-size: 14px; 
+            color: #666;
+            font-weight: 400 !important; 
+            border: 1px solid transparent; 
+            background: transparent;
+            z-index: 2; /* Sit above slider */
+            position: relative;
+            transition: color 0.3s ease;
         }
-        .mode-selector input:not(:checked) + label:hover, .tab-btn:not(.active):hover {
-            color: #8C704D; background-color: rgba(140, 112, 77, 0.05);
+        
+        .tab-btn.active {
+            color: white; /* Active text color */
         }
-        .mode-selector input { display: none; }
-        .mode-selector input:checked + label, .tab-btn.active {
-            background-color: #8C704D; color: white;
-            box-shadow: 0 4px 12px rgba(140, 112, 77, 0.3); transform: translateY(-1px);
+
+        /* The Elastic Slider Background */
+        .tab-slider {
+            position: absolute;
+            top: 6px;
+            left: 6px;
+            bottom: 6px;
+            background-color: #8C704D; /* Gold */
+            border-radius: 8px;
+            z-index: 1;
+            /* Faster Elastic Bezier (0.35s) */
+            transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+            width: 0; 
         }
 
         input.input-error { border-color: #dc3545 !important; background-color: #fff8f8; }
@@ -453,11 +505,10 @@
         <h2>Enter Your Information</h2>
         <div class="sub-header">กรอกข้อมูลพนักงานหรือหน่วยงาน (Fill in your information)</div>
 
-        <div class="mode-selector">
-            <input type="radio" id="modePerson" name="sigMode" value="person" checked onchange="toggleMode()">
-            <label for="modePerson">👤 พนักงาน (Person)</label>
-            <input type="radio" id="modeDept" name="sigMode" value="dept" onchange="toggleMode()">
-            <label for="modeDept">🏢 หน่วยงาน (Department)</label>
+        <div class="toggle-container" id="modeSelector">
+            <div class="tab-slider" id="modeSlider"></div>
+            <button class="tab-btn active" id="btnPerson" onclick="setMode('person', this)">👤 พนักงาน (Person)</button>
+            <button class="tab-btn" id="btnDept" onclick="setMode('dept', this)">🏢 หน่วยงาน (Department)</button>
         </div>
 
         <div id="formPerson" class="form-container active">
@@ -530,9 +581,10 @@
         <h2>Select Template & Copy</h2>
         <div class="sub-header">เลือกรูปแบบที่ต้องการแล้วกดปุ่มคัดลอก (Choose style & Copy)</div>
         
-        <div class="preview-tabs">
-            <button class="tab-btn active" onclick="switchTab('desktop')">💻 Desktop (Standard)</button>
-            <button class="tab-btn" onclick="switchTab('mobile')">📱 Mobile (Plain Text)</button>
+        <div class="toggle-container preview-tabs" id="previewTabs">
+            <div class="tab-slider" id="previewSlider"></div>
+            <button class="tab-btn active" id="btnDesktop" onclick="switchTab('desktop', this)">💻 Desktop (Standard)</button>
+            <button class="tab-btn" id="btnMobile" onclick="switchTab('mobile', this)">📱 Mobile (Plain Text)</button>
         </div>
 
         <div class="signature-box" id="signatureBox">
@@ -818,32 +870,64 @@
         });
     }
 
-    // --- MAIN APP LOGIC ---
+    // --- MAIN APP LOGIC (ELASTIC TAB) ---
+    let currentMode = 'person';
     let currentTab = 'desktop';
-    function switchTab(tab) {
+    
+    // Init sliders position
+    window.onload = function() {
+        const desktopBtn = document.getElementById('btnDesktop');
+        const personBtn = document.getElementById('btnPerson');
+        moveSlider(desktopBtn, 'previewSlider');
+        moveSlider(personBtn, 'modeSlider');
+    };
+
+    function moveSlider(element, sliderId) {
+        const slider = document.getElementById(sliderId);
+        slider.style.width = element.offsetWidth + 'px';
+        slider.style.transform = `translateX(${element.offsetLeft - 6}px)`;
+    }
+
+    // Preview Tabs
+    function switchTab(tab, btnElement) {
         currentTab = tab;
+        moveSlider(btnElement, 'previewSlider');
+        
         const note = document.getElementById('noteText');
-        const btns = document.querySelectorAll('.tab-btn');
+        const btns = document.getElementById('previewTabs').querySelectorAll('.tab-btn');
         btns.forEach(btn => btn.classList.remove('active'));
+        btnElement.classList.add('active');
+        
         if (tab === 'desktop') {
             document.getElementById('previewDesktop').classList.add('active');
             document.getElementById('previewMobile').classList.remove('active');
-            btns[0].classList.add('active');
             note.innerHTML = "<strong>Desktop:</strong> เหมาะสำหรับ Outlook บนคอมพิวเตอร์";
         } else {
             document.getElementById('previewDesktop').classList.remove('active');
             document.getElementById('previewMobile').classList.add('active');
-            btns[1].classList.add('active');
             note.innerHTML = "<strong>Mobile:</strong> เหมาะสำหรับ iPhone/Android (ข้อความล้วน)";
         }
     }
 
-    function toggleMode() {
-        const isPerson = document.getElementById('modePerson').checked;
+    // Mode Selector (Person/Dept)
+    function setMode(mode, btnElement) {
+        currentMode = mode;
+        moveSlider(btnElement, 'modeSlider');
+
+        const btns = document.getElementById('modeSelector').querySelectorAll('.tab-btn');
+        btns.forEach(btn => btn.classList.remove('active'));
+        btnElement.classList.add('active');
+
         const formPerson = document.getElementById('formPerson');
         const formDept = document.getElementById('formDept');
-        if (isPerson) { formPerson.classList.add('active'); formDept.classList.remove('active'); } 
-        else { formPerson.classList.remove('active'); formDept.classList.add('active'); }
+        
+        if (mode === 'person') {
+            formPerson.classList.add('active');
+            formDept.classList.remove('active');
+        } else {
+            formPerson.classList.remove('active');
+            formDept.classList.add('active');
+        }
         updateSig();
     }
 
@@ -867,7 +951,6 @@
         return `<div class="warn-cycle"><span class="th">${th}</span><span class="en">${en}</span></div>`;
     }
 
-    // HELPER: Toggle Icon
     function toggleIcon(id, isValid) {
         const icon = document.getElementById(id);
         if(isValid) icon.style.display = 'block';
@@ -968,7 +1051,6 @@
     }
 
     // --- 3. NAME VALIDATION ---
-    // Added param 'isStrict' (true = require space/2 parts, false = allow 1 part)
     function validateNameEn(input, elId, warnId, iconId, isStrict) {
         const el = document.getElementById(elId);
         const warn = document.getElementById(warnId);
@@ -980,7 +1062,6 @@
             return;
         }
 
-        // Check for Thai characters
         const hasThai = /[\u0E00-\u0E7F]/.test(input);
         
         if(hasThai) {
@@ -992,12 +1073,14 @@
             warn.style.display = 'none';
             el.classList.remove('input-error');
             
+            // Check for valid English Name
             let isValid = false;
             if (isStrict) {
                 // Must have at least 2 parts (English + Space + English)
                 isValid = /^[a-zA-Z]+(\s[a-zA-Z]+)+$/.test(input);
             } else {
-                // Just English characters allowed (space optional)
+                // *** UPDATED: Just English characters allowed (space optional) ***
+                // This covers Department Name
                 isValid = /^[a-zA-Z\s.]+$/.test(input);
             }
             toggleIcon(iconId, isValid);
@@ -1015,7 +1098,6 @@
             return;
         }
 
-        // Check for English characters
         const hasEng = /[a-zA-Z]/.test(input);
         
         if(hasEng) {
@@ -1027,12 +1109,14 @@
             warn.style.display = 'none';
             el.classList.remove('input-error');
             
+            // Check for valid Thai Name
             let isValid = false;
             if (isStrict) {
                 // Must have at least 2 parts
                 isValid = /^[\u0E00-\u0E7F]+(\s[\u0E00-\u0E7F]+)+$/.test(input);
             } else {
-                // Just Thai characters allowed
+                // *** UPDATED: Just Thai characters allowed ***
+                // This covers Department Name
                 isValid = /^[\u0E00-\u0E7F\s.]+$/.test(input);
             }
             toggleIcon(iconId, isValid);
@@ -1040,21 +1124,17 @@
     }
 
     function updateSig() {
-        const isPerson = document.getElementById('modePerson').checked;
-        
-        let nameLine = "";
-        let posLine = "";
-        let deptLine = "";
-
-        // **FIX**: Get Raw Value first
+        // ... (Logic same as before, ensures validation runs on every input)
+        // Get raw email for validation
         const emailRaw = document.getElementById('inputEmail').value; 
-        const email = emailRaw || 'example@bgrimmpower.com'; // Use default for preview
+        const email = emailRaw || 'example@bgrimmpower.com'; 
 
-        if(isPerson) {
+        let nameLine = "", posLine = "", deptLine = "";
+
+        if(currentMode === 'person') {
             const en = document.getElementById('pNameEng').value || 'Panupong Pumikrai';
             const th = document.getElementById('pNameTh').value || 'ภาณุพงศ์ ภูมิไกร';
             
-            // Name Validation (Strict = true for Person)
             validateNameEn(document.getElementById('pNameEng').value, 'pNameEng', 'warnNameEng', 'checkNameEng', true);
             validateNameTh(document.getElementById('pNameTh').value, 'pNameTh', 'warnNameTh', 'checkNameTh', true);
 
@@ -1065,7 +1145,6 @@
             const en = document.getElementById('dNameEng').value || 'Human Resources';
             const th = document.getElementById('dNameTh').value || '';
             
-            // Dept Name Validation (Strict = false for Dept)
             validateNameEn(document.getElementById('dNameEng').value, 'dNameEng', 'warnDeptEng', 'checkDeptEng', false);
             
             if(document.getElementById('dNameTh').value) {
@@ -1083,7 +1162,6 @@
         const mobRaw = document.getElementById('inputMobile').value;
         const telRaw = document.getElementById('inputTel').value;
 
-        // Pass RAW email value to validator to fix premature checkmark
         validateEmail(emailRaw);
         validatePhone(mobRaw, 'inputMobile', 'warnMobile', 'checkMobile', 10);
         validatePhone(telRaw, 'inputTel', 'warnTel', 'checkTel', 9);
@@ -1091,7 +1169,7 @@
         document.getElementById('sigNameContent').innerHTML = nameLine;
         
         const rowPos = document.getElementById('rowPosition');
-        if (isPerson) {
+        if (currentMode === 'person') {
             rowPos.style.display = 'table-row';
             document.getElementById('prevPos').innerText = posLine;
             document.getElementById('prevDept').innerText = deptLine;
@@ -1105,7 +1183,7 @@
         const deskMobWrap = document.getElementById('wrapperMobile');
         let finalMob = "";
         if(!mobRaw) {
-            if(isPerson) {
+            if(currentMode === 'person') {
                  deskMobWrap.style.display = 'inline';
                  finalMob = '+66 8 9999 9999';
                  document.getElementById('textMobile').innerText = finalMob;
@@ -1131,7 +1209,7 @@
         let mText = "--\n\n";
         mText += nameLine + "\n"; 
         
-        if(isPerson) {
+        if(currentMode === 'person') {
             mText += posLine + "\n";
             mText += deptLine + "\n";
         }
