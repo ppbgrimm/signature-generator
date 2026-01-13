@@ -6,16 +6,47 @@
     <title>B.Grimm Signature Generator</title>
     <style>
         /* --- GLOBAL SETTINGS --- */
+        :root {
+            /* Configuration Variables for perfect spacing */
+            --header-top-gap: 25px;      /* ระยะห่างจากขอบบนจอถึง Pill */
+            --header-bottom-gap: 25px;   /* ระยะห่างจาก Pill ถึง Container */
+            
+            /* Header Height Components (Must match header CSS) */
+            --logo-min-h: 30px;
+            --logo-pref-h: 5vw;
+            --logo-max-h: 50px;
+            --header-v-padding: 30px;    /* 15px top + 15px bottom */
+            --header-border: 2px;
+        }
+
         body {
             font-family: Arial, sans-serif;
             background-color: #f0f2f5;
             display: flex;
             flex-direction: column;
             align-items: center;
-            /* Added padding-top to compensate for fixed header */
-            padding: 140px 30px 30px; 
+            
+            /* --- DYNAMIC SPACING CALCULATION --- */
+            /* Formula: 
+               Top Gap + Header Height (Dynamic Clamp) + Bottom Gap 
+               Height = Clamp(LogoMin, Pref, LogoMax) + Padding + Border
+            */
+            padding-top: calc(
+                var(--header-top-gap) + 
+                clamp(var(--logo-min-h), var(--logo-pref-h), var(--logo-max-h)) + 
+                var(--header-v-padding) + 
+                var(--header-border) + 
+                var(--header-bottom-gap)
+            );
+            /* ----------------------------------- */
+            
+            padding-bottom: 30px;
+            padding-left: 20px;
+            padding-right: 20px;
+            
             color: #63666F;
             min-height: 100vh;
+            box-sizing: border-box;
         }
         
         input, button, .tab-btn, h1, h2, h3, h4, .sub-header, li, p {
@@ -25,7 +56,10 @@
         /* --- GLASSMORPHISM PILL HEADER --- */
         .main-header {
             position: fixed;
-            top: 25px;
+            
+            /* Equal Top Spacing */
+            top: var(--header-top-gap);
+            
             left: 50%;
             transform: translateX(-50%);
             width: 90%;
@@ -41,48 +75,55 @@
             border: 1px solid rgba(255, 255, 255, 0.6);
             box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
             
-            border-radius: 60px; /* Pill Shape */
-            padding: 12px 30px; /* Reduced padding slightly for better fit */
+            border-radius: 12px; /* Initial Radius matches Container */
+            padding: 15px 30px; /* Top/Bottom Padding (Total 30px) */
+            
             z-index: 2000;
             
-            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            /* Smooth transition */
+            transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+            box-sizing: border-box; /* Include padding/border in height */
         }
 
-        /* Scrolled State (Shrink) */
+        /* Scrolled State (Shrink + Morph to Pill) */
         .main-header.scrolled {
-            top: 15px;
-            padding: 8px 25px;
+            top: 15px; /* Shrink top gap slightly when scrolling to stick nicely */
+            padding: 10px 25px; 
             background: rgba(255, 255, 255, 0.85); 
             box-shadow: 0 10px 30px 0 rgba(31, 38, 135, 0.15);
             width: 85%;
             max-width: 900px;
+            border-radius: 50px; 
         }
 
         .header-logo img {
-            /* Responsive Height: Min 30px, Pref 5vw, Max 50px */
-            height: clamp(30px, 5vw, 50px);
+            /* Matches the clamp in body padding calculation */
+            height: clamp(var(--logo-min-h), var(--logo-pref-h), var(--logo-max-h));
             width: auto;
             display: block;
             transition: height 0.4s ease;
         }
 
         .main-header.scrolled .header-logo img {
-            height: clamp(25px, 4vw, 35px); /* Shrink Logo Responsively */
+            height: clamp(25px, 4vw, 35px);
         }
 
         .header-titles {
             text-align: right;
             transition: all 0.4s ease;
-            white-space: nowrap; /* Prevent line break in pill */
+            white-space: nowrap;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
 
         /* === VIVID SLOW MOLTEN ORANGE ANIMATION === */
         .header-title-en {
-            /* RESPONSIVE FONT SIZE: Min 14px, Pref 2.5vw, Max 26px */
             font-size: clamp(14px, 2.5vw, 26px);
             font-weight: 700;
             margin-bottom: 2px;
             letter-spacing: -0.5px;
+            line-height: 1.2;
             transition: font-size 0.4s ease;
             
             background: linear-gradient(
@@ -104,7 +145,6 @@
         }
 
         .main-header.scrolled .header-title-en {
-            /* Scrolled Font Size: Min 12px, Max 18px */
             font-size: clamp(12px, 2vw, 18px);
         }
 
@@ -120,14 +160,13 @@
 
         .header-title-th {
             color: #63666F;
-            /* RESPONSIVE FONT SIZE: Min 10px, Pref 1.5vw, Max 16px */
             font-size: clamp(10px, 1.5vw, 16px);
             font-weight: 400;
+            line-height: 1.2;
             transition: font-size 0.4s ease, opacity 0.4s ease;
         }
 
         .main-header.scrolled .header-title-th {
-            /* Scrolled Font Size: Min 9px, Max 12px */
             font-size: clamp(9px, 1.2vw, 12px);
             opacity: 0.8;
         }
@@ -144,6 +183,9 @@
             width: 100%;
             flex-wrap: wrap;
             margin-bottom: 40px;
+            
+            /* Ensure no extra margins disrupt spacing */
+            margin-top: 0;
         }
 
         /* --- FLOATING BUBBLE --- */
@@ -878,8 +920,6 @@
             setTimeout(() => { firstBtn.classList.add('active'); firstPanel.classList.add('show'); }, 600);
         }
     }
-    
-    // --- SCROLL: STICKY HEADER & BUBBLE HIDE ---
     window.addEventListener('scroll', function() {
         // Sticky Header Logic
         const header = document.getElementById('stickyHeader');
