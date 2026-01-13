@@ -43,22 +43,12 @@
             text-align: right;
         }
 
-        /* === SMOOTH SHIMMER ANIMATION (LIGHT GOLD) === */
         .header-title-en {
             font-size: 26px;
             font-weight: 700;
             margin-bottom: 5px;
             letter-spacing: -0.5px;
-            
-            /* Gradient: Orange -> Light Gold -> Orange */
-            background: linear-gradient(
-                110deg, 
-                #FF6727 30%, 
-                #F8E6B8 45%, 
-                #C8B273 50%, 
-                #F8E6B8 55%, 
-                #FF6727 70%
-            );
+            background: linear-gradient(110deg, #FF6727 30%, #F8E6B8 45%, #C8B273 50%, #F8E6B8 55%, #FF6727 70%);
             background-size: 250% auto;
             color: #FF6727;
             -webkit-background-clip: text;
@@ -91,7 +81,7 @@
             margin-bottom: 40px;
         }
 
-        /* --- FLOATING BUBBLE --- */
+        /* --- FLOATING BUBBLE (ELASTIC + AUTO HIDE) --- */
         .float-guide-btn {
             position: fixed;
             bottom: 30px;
@@ -100,23 +90,40 @@
             color: white;
             border: none;
             border-radius: 50px;
-            padding: 12px 24px;
+            padding: 12px 20px;
             font-size: 14px;
             font-weight: 700;
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(140, 112, 77, 0.4);
+            box-shadow: 0 6px 20px rgba(140, 112, 77, 0.4);
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 10px;
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             z-index: 1000;
+            
+            /* Animations */
             animation: floatBounce 3s infinite ease-in-out;
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), transform 0.2s ease, opacity 0.4s ease, visibility 0.4s;
+            
+            /* Initial State */
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        /* Class to hide bubble */
+        .float-guide-btn.hidden {
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px); /* Slide down effect */
+            pointer-events: none; /* Prevent clicking when hidden */
+            animation: none; /* Stop bounce when hidden */
         }
 
         .float-guide-btn:hover {
-            transform: translateY(-5px) scale(1.05);
+            transform: scale(1.05);
             box-shadow: 0 8px 20px rgba(140, 112, 77, 0.6);
-            animation: none;
+            animation-play-state: paused;
         }
 
         .float-guide-btn .icon-bubble {
@@ -128,6 +135,20 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .bubble-text-wrapper {
+            display: inline-block;
+            white-space: nowrap;
+            overflow: hidden;
+            width: 0px;
+            opacity: 1;
+            transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+        }
+        
+        .bubble-text-wrapper.fading {
+            opacity: 0;
         }
 
         @keyframes floatBounce {
@@ -374,11 +395,12 @@
     </div>
 </header>
 
-<button class="float-guide-btn" onclick="scrollToGuide()">
+<button id="floatGuideBtn" class="float-guide-btn" onclick="scrollToGuide()">
     <span class="icon-bubble">?</span>
-    <span data-lang="th">วิธีติดตั้ง?</span>
-    <span data-lang="en">How to install?</span>
+    <span id="bubbleTextWrapper" class="bubble-text-wrapper"></span>
 </button>
+
+<span id="textMeasurer" style="visibility: hidden; position: absolute; font-size: 14px; font-weight: 700; font-family: Arial; white-space: nowrap;"></span>
 
 <div class="container">
     <div class="input-section">
@@ -675,7 +697,53 @@
 </footer>
 
 <script>
-    // --- SCROLL TO GUIDE + AUTO OPEN ---
+    // --- BUBBLE AUTO-RESIZE & TEXT CYCLE ---
+    const textWrapper = document.getElementById('bubbleTextWrapper');
+    const textMeasurer = document.getElementById('textMeasurer');
+    const floatBtn = document.getElementById('floatGuideBtn');
+    
+    // Initial Text
+    textWrapper.innerText = "วิธีติดตั้ง?";
+    textMeasurer.innerText = "วิธีติดตั้ง?";
+    
+    // Set initial width
+    requestAnimationFrame(() => {
+        textWrapper.style.width = textMeasurer.offsetWidth + 'px';
+    });
+
+    let isThaiBubble = true;
+
+    setInterval(() => {
+        // 1. Fade out current text
+        textWrapper.classList.add('fading');
+
+        // 2. Wait for fade out to finish (300ms)
+        setTimeout(() => {
+            // Swap text logic
+            isThaiBubble = !isThaiBubble;
+            const newText = isThaiBubble ? "วิธีติดตั้ง?" : "How to install?";
+            
+            // Measure new width using hidden span
+            textMeasurer.innerText = newText;
+            const newWidth = textMeasurer.offsetWidth;
+
+            // Apply new width (Elastic CSS will handle the bounce)
+            textWrapper.style.width = newWidth + 'px';
+            
+            // Apply new text
+            textWrapper.innerText = newText;
+
+            // Fade in
+            textWrapper.classList.remove('fading');
+
+        }, 300); // Wait 300ms for opacity fade out
+
+    }, 3000); // Change every 3 seconds
+
+
+    // --- SCROLL TO GUIDE + AUTO OPEN + AUTO HIDE BUBBLE ---
+    
+    // 1. Scroll To Logic
     function scrollToGuide() {
         const anchor = document.getElementById('guide-anchor');
         anchor.scrollIntoView({ behavior: 'smooth' });
@@ -690,6 +758,26 @@
             }, 600);
         }
     }
+
+    // 2. Scroll Detection Logic (Hide bubble when reaching guide)
+    window.addEventListener('scroll', function() {
+        const guideHeader = document.getElementById('guide-anchor');
+        
+        if (!guideHeader) return;
+
+        // Get position of the guide header relative to viewport
+        const guidePosition = guideHeader.getBoundingClientRect().top;
+        const screenHeight = window.innerHeight;
+
+        // If guide header is visible (or slightly above fold), hide button
+        // Offset -50 allows button to disappear just before guide hits bottom
+        if (guidePosition < screenHeight - 100) {
+            floatBtn.classList.add('hidden');
+        } else {
+            floatBtn.classList.remove('hidden');
+        }
+    });
+
 
     // --- LANGUAGE SWITCH LOGIC ---
     let currentGuideLang = 'th';
@@ -791,52 +879,37 @@
         else { warn.style.display='none'; el.classList.remove('input-error'); }
     }
 
-    // --- RE-WRITTEN UPDATE SIG LOGIC ---
     function updateSig() {
         const isPerson = document.getElementById('modePerson').checked;
         
-        // 1. GET VALUES BASED ON MODE
         let nameLine = "";
         let posLine = "";
         let deptLine = "";
 
         if(isPerson) {
-            // Person Inputs
             const en = document.getElementById('pNameEng').value || 'Panupong Pumikrai';
             const th = document.getElementById('pNameTh').value || 'ภาณุพงศ์ ภูมิไกร';
             nameLine = `${en} | ${th}`;
-            
             posLine = document.getElementById('pPosition').value || 'Digital Visual Designer';
             deptLine = document.getElementById('pDept').value || 'Digital and Energy Solutions';
         } else {
-            // Dept Inputs
             const en = document.getElementById('dNameEng').value || 'Human Resources';
             const th = document.getElementById('dNameTh').value || '';
-            
-            // Name Line becomes Dept Name
             nameLine = th ? `${en} | ${th}` : en;
-            
-            // Pos/Dept Lines are empty for Dept Mode
             posLine = "";
             deptLine = "";
         }
 
-        // Common Contact Info
         const email = document.getElementById('inputEmail').value || 'example@bgrimmpower.com';
         const mobRaw = document.getElementById('inputMobile').value;
         const telRaw = document.getElementById('inputTel').value;
 
-        // Validations
         validateEmail(email);
         validatePhone(mobRaw, 'inputMobile', 'warnMobile');
         validatePhone(telRaw, 'inputTel', 'warnTel');
 
-        // --- 2. UPDATE DESKTOP PREVIEW ---
-        
-        // Name / Dept Header
         document.getElementById('sigNameContent').innerHTML = nameLine;
-
-        // Position Row (Hide completely if Dept Mode)
+        
         const rowPos = document.getElementById('rowPosition');
         if (isPerson) {
             rowPos.style.display = 'table-row';
@@ -846,11 +919,9 @@
             rowPos.style.display = 'none';
         }
 
-        // Email
         document.getElementById('textEmail').innerText = email;
         document.getElementById('linkEmail').href = "mailto:" + email;
 
-        // Mobile
         const deskMobWrap = document.getElementById('wrapperMobile');
         let finalMob = "";
         if(!mobRaw) {
@@ -867,7 +938,6 @@
             document.getElementById('linkMobile').href = "tel:"+finalMob.replace(/\D/g,'');
         }
 
-        // Tel
         const deskTelWrap = document.getElementById('wrapperTel');
         let finalTel = "";
         if(!telRaw) { deskTelWrap.style.display = 'none'; } 
@@ -878,9 +948,8 @@
             document.getElementById('linkTel').href = "tel:"+finalTel.replace(/\D/g,'');
         }
 
-        // --- 3. UPDATE MOBILE PREVIEW ---
         let mText = "--\n\n";
-        mText += nameLine + "\n"; // Name or Dept Name
+        mText += nameLine + "\n"; 
         
         if(isPerson) {
             mText += posLine + "\n";
