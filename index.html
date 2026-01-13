@@ -12,7 +12,8 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 30px;
+            /* Added padding-top to compensate for fixed header */
+            padding: 140px 30px 30px; 
             color: #63666F;
             min-height: 100vh;
         }
@@ -21,61 +22,88 @@
             font-family: Arial, sans-serif;
         }
 
-        /* --- HEADER SECTION --- */
+        /* --- GLASSMORPHISM PILL HEADER --- */
         .main-header {
-            width: 100%;
+            position: fixed;
+            top: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
             max-width: 1100px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding-bottom: 25px;
-            margin-bottom: 10px;
-            border-bottom: none;
+            
+            /* Glassmorphism Style */
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+            
+            border-radius: 60px; /* Pill Shape */
+            padding: 15px 40px;
+            z-index: 2000;
+            
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        /* Scrolled State (Shrink) */
+        .main-header.scrolled {
+            top: 15px;
+            padding: 10px 30px;
+            background: rgba(255, 255, 255, 0.85); /* Slightly less transparent for readability */
+            box-shadow: 0 10px 30px 0 rgba(31, 38, 135, 0.15);
+            width: 85%; /* Slightly narrower */
+            max-width: 900px;
         }
 
         .header-logo img {
             height: 50px;
             width: auto;
             display: block;
+            transition: height 0.4s ease;
+        }
+
+        .main-header.scrolled .header-logo img {
+            height: 35px; /* Shrink Logo */
         }
 
         .header-titles {
             text-align: right;
+            transition: all 0.4s ease;
         }
 
-        /* === UPDATED: VIVID SLOW MOLTEN ORANGE === */
+        /* === VIVID SLOW MOLTEN ORANGE ANIMATION === */
         .header-title-en {
             font-size: 26px;
             font-weight: 700;
-            margin-bottom: 5px;
+            margin-bottom: 2px;
             letter-spacing: -0.5px;
+            transition: font-size 0.4s ease;
             
-            /* NEW: More vivid orange gradient with brighter highlights and deeper reds */
             background: linear-gradient(
                 120deg, 
-                #FF6727 0%,    /* Base B.Grimm Orange */
-                #FF8C00 15%,   /* Vivid Dark Orange */
-                #FF6727 30%,   /* Base */
-                #FFE3B3 45%,   /* Super Bright Glowing Highlight */
-                #FF6727 60%,   /* Base */
-                #FF4500 75%,   /* Deep rich orange-red */
-                #FF6727 90%    /* Base */
+                #FF6727 0%,    
+                #FF8C00 15%,   
+                #FF6727 30%,   
+                #FFE3B3 45%,   
+                #FF6727 60%,   
+                #FF4500 75%,   
+                #FF6727 90%    
             );
-            
-            /* Very large background size for chaotic movement space */
             background-size: 400% 400%;
-            
-            /* Clip to text */
-            color: #FF6727; /* Fallback */
+            color: #FF6727;
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
-            
-            /* NEW: Slower duration (25s) for more majestic flow */
             animation: moltenChaos 25s ease infinite;
         }
 
-        /* Keyframes moving randomly across the large background grid */
+        .main-header.scrolled .header-title-en {
+            font-size: 18px; /* Shrink Text */
+        }
+
         @keyframes moltenChaos {
             0%   { background-position: 10% 15%; }
             20%  { background-position: 85% 30%; }
@@ -83,14 +111,19 @@
             50%  { background-position: 15% 60%; }
             70%  { background-position: 90% 90%; }
             85%  { background-position: 40% 20%; }
-            100% { background-position: 10% 15%; } /* Loop back smoothly */
+            100% { background-position: 10% 15%; } 
         }
-        /* ==================================================================== */
 
         .header-title-th {
             color: #63666F;
             font-size: 16px;
             font-weight: 400;
+            transition: font-size 0.4s ease, opacity 0.4s ease;
+        }
+
+        .main-header.scrolled .header-title-th {
+            font-size: 12px; /* Shrink Text */
+            opacity: 0.8;
         }
 
         /* --- MAIN CONTAINER --- */
@@ -476,14 +509,18 @@
             .container { flex-direction: column; }
             .input-section { border-right: none; padding-right: 0; border-bottom: 1px solid #ddd; padding-bottom: 20px; }
             .float-guide-btn { bottom: 20px; right: 20px; padding: 10px 20px; font-size: 12px; }
-            .main-header { flex-direction: column; gap: 15px; align-items: flex-start; }
+            /* Adjusted for fixed header mobile */
+            .main-header {
+                width: 95%; /* Wider on mobile */
+                padding: 12px 20px;
+            }
             .header-titles { text-align: left; }
         }
     </style>
 </head>
 <body>
 
-<header class="main-header">
+<header class="main-header" id="stickyHeader">
     <div class="header-logo">
         <img src="https://static-portal.bgrimm.io/public/logo/B.Grimm%20Logo.png" alt="B.Grimm Logo">
     </div>
@@ -835,13 +872,25 @@
             setTimeout(() => { firstBtn.classList.add('active'); firstPanel.classList.add('show'); }, 600);
         }
     }
+    
+    // --- SCROLL: STICKY HEADER & BUBBLE HIDE ---
     window.addEventListener('scroll', function() {
+        // Sticky Header Logic
+        const header = document.getElementById('stickyHeader');
+        if (window.scrollY > 50) {
+            header.classList.add('scrolled');
+        } else {
+            header.classList.remove('scrolled');
+        }
+
+        // Bubble Hide Logic
         const guideHeader = document.getElementById('guide-anchor');
-        if (!guideHeader) return;
-        const guidePosition = guideHeader.getBoundingClientRect().top;
-        const screenHeight = window.innerHeight;
-        if (guidePosition < screenHeight - 100) { floatBtn.classList.add('hidden'); } 
-        else { floatBtn.classList.remove('hidden'); }
+        if (guideHeader) {
+            const guidePosition = guideHeader.getBoundingClientRect().top;
+            const screenHeight = window.innerHeight;
+            if (guidePosition < screenHeight - 100) { floatBtn.classList.add('hidden'); } 
+            else { floatBtn.classList.remove('hidden'); }
+        }
     });
 
     // --- LANGUAGE SWITCH LOGIC ---
