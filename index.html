@@ -9,8 +9,10 @@
         :root {
             --body-side-padding: 20px;
             
-            /* Header Variables */
-            --header-max-width: 1100px; /* Max width for content */
+            /* Header Height Components */
+            --logo-min-h: 30px;
+            --logo-pref-h: 5vw;
+            --logo-max-h: 50px;
         }
 
         body {
@@ -36,94 +38,69 @@
             font-family: Arial, sans-serif;
         }
 
-        /* --- GLASSMORPHISM HEADER (STABLE CONTAINER) --- */
+        /* --- GLASSMORPHISM HEADER (CONTAINER-BASED STABLE CONTENT) --- */
         .main-header {
             position: fixed;
             z-index: 2000;
             
-            /* CENTERING TRICK (Works better with width animation than transform) */
+            /* CENTERING TRICK */
             left: 0;
             right: 0;
             margin: 0 auto;
             
             /* STATE 1: RECTANGLE (TOP) */
             top: 0;
-            width: 100%; /* Full Width */
-            max-width: 100%;
+            width: 100%;
             border-radius: 0;
+            padding: 20px 0;
             
             /* Glass Style */
             background: rgba(255, 255, 255, 0.75);
             backdrop-filter: blur(15px);
             -webkit-backdrop-filter: blur(15px);
             border-bottom: 1px solid rgba(255, 255, 255, 0.5);
-            border-left: 1px solid transparent;
-            border-right: 1px solid transparent;
-            border-top: 1px solid transparent;
-            
             box-shadow: 0 4px 20px rgba(0,0,0,0.03);
             
-            /* TRANSITIONS (Unified Elastic) */
-            transition: 
-                top 0.6s cubic-bezier(0.34, 1.56, 0.64, 1),
-                width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1),
-                max-width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1),
-                border-radius 0.6s cubic-bezier(0.34, 1.56, 0.64, 1),
-                background 0.5s ease,
-                box-shadow 0.5s ease,
-                padding 0.6s ease;
-                
+            /* TRANSITIONS */
+            transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
             box-sizing: border-box;
             
-            /* Flex center to hold inner content */
             display: flex;
             justify-content: center;
-            padding: 15px 0; /* Vertical padding */
         }
 
         /* STATE 2: PILL (SCROLLED) */
         .main-header.scrolled {
             top: 20px;
-            
-            /* Shrink width to contain content + padding */
             width: 95%; 
-            max-width: 1140px; /* Cap width */
-            
+            max-width: 1140px;
             border-radius: 60px;
-            
-            /* Full Border */
             border: 1px solid rgba(255, 255, 255, 0.6);
-            
             box-shadow: 0 15px 40px rgba(31, 38, 135, 0.12);
             background: rgba(255, 255, 255, 0.9);
-            
             padding: 10px 0;
         }
 
         /* --- INNER CONTENT WRAPPER --- */
-        /* This ensures content stays centered and restricted width */
         .header-inner {
             width: 100%;
-            max-width: 1100px; /* Matches page content max-width */
+            max-width: 1100px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            
-            /* Horizontal Padding ensures items don't touch pill edges */
             padding: 0 30px; 
             box-sizing: border-box;
         }
 
-        /* LOGO & TEXT ANIMATIONS */
         .header-logo img {
-            height: clamp(30px, 5vw, 50px);
+            height: clamp(var(--logo-min-h), var(--logo-pref-h), var(--logo-max-h));
             width: auto;
             display: block;
             transition: height 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
         .main-header.scrolled .header-logo img {
-            height: clamp(25px, 4vw, 35px); /* Shrink Logo */
+            height: clamp(25px, 4vw, 35px);
         }
 
         .header-titles {
@@ -135,7 +112,6 @@
             justify-content: center;
         }
 
-        /* === VIVID MOLTEN ORANGE ANIMATION === */
         .header-title-en {
             font-size: clamp(14px, 2.5vw, 26px);
             font-weight: 700;
@@ -197,10 +173,8 @@
             padding: 30px;
             border-radius: 12px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            
             width: 100%;
             max-width: 1100px;
-            
             flex-wrap: wrap;
             margin-bottom: 40px;
             margin-top: 0;
@@ -575,8 +549,6 @@
             .container { flex-direction: column; }
             .input-section { border-right: none; padding-right: 0; border-bottom: 1px solid #ddd; padding-bottom: 20px; }
             .float-guide-btn { bottom: 20px; right: 20px; padding: 10px 20px; font-size: 12px; }
-            .main-header { padding: 10px 0; }
-            .header-inner { padding: 0 20px; }
             .header-titles { text-align: left; }
         }
     </style>
@@ -617,13 +589,13 @@
             <h3>ข้อมูลส่วนตัว (Personal Info)</h3>
             <div class="form-group">
                 <label>ชื่อ-นามสกุล ภาษาอังกฤษ (Name - EN)</label>
-                <input type="text" id="pNameEng" placeholder="Panupong Pumikrai" oninput="updateSig()">
+                <input type="text" id="pNameEng" placeholder="Somchai Jaidee" oninput="updateSig()">
                 <span id="checkNameEng" class="valid-icon">✓</span>
                 <div id="warnNameEng" class="warning-msg"></div>
             </div>
             <div class="form-group">
                 <label>ชื่อ-นามสกุล ภาษาไทย (Name - TH)</label>
-                <input type="text" id="pNameTh" placeholder="ภาณุพงศ์ ภูมิไกร" oninput="updateSig()">
+                <input type="text" id="pNameTh" placeholder="สมชาย ใจดี" oninput="updateSig()">
                 <span id="checkNameTh" class="valid-icon">✓</span>
                 <div id="warnNameTh" class="warning-msg"></div>
             </div>
@@ -633,8 +605,12 @@
                 <input type="text" id="pPosition" placeholder="Digital Visual Designer" oninput="updateSig()">
             </div>
             <div class="form-group">
-                <label>ฝ่าย/แผนก (Department/Solutions)</label>
-                <input type="text" id="pDept" placeholder="Digital and Energy Solutions" oninput="updateSig()">
+                <label>แผนก/ส่วนงาน (Section/Solutions)</label>
+                <input type="text" id="pDept" placeholder="Digital Project Office" oninput="updateSig()">
+            </div>
+            <div class="form-group">
+                <label>ฝ่าย (Department)</label>
+                <input type="text" id="pMainDept" placeholder="Digital and Energy Solutions" oninput="updateSig()">
             </div>
         </div>
 
@@ -734,40 +710,8 @@
         <span class="icon">▼</span>
     </button>
     <div class="panel">
-        <div data-lang="th">
-            <p><em>เหมาะสำหรับผู้ที่ใช้ Outlook App บน Windows หรือ Mac</em></p>
-            <ol>
-                <li>เปิดโปรแกรม Outlook</li>
-                <li>คลิกที่เมนู <strong>File (ไฟล์)</strong> > <strong>Options (ตัวเลือก)</strong></li>
-                <li>เลือกแถบ <strong>Mail (จดหมาย)</strong> และคลิกปุ่ม <strong>Signatures... (ลายเซ็น...)</strong></li>
-                <li>กดปุ่ม <strong>New (ใหม่)</strong> เพื่อสร้างลายเซ็นใหม่ ตั้งชื่อว่า <strong>"B.Grimm"</strong></li>
-                <li>ในช่องว่างด้านล่าง ให้คลิกขวาแล้วเลือก <strong>Paste (วาง)</strong> หรือกด <code>Ctrl + V</code></li>
-                <li><strong>สำคัญ:</strong> ที่ส่วน <strong>Choose default signature (เลือกลายเซ็นเริ่มต้น)</strong> ด้านขวา
-                    <ul>
-                        <li>New messages (ข้อความใหม่): เลือก <strong>"B.Grimm"</strong></li>
-                        <li>Replies/forwards (การตอบกลับ/ส่งต่อ): เลือก <strong>"B.Grimm"</strong></li>
-                    </ul>
-                </li>
-                <li>กด <strong>OK</strong> เพื่อบันทึก</li>
-            </ol>
-        </div>
-        <div data-lang="en">
-            <p><em>Suitable for Outlook App on Windows or Mac</em></p>
-            <ol>
-                <li>Open Outlook.</li>
-                <li>Click <strong>File</strong> > <strong>Options</strong>.</li>
-                <li>Select the <strong>Mail</strong> tab and click <strong>Signatures...</strong></li>
-                <li>Click <strong>New</strong> to create a signature, name it <strong>"B.Grimm"</strong>.</li>
-                <li>In the text box below, right-click and select <strong>Paste</strong> or press <code>Ctrl + V</code>.</li>
-                <li><strong>Important:</strong> Under <strong>Choose default signature</strong> on the right:
-                    <ul>
-                        <li>New messages: Select <strong>"B.Grimm"</strong></li>
-                        <li>Replies/forwards: Select <strong>"B.Grimm"</strong></li>
-                    </ul>
-                </li>
-                <li>Click <strong>OK</strong> to save.</li>
-            </ol>
-        </div>
+        <div data-lang="th"><p><em>เหมาะสำหรับผู้ที่ใช้ Outlook App บน Windows หรือ Mac</em></p><ol><li>เปิดโปรแกรม Outlook</li><li>คลิกที่เมนู <strong>File (ไฟล์)</strong> > <strong>Options (ตัวเลือก)</strong></li><li>เลือกแถบ <strong>Mail (จดหมาย)</strong> และคลิกปุ่ม <strong>Signatures... (ลายเซ็น...)</strong></li><li>กดปุ่ม <strong>New (ใหม่)</strong> เพื่อสร้างลายเซ็นใหม่ ตั้งชื่อว่า <strong>"B.Grimm"</strong></li><li>ในช่องว่างด้านล่าง ให้คลิกขวาแล้วเลือก <strong>Paste (วาง)</strong> หรือกด <code>Ctrl + V</code></li><li><strong>สำคัญ:</strong> ที่ส่วน <strong>Choose default signature (เลือกลายเซ็นเริ่มต้น)</strong> ด้านขวา<ul><li>New messages (ข้อความใหม่): เลือก <strong>"B.Grimm"</strong></li><li>Replies/forwards (การตอบกลับ/ส่งต่อ): เลือก <strong>"B.Grimm"</strong></li></ul></li><li>กด <strong>OK</strong> เพื่อบันทึก</li></ol></div>
+        <div data-lang="en"><p><em>Suitable for Outlook App on Windows or Mac</em></p><ol><li>Open Outlook.</li><li>Click <strong>File</strong> > <strong>Options</strong>.</li><li>Select the <strong>Mail</strong> tab and click <strong>Signatures...</strong></li><li>Click <strong>New</strong> to create a signature, name it <strong>"B.Grimm"</strong>.</li><li>In the text box below, right-click and select <strong>Paste</strong> or press <code>Ctrl + V</code>.</li><li><strong>Important:</strong> Under <strong>Choose default signature</strong> on the right:<ul><li>New messages: Select <strong>"B.Grimm"</strong></li><li>Replies/forwards: Select <strong>"B.Grimm"</strong></li></ul></li><li>Click <strong>OK</strong> to save.</li></ol></div>
     </div>
 
     <button class="accordion">
@@ -776,40 +720,8 @@
         <span class="icon">▼</span>
     </button>
     <div class="panel">
-        <div data-lang="th">
-            <p><em>เหมาะสำหรับผู้ที่เช็คอีเมลผ่าน Microsoft 365 บน Chrome/Edge</em></p>
-            <ol>
-                <li>เข้าไปที่หน้าอีเมล Outlook บนเว็บ</li>
-                <li>คลิกไอคอน <strong>Settings (รูปฟันเฟือง ⚙️)</strong> มุมขวาบน</li>
-                <li>ไปที่ <strong>Mail (จดหมาย)</strong> > <strong>Compose and reply (เขียนและตอบกลับ)</strong></li>
-                <li>คลิกปุ่ม <strong>+ New signature (ลายเซ็นใหม่)</strong> ตั้งชื่อว่า <strong>"B.Grimm"</strong></li>
-                <li>คลิกขวาในกล่องข้อความแล้วเลือก <strong>Paste (วาง)</strong> หรือกด <code>Ctrl + V</code></li>
-                <li>เลื่อนลงมาที่หัวข้อ <strong>Select default signatures (เลือกลายเซ็นเริ่มต้น)</strong>
-                    <ul>
-                        <li>For New messages: เลือก <strong>"B.Grimm"</strong></li>
-                        <li>For Replies/Forwards: เลือก <strong>"B.Grimm"</strong></li>
-                    </ul>
-                </li>
-                <li>กดปุ่ม <strong>Save (บันทึก)</strong></li>
-            </ol>
-        </div>
-        <div data-lang="en">
-            <p><em>Suitable for Microsoft 365 via Chrome/Edge</em></p>
-            <ol>
-                <li>Go to Outlook on the web.</li>
-                <li>Click the <strong>Settings (gear icon ⚙️)</strong> at the top right.</li>
-                <li>Go to <strong>Mail</strong> > <strong>Compose and reply</strong>.</li>
-                <li>Click <strong>+ New signature</strong>, name it <strong>"B.Grimm"</strong>.</li>
-                <li>Right-click in the text box and select <strong>Paste</strong> or press <code>Ctrl + V</code>.</li>
-                <li>Scroll down to <strong>Select default signatures</strong>:
-                    <ul>
-                        <li>For New messages: Select <strong>"B.Grimm"</strong></li>
-                        <li>For Replies/Forwards: Select <strong>"B.Grimm"</strong></li>
-                    </ul>
-                </li>
-                <li>Click <strong>Save</strong>.</li>
-            </ol>
-        </div>
+         <div data-lang="th"><p><em>เหมาะสำหรับผู้ที่เช็คอีเมลผ่าน Microsoft 365 บน Chrome/Edge</em></p><ol><li>เข้าไปที่หน้าอีเมล Outlook บนเว็บ</li><li>คลิกไอคอน <strong>Settings (รูปฟันเฟือง ⚙️)</strong> มุมขวาบน</li><li>ไปที่ <strong>Mail (จดหมาย)</strong> > <strong>Compose and reply (เขียนและตอบกลับ)</strong></li><li>คลิกปุ่ม <strong>+ New signature (ลายเซ็นใหม่)</strong> ตั้งชื่อว่า <strong>"B.Grimm"</strong></li><li>คลิกขวาในกล่องข้อความแล้วเลือก <strong>Paste (วาง)</strong> หรือกด <code>Ctrl + V</code></li><li>เลื่อนลงมาที่หัวข้อ <strong>Select default signatures (เลือกลายเซ็นเริ่มต้น)</strong><ul><li>For New messages: เลือก <strong>"B.Grimm"</strong></li><li>For Replies/Forwards: เลือก <strong>"B.Grimm"</strong></li></ul></li><li>กดปุ่ม <strong>Save (บันทึก)</strong></li></ol></div>
+         <div data-lang="en"><p><em>Suitable for Microsoft 365 via Chrome/Edge</em></p><ol><li>Go to Outlook on the web.</li><li>Click the <strong>Settings (gear icon ⚙️)</strong> at the top right.</li><li>Go to <strong>Mail</strong> > <strong>Compose and reply</strong>.</li><li>Click <strong>+ New signature</strong>, name it <strong>"B.Grimm"</strong>.</li><li>Right-click in the text box and select <strong>Paste</strong> or press <code>Ctrl + V</code>.</li><li>Scroll down to <strong>Select default signatures</strong>:<ul><li>For New messages: Select <strong>"B.Grimm"</strong></li><li>For Replies/Forwards: Select <strong>"B.Grimm"</strong></li></ul></li><li>Click <strong>Save</strong>.</li></ol></div>
     </div>
 
     <button class="accordion">
@@ -818,40 +730,8 @@
         <span class="icon">▼</span>
     </button>
     <div class="panel">
-        <div data-lang="th">
-            <p><em>เหมาะสำหรับผู้ที่ใช้งาน Gmail องค์กร</em></p>
-            <ol>
-                <li>เข้าไปที่ Gmail</li>
-                <li>คลิกไอคอน <strong>Settings (รูปฟันเฟือง ⚙️)</strong> มุมขวาบน > เลือก <strong>See all settings (ดูการตั้งค่าทั้งหมด)</strong></li>
-                <li>เลื่อนลงมาหาหัวข้อ <strong>Signature (ลายเซ็น)</strong></li>
-                <li>คลิก <strong>+ Create new (สร้างใหม่)</strong> ตั้งชื่อว่า <strong>"B.Grimm"</strong> แล้วกด Create</li>
-                <li>คลิกขวาในกล่องข้อความด้านขวา แล้วเลือก <strong>Paste (วาง)</strong> หรือกด <code>Ctrl + V</code></li>
-                <li>เลื่อนลงมาที่หัวข้อ <strong>Signature defaults (ค่าเริ่มต้นของลายเซ็น)</strong>
-                    <ul>
-                        <li>For new emails use: เลือก <strong>"B.Grimm"</strong></li>
-                        <li>On reply/forward use: เลือก <strong>"B.Grimm"</strong></li>
-                    </ul>
-                </li>
-                <li>เลื่อนลงไปล่างสุดของหน้า แล้วกดปุ่ม <strong>Save Changes (บันทึกการเปลี่ยนแปลง)</strong></li>
-            </ol>
-        </div>
-        <div data-lang="en">
-            <p><em>Suitable for Corporate Gmail users</em></p>
-            <ol>
-                <li>Go to Gmail.</li>
-                <li>Click <strong>Settings (gear icon ⚙️)</strong> > Select <strong>See all settings</strong>.</li>
-                <li>Scroll down to the <strong>Signature</strong> section.</li>
-                <li>Click <strong>+ Create new</strong>, name it <strong>"B.Grimm"</strong>, and click Create.</li>
-                <li>Right-click in the text box and select <strong>Paste</strong> or press <code>Ctrl + V</code>.</li>
-                <li>Scroll down to <strong>Signature defaults</strong>:
-                    <ul>
-                        <li>For new emails use: Select <strong>"B.Grimm"</strong></li>
-                        <li>On reply/forward use: Select <strong>"B.Grimm"</strong></li>
-                    </ul>
-                </li>
-                <li>Scroll to the bottom and click <strong>Save Changes</strong>.</li>
-            </ol>
-        </div>
+        <div data-lang="th"><p><em>เหมาะสำหรับผู้ที่ใช้งาน Gmail องค์กร</em></p><ol><li>เข้าไปที่ Gmail</li><li>คลิกไอคอน <strong>Settings (รูปฟันเฟือง ⚙️)</strong> มุมขวาบน > เลือก <strong>See all settings (ดูการตั้งค่าทั้งหมด)</strong></li><li>เลื่อนลงมาหาหัวข้อ <strong>Signature (ลายเซ็น)</strong></li><li>คลิก <strong>+ Create new (สร้างใหม่)</strong> ตั้งชื่อว่า <strong>"B.Grimm"</strong> แล้วกด Create</li><li>คลิกขวาในกล่องข้อความด้านขวา แล้วเลือก <strong>Paste (วาง)</strong> หรือกด <code>Ctrl + V</code></li><li>เลื่อนลงมาที่หัวข้อ <strong>Signature defaults (ค่าเริ่มต้นของลายเซ็น)</strong><ul><li>For new emails use: เลือก <strong>"B.Grimm"</strong></li><li>On reply/forward use: เลือก <strong>"B.Grimm"</strong></li></ul></li><li>เลื่อนลงไปล่างสุดของหน้า แล้วกดปุ่ม <strong>Save Changes (บันทึกการเปลี่ยนแปลง)</strong></li></ol></div>
+        <div data-lang="en"><p><em>Suitable for Corporate Gmail users</em></p><ol><li>Go to Gmail.</li><li>Click <strong>Settings (gear icon ⚙️)</strong> > Select <strong>See all settings</strong>.</li><li>Scroll down to the <strong>Signature</strong> section.</li><li>Click <strong>+ Create new</strong>, name it <strong>"B.Grimm"</strong>, and click Create.</li><li>Right-click in the text box and select <strong>Paste</strong> or press <code>Ctrl + V</code>.</li><li>Scroll down to <strong>Signature defaults</strong>:<ul><li>For new emails use: Select <strong>"B.Grimm"</strong></li><li>On reply/forward use: Select <strong>"B.Grimm"</strong></li></ul></li><li>Scroll to the bottom and click <strong>Save Changes</strong>.</li></ol></div>
     </div>
 
     <button class="accordion">
@@ -860,46 +740,9 @@
         <span class="icon">▼</span>
     </button>
     <div class="panel">
-        <div data-lang="th">
-            <p>หากต้องการตั้งค่าในมือถือ ให้ทำดังนี้:</p>
-            <ol>
-                <li>ในเครื่องมือสร้างลายเซ็น ให้กดเลือก Tab <strong>"📱 Mobile (Plain Text)"</strong> ด้านบน</li>
-                <li>กดปุ่ม <strong>COPY TO CLIPBOARD</strong></li>
-                <li>ไปที่การตั้งค่าลายเซ็นในแอปมือถือของคุณ (Outlook App หรือ iOS Mail)</li>
-                <li>วางข้อความที่คัดลอกลงไป (รูปแบบ Mobile จะไม่มีรูปภาพ เพื่อให้อ่านง่ายและไม่เปลืองดาต้า)</li>
-            </ol>
-        </div>
-        <div data-lang="en">
-            <p>To set up on mobile devices:</p>
-            <ol>
-                <li>In the signature generator tool, select the <strong>"📱 Mobile (Plain Text)"</strong> tab.</li>
-                <li>Click <strong>COPY TO CLIPBOARD</strong>.</li>
-                <li>Go to the signature settings in your mobile app (Outlook App or iOS Mail).</li>
-                <li>Paste the copied text (Mobile format is text-only for better readability and data saving).</li>
-            </ol>
-        </div>
+        <div data-lang="th"><p>หากต้องการตั้งค่าในมือถือ ให้ทำดังนี้:</p><ol><li>ในเครื่องมือสร้างลายเซ็น ให้กดเลือก Tab <strong>"📱 Mobile (Plain Text)"</strong> ด้านบน</li><li>กดปุ่ม <strong>COPY TO CLIPBOARD</strong></li><li>ไปที่การตั้งค่าลายเซ็นในแอปมือถือของคุณ (Outlook App หรือ iOS Mail)</li><li>วางข้อความที่คัดลอกลงไป (รูปแบบ Mobile จะไม่มีรูปภาพ เพื่อให้อ่านง่ายและไม่เปลืองดาต้า)</li></ol></div>
+        <div data-lang="en"><p>To set up on mobile devices:</p><ol><li>In the signature generator tool, select the <strong>"📱 Mobile (Plain Text)"</strong> tab.</li><li>Click <strong>COPY TO CLIPBOARD</strong>.</li><li>Go to the signature settings in your mobile app (Outlook App or iOS Mail).</li><li>Paste the copied text (Mobile format is text-only for better readability and data saving).</li></ol></div>
     </div>
-
-    <div style="background:#fffbf5; border:1px solid #C8B273; padding:15px; border-radius:10px; margin-top:20px; display:flex; align-items:flex-start; gap:10px;">
-        <span style="font-size:20px;">⚠️</span>
-        <div style="font-size:14px; color:#63666F; line-height:1.6;">
-            <div data-lang="th">
-                <strong style="color:#8C704D;">หากพบปัญหา:</strong>
-                <ul style="margin:5px 0 0 20px; padding:0; color:#63666F;">
-                    <li><strong>รูปไม่ขึ้น:</strong> ลองกด Copy และ Paste ใหม่อีกครั้ง หรือตรวจสอบการเชื่อมต่ออินเทอร์เน็ต</li>
-                    <li><strong>ฟอนต์เพี้ยน:</strong> ระบบถูกตั้งค่าให้ใช้ฟอนต์ Arial เป็นมาตรฐาน หากนำไปวางแล้วฟอนต์เปลี่ยน ให้ลองกดวางแบบ "Keep Source Formatting" (รักษารูปแบบต้นฉบับ)</li>
-                </ul>
-            </div>
-            <div data-lang="en">
-                <strong style="color:#8C704D;">Troubleshooting:</strong>
-                <ul style="margin:5px 0 0 20px; padding:0; color:#63666F;">
-                    <li><strong>Image broken:</strong> Try Copy and Paste again or check your internet connection.</li>
-                    <li><strong>Font incorrect:</strong> The system uses Arial by default. If the font changes upon pasting, try selecting "Keep Source Formatting".</li>
-                </ul>
-            </div>
-        </div>
-    </div>
-
 </div>
 
 <footer class="app-footer">
@@ -937,18 +780,16 @@
             setTimeout(() => { firstBtn.classList.add('active'); firstPanel.classList.add('show'); }, 600);
         }
     }
-    
-    // --- SCROLL: STICKY HEADER & BUBBLE HIDE ---
-    window.addEventListener('scroll', function() {
-        // Sticky Header Logic
-        const header = document.getElementById('stickyHeader');
-        if (window.scrollY > 50) {
-            header.classList.add('scrolled');
-        } else {
-            header.classList.remove('scrolled');
-        }
 
-        // Bubble Hide Logic
+    // --- SCROLL & RESIZE LOGIC (Layout) ---
+    function updateLayoutState() {
+        const wrapper = document.getElementById('stickyHeader');
+        if (window.scrollY > 50) {
+            wrapper.classList.add('scrolled');
+        } else {
+            wrapper.classList.remove('scrolled');
+        }
+        
         const guideHeader = document.getElementById('guide-anchor');
         if (guideHeader) {
             const guidePosition = guideHeader.getBoundingClientRect().top;
@@ -956,7 +797,8 @@
             if (guidePosition < screenHeight - 100) { floatBtn.classList.add('hidden'); } 
             else { floatBtn.classList.remove('hidden'); }
         }
-    });
+    }
+    window.addEventListener('scroll', updateLayoutState);
 
     // --- LANGUAGE SWITCH LOGIC ---
     let currentGuideLang = 'th';
@@ -984,41 +826,30 @@
         });
     }
 
-    // --- MAIN APP LOGIC (ELASTIC TAB) ---
+    // --- MAIN APP LOGIC ---
     let currentMode = 'person';
     let currentTab = 'desktop';
     
-    // Init sliders position and Layout
     window.onload = function() {
         const desktopBtn = document.getElementById('btnDesktop');
         const personBtn = document.getElementById('btnPerson');
         moveSlider(desktopBtn, 'previewSlider');
         moveSlider(personBtn, 'modeSlider');
-        
-        // Initial Layout Calculation
         adjustLayout();
     };
 
-    // Recalculate layout on resize
     window.addEventListener('resize', function() {
         adjustLayout();
-        
-        // Recalc Sliders Position on resize (Fixes misalignment)
         const activeModeBtn = document.querySelector('#modeSelector .tab-btn.active');
         if(activeModeBtn) moveSlider(activeModeBtn, 'modeSlider');
-
         const activePreviewBtn = document.querySelector('#previewTabs .tab-btn.active');
         if(activePreviewBtn) moveSlider(activePreviewBtn, 'previewSlider');
     });
 
-    // === FUNCTION TO ADJUST PADDING DYNAMICALLY ===
     function adjustLayout() {
         const header = document.querySelector('.main-header');
-        const headerHeight = header.offsetHeight;
-        const gap = 25; // Top/Bottom Gap
-        
-        // Body Padding Top = Header Height + Gap
-        document.body.style.paddingTop = (headerHeight + gap) + 'px';
+        const headerHeight = header.offsetHeight || 100;
+        document.body.style.paddingTop = (headerHeight + 40) + 'px';
     }
 
     function moveSlider(element, sliderId) {
@@ -1027,16 +858,13 @@
         slider.style.transform = `translateX(${element.offsetLeft - 6}px)`;
     }
 
-    // Preview Tabs
     function switchTab(tab, btnElement) {
         currentTab = tab;
         moveSlider(btnElement, 'previewSlider');
-        
         const note = document.getElementById('noteText');
         const btns = document.getElementById('previewTabs').querySelectorAll('.tab-btn');
         btns.forEach(btn => btn.classList.remove('active'));
         btnElement.classList.add('active');
-        
         if (tab === 'desktop') {
             document.getElementById('previewDesktop').classList.add('active');
             document.getElementById('previewMobile').classList.remove('active');
@@ -1048,18 +876,14 @@
         }
     }
 
-    // Mode Selector (Person/Dept)
     function setMode(mode, btnElement) {
         currentMode = mode;
         moveSlider(btnElement, 'modeSlider');
-
         const btns = document.getElementById('modeSelector').querySelectorAll('.tab-btn');
         btns.forEach(btn => btn.classList.remove('active'));
         btnElement.classList.add('active');
-
         const formPerson = document.getElementById('formPerson');
         const formDept = document.getElementById('formDept');
-        
         if (mode === 'person') {
             formPerson.classList.add('active');
             formDept.classList.remove('active');
@@ -1085,143 +909,52 @@
         return input; 
     }
 
-    // --- NEW VALIDATION & WARNING LOGIC (BILINGUAL CYCLE) ---
-    function getDualWarnHTML(th, en) {
-        return `<div class="warn-cycle"><span class="th">${th}</span><span class="en">${en}</span></div>`;
-    }
+    function getDualWarnHTML(th, en) { return `<div class="warn-cycle"><span class="th">${th}</span><span class="en">${en}</span></div>`; }
+    function toggleIcon(id, isValid) { document.getElementById(id).style.display = isValid ? 'block' : 'none'; }
 
-    function toggleIcon(id, isValid) {
-        const icon = document.getElementById(id);
-        if(isValid) icon.style.display = 'block';
-        else icon.style.display = 'none';
-    }
-
-    // --- 1. EMAIL VALIDATION ---
     function validateEmail(email) {
         const inputEl = document.getElementById('inputEmail');
         const warnEl = document.getElementById('warnEmail');
-        
-        // **FIX**: If empty, hide everything and return
-        if (!email) {
-            toggleIcon('checkEmail', false);
-            warnEl.style.display = 'none';
-            inputEl.classList.remove('input-error');
-            return;
-        }
-        
-        let errsTH = [];
-        let errsEN = [];
-        
-        if(/[\u0E00-\u0E7F]/.test(email)) {
-            errsTH.push("ห้ามใช้ภาษาไทย");
-            errsEN.push("No Thai characters");
-        }
-        
-        if(/\s/.test(email)) {
-            errsTH.push("ห้ามเว้นวรรค");
-            errsEN.push("No spaces");
-        }
-        
-        if(/[A-Z]/.test(email)) {
-            errsTH.push("ควรใช้ตัวพิมพ์เล็ก");
-            errsEN.push("Use lowercase");
-        }
-        
-        // Strict Check for Success Icon
+        if (!email) { toggleIcon('checkEmail', false); warnEl.style.display = 'none'; inputEl.classList.remove('input-error'); return; }
+        let errsTH = [], errsEN = [];
+        if(/[\u0E00-\u0E7F]/.test(email)) { errsTH.push("ห้ามใช้ภาษาไทย"); errsEN.push("No Thai characters"); }
+        if(/\s/.test(email)) { errsTH.push("ห้ามเว้นวรรค"); errsEN.push("No spaces"); }
+        if(/[A-Z]/.test(email)) { errsTH.push("ควรใช้ตัวพิมพ์เล็ก"); errsEN.push("Use lowercase"); }
         const isValid = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/.test(email);
         toggleIcon('checkEmail', isValid);
-        
         if(errsTH.length > 0) { 
-            const thMsg = "⚠️ " + errsTH.join(", ");
-            const enMsg = "⚠️ " + errsEN.join(", ");
-            warnEl.innerHTML = getDualWarnHTML(thMsg, enMsg);
-            warnEl.style.display = 'block'; 
-            inputEl.classList.add('input-error'); 
-        } else { 
-            warnEl.style.display = 'none'; 
-            inputEl.classList.remove('input-error'); 
-        }
+            warnEl.innerHTML = getDualWarnHTML("⚠️ " + errsTH.join(", "), "⚠️ " + errsEN.join(", "));
+            warnEl.style.display = 'block'; inputEl.classList.add('input-error'); 
+        } else { warnEl.style.display = 'none'; inputEl.classList.remove('input-error'); }
     }
 
-    // --- 2. PHONE VALIDATION ---
     function validatePhone(input, elId, warnId, iconId, lengthReq) {
         const el = document.getElementById(elId);
         const warn = document.getElementById(warnId);
-        
-        if (!input) {
-            toggleIcon(iconId, false);
-            warn.style.display = 'none';
-            el.classList.remove('input-error');
-            return;
-        }
-
-        let errsTH = [];
-        let errsEN = [];
-
-        if (/-/.test(input)) {
-            errsTH.push("ห้ามขีด (-)");
-            errsEN.push("No hyphens");
-        }
-
-        if (/\s/.test(input)) {
-            errsTH.push("ห้ามเว้นวรรค");
-            errsEN.push("No spaces");
-        }
-
-        if (/[^\d\-\s]/.test(input)) {
-            errsTH.push("ตัวเลขเท่านั้น");
-            errsEN.push("Numbers only");
-        }
-        
+        if (!input) { toggleIcon(iconId, false); warn.style.display = 'none'; el.classList.remove('input-error'); return; }
+        let errsTH = [], errsEN = [];
+        if (/-/.test(input)) { errsTH.push("ห้ามขีด (-)"); errsEN.push("No hyphens"); }
+        if (/\s/.test(input)) { errsTH.push("ห้ามเว้นวรรค"); errsEN.push("No spaces"); }
+        if (/[^\d\-\s]/.test(input)) { errsTH.push("ตัวเลขเท่านั้น"); errsEN.push("Numbers only"); }
         const isNumsOnly = /^\d+$/.test(input);
         const isCorrectLen = input.length === lengthReq;
         toggleIcon(iconId, isNumsOnly && isCorrectLen);
-        
         if(errsTH.length > 0) { 
-            const thMsg = "⚠️ " + errsTH.join(", ");
-            const enMsg = "⚠️ " + errsEN.join(", ");
-            warn.innerHTML = getDualWarnHTML(thMsg, enMsg);
-            warn.style.display = 'block'; 
-            el.classList.add('input-error'); 
-        } else { 
-            warn.style.display = 'none'; 
-            el.classList.remove('input-error'); 
-        }
+            warn.innerHTML = getDualWarnHTML("⚠️ " + errsTH.join(", "), "⚠️ " + errsEN.join(", "));
+            warn.style.display = 'block'; el.classList.add('input-error'); 
+        } else { warn.style.display = 'none'; el.classList.remove('input-error'); }
     }
 
-    // --- 3. NAME VALIDATION ---
     function validateNameEn(input, elId, warnId, iconId, isStrict) {
         const el = document.getElementById(elId);
         const warn = document.getElementById(warnId);
-        
-        if (!input) {
-            toggleIcon(iconId, false);
-            warn.style.display = 'none';
-            el.classList.remove('input-error');
-            return;
-        }
-
-        const hasThai = /[\u0E00-\u0E7F]/.test(input);
-        
-        if(hasThai) {
+        if (!input) { toggleIcon(iconId, false); warn.style.display = 'none'; el.classList.remove('input-error'); return; }
+        if(/[\u0E00-\u0E7F]/.test(input)) {
             warn.innerHTML = getDualWarnHTML("⚠️ กรุณากรอกเป็นภาษาอังกฤษเท่านั้น", "⚠️ English characters only");
-            warn.style.display = 'block';
-            el.classList.add('input-error');
-            toggleIcon(iconId, false);
+            warn.style.display = 'block'; el.classList.add('input-error'); toggleIcon(iconId, false);
         } else {
-            warn.style.display = 'none';
-            el.classList.remove('input-error');
-            
-            // Check for valid English Name
-            let isValid = false;
-            if (isStrict) {
-                // Must have at least 2 parts (English + Space + English)
-                isValid = /^[a-zA-Z]+(\s[a-zA-Z]+)+$/.test(input);
-            } else {
-                // *** UPDATED: Just English characters allowed (space optional) ***
-                // This covers Department Name
-                isValid = /^[a-zA-Z\s.]+$/.test(input);
-            }
+            warn.style.display = 'none'; el.classList.remove('input-error');
+            let isValid = isStrict ? /^[a-zA-Z]+(\s[a-zA-Z]+)+$/.test(input) : /^[a-zA-Z\s.]+$/.test(input);
             toggleIcon(iconId, isValid);
         }
     }
@@ -1229,63 +962,50 @@
     function validateNameTh(input, elId, warnId, iconId, isStrict) {
         const el = document.getElementById(elId);
         const warn = document.getElementById(warnId);
-        
-        if (!input) {
-            toggleIcon(iconId, false);
-            warn.style.display = 'none';
-            el.classList.remove('input-error');
-            return;
-        }
-
-        const hasEng = /[a-zA-Z]/.test(input);
-        
-        if(hasEng) {
+        if (!input) { toggleIcon(iconId, false); warn.style.display = 'none'; el.classList.remove('input-error'); return; }
+        if(/[a-zA-Z]/.test(input)) {
             warn.innerHTML = getDualWarnHTML("⚠️ กรุณากรอกเป็นภาษาไทยเท่านั้น", "⚠️ Thai characters only");
-            warn.style.display = 'block';
-            el.classList.add('input-error');
-            toggleIcon(iconId, false);
+            warn.style.display = 'block'; el.classList.add('input-error'); toggleIcon(iconId, false);
         } else {
-            warn.style.display = 'none';
-            el.classList.remove('input-error');
-            
-            // Check for valid Thai Name
-            let isValid = false;
-            if (isStrict) {
-                // Must have at least 2 parts
-                isValid = /^[\u0E00-\u0E7F]+(\s[\u0E00-\u0E7F]+)+$/.test(input);
-            } else {
-                // *** UPDATED: Just Thai characters allowed ***
-                // This covers Department Name
-                isValid = /^[\u0E00-\u0E7F\s.]+$/.test(input);
-            }
+            warn.style.display = 'none'; el.classList.remove('input-error');
+            let isValid = isStrict ? /^[\u0E00-\u0E7F]+(\s[\u0E00-\u0E7F]+)+$/.test(input) : /^[\u0E00-\u0E7F\s.]+$/.test(input);
             toggleIcon(iconId, isValid);
         }
     }
 
     function updateSig() {
-        // ... (Logic same as before, ensures validation runs on every input)
-        // Get raw email for validation
         const emailRaw = document.getElementById('inputEmail').value; 
         const email = emailRaw || 'example@bgrimmpower.com'; 
 
         let nameLine = "", posLine = "", deptLine = "";
 
         if(currentMode === 'person') {
-            const en = document.getElementById('pNameEng').value || 'Panupong Pumikrai';
-            const th = document.getElementById('pNameTh').value || 'ภาณุพงศ์ ภูมิไกร';
+            const en = document.getElementById('pNameEng').value || 'Somchai Jaidee';
+            const th = document.getElementById('pNameTh').value || 'สมชาย ใจดี';
             
             validateNameEn(document.getElementById('pNameEng').value, 'pNameEng', 'warnNameEng', 'checkNameEng', true);
             validateNameTh(document.getElementById('pNameTh').value, 'pNameTh', 'warnNameTh', 'checkNameTh', true);
 
             nameLine = `${en} | ${th}`;
             posLine = document.getElementById('pPosition').value || 'Digital Visual Designer';
-            deptLine = document.getElementById('pDept').value || 'Digital and Energy Solutions';
+            
+            // COMBINE DEPT + MAIN DEPT
+            const section = document.getElementById('pDept').value;
+            const department = document.getElementById('pMainDept').value;
+            
+            // Fallback for placeholder logic in preview
+            const defSection = 'Digital Project Office';
+            const defDept = 'Digital and Energy Solutions';
+            
+            const finalSection = section || defSection;
+            const finalDept = department || defDept;
+            
+            deptLine = finalSection + ', ' + finalDept;
         } else {
             const en = document.getElementById('dNameEng').value || 'Human Resources';
             const th = document.getElementById('dNameTh').value || '';
             
             validateNameEn(document.getElementById('dNameEng').value, 'dNameEng', 'warnDeptEng', 'checkDeptEng', false);
-            
             if(document.getElementById('dNameTh').value) {
                  validateNameTh(document.getElementById('dNameTh').value, 'dNameTh', 'warnDeptTh', 'checkDeptTh', false);
             } else {
