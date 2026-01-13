@@ -70,8 +70,7 @@
             
             z-index: 2000;
             
-            /* === KEY CHANGE: ELASTIC ANIMATION === */
-            /* Using custom bezier for "Spring/Bounce" effect */
+            /* ELASTIC ANIMATION */
             transition: 
                 top 0.7s cubic-bezier(0.34, 1.56, 0.64, 1),
                 width 0.7s cubic-bezier(0.34, 1.56, 0.64, 1),
@@ -80,31 +79,19 @@
                 background 0.5s ease,
                 box-shadow 0.5s ease;
                 
-            will-change: top, width, border-radius, padding; /* Optimization */
+            will-change: top, width, border-radius, padding;
             box-sizing: border-box;
         }
 
         /* SCROLLED STATE: PILL */
         .main-header.scrolled {
-            /* Drop down */
             top: 20px;
-            
-            /* Shrink Width (Elastic will overshoot slightly then settle) */
             width: 90%;
             max-width: 1100px;
-            
-            /* Morph to Pill */
             border-radius: 60px;
-            
-            /* Full Border */
             border: 1px solid rgba(255, 255, 255, 0.6);
-            
-            /* Shadow */
             box-shadow: 0 15px 40px rgba(31, 38, 135, 0.12);
-            
             background: rgba(255, 255, 255, 0.9);
-            
-            /* Adjust Padding */
             padding: 10px 30px; 
         }
 
@@ -112,7 +99,6 @@
             height: clamp(var(--logo-min-h), var(--logo-pref-h), var(--logo-max-h));
             width: auto;
             display: block;
-            /* Smooth size transition matches header */
             transition: height 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
@@ -136,8 +122,6 @@
             margin-bottom: 2px;
             letter-spacing: -0.5px;
             line-height: 1.2;
-            
-            /* Elastic font resize */
             transition: font-size 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
             
             background: linear-gradient(
@@ -464,6 +448,7 @@
         }
 
         /* The Elastic Slider Background */
+        /* === UPDATED: MORE BOUNCY/ELASTIC FEEL (Same as Header Pill) === */
         .tab-slider {
             position: absolute;
             top: 6px;
@@ -472,8 +457,8 @@
             background-color: #8C704D; /* Gold */
             border-radius: 8px;
             z-index: 1;
-            /* Faster Elastic Bezier (0.35s) */
-            transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+            /* Using the exact same springy bezier as the header morph */
+            transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
             width: 0; 
         }
 
@@ -933,8 +918,6 @@
             setTimeout(() => { firstBtn.classList.add('active'); firstPanel.classList.add('show'); }, 600);
         }
     }
-    
-    // --- SCROLL: STICKY HEADER & BUBBLE HIDE ---
     window.addEventListener('scroll', function() {
         // Sticky Header Logic
         const header = document.getElementById('stickyHeader');
