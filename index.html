@@ -5,14 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>B.Grimm Signature Generator</title>
     <style>
+        /* --- 1. GLOBAL FONT: ARIAL --- */
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: Arial, sans-serif; /* เปลี่ยนเป็น Arial ทั้งหมด */
             background-color: #f0f2f5;
             display: flex;
             justify-content: center;
             padding: 40px;
             color: #333;
         }
+        
+        /* Ensure inputs and buttons inherit Arial */
+        input, button, .tab-btn, .mode-selector label, h2, h3, .sub-header {
+            font-family: Arial, sans-serif;
+        }
+
         .container {
             display: flex;
             gap: 30px;
@@ -50,7 +57,7 @@
         }
         
         .form-group { margin-bottom: 12px; position: relative; }
-        label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 13px; color: #666; }
+        label { display: block; margin-bottom: 5px; font-weight: 700; font-size: 13px; color: #666; }
         
         input {
             width: 100%;
@@ -86,7 +93,7 @@
             margin: 0;
             font-size: 14px;
             color: #666;
-            font-weight: 500 !important;
+            font-weight: 400 !important; /* Not bold */
             transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             border: 1px solid transparent;
         }
@@ -117,7 +124,7 @@
             border: 1px solid transparent;
             background: transparent;
             font-family: inherit;
-            font-weight: 500;
+            font-weight: 400; /* Not bold */
             transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
@@ -134,7 +141,7 @@
         }
 
         input.input-error { border-color: #dc3545 !important; background-color: #fff8f8; }
-        .warning-msg { color: #dc3545; font-size: 12px; margin-top: 4px; display: none; font-weight: 600; }
+        .warning-msg { color: #dc3545; font-size: 12px; margin-top: 4px; display: none; font-weight: 700; }
         .format-hint { font-size: 11px; color: #888; margin-top: 2px; }
         
         .signature-box {
@@ -164,7 +171,7 @@
             border-radius: 50px;
             font-size: 15px;
             cursor: pointer;
-            font-weight: 600;
+            font-weight: 700;
             margin-top: 20px;
             width: 100%;
             text-transform: uppercase;
@@ -295,32 +302,39 @@
         <div class="signature-box" id="signatureBox">
             
             <div id="previewDesktop" class="active">
-                <div style="font-family:Arial, Helvetica, sans-serif; font-size:12px; color:#63666F; margin-bottom: 10px;">--</div>
+                
+                <style>
+                    /* Inline styles for signature links to ensure correct behavior when copied */
+                    a.sig-link { color:#63666F; text-decoration:none; }
+                    a.sig-link:hover { color: #FF6727 !important; text-decoration: underline !important; }
+                </style>
 
-                <table cellpadding="0" cellspacing="0" border="0" style="font-family:Arial, Helvetica, sans-serif; font-size:12px; color:#63666F;">
+                <div style="font-family:Arial, sans-serif; font-size:12px; color:#63666F; margin-bottom: 10px;">--</div>
+
+                <table cellpadding="0" cellspacing="0" border="0" style="font-family:Arial, sans-serif; font-size:12px; color:#63666F;">
                   <tr>
                     <td style="padding-bottom:4px;">
-                      <strong id="sigNameContent" style="font-size:13px; color:#FF6727; font-family:Arial;">
+                      <strong id="sigNameContent" style="font-size:13px; color:#FF6727; font-family:Arial, sans-serif;">
                         Panupong Pumikrai | ภาณุพงศ์ ภูมิไกร
                       </strong>
                     </td>
                   </tr>
                   <tr id="rowPosition">
-                    <td style="padding-bottom:4px; line-height:1.2; font-family:Arial;">
+                    <td style="padding-bottom:4px; line-height:1.2; font-family:Arial, sans-serif;">
                       <span id="prevPos">Digital Visual Designer</span> | <span id="prevDept">Digital and Energy Solutions</span>
                     </td>
                   </tr>
                   <tr>
-                    <td style="padding-bottom:4px; line-height:1.2; font-family:Arial;">
+                    <td style="padding-bottom:4px; line-height:1.2; font-family:Arial, sans-serif;">
                       <strong>E.</strong>
-                      <a id="linkEmail" href="mailto:example@bgrimmpower.com" class="sig-link" style="color:#63666F; text-decoration:none; font-family:Arial;">
+                      <a id="linkEmail" href="mailto:example@bgrimmpower.com" class="sig-link" style="font-family:Arial, sans-serif;">
                         <span id="textEmail">example@bgrimmpower.com</span>
                       </a>
                       
                       <span id="wrapperMobile">
                           &nbsp;|&nbsp;
                           <strong>M.</strong>
-                          <a id="linkMobile" href="tel:+66899999999" class="sig-link" style="color:#63666F; text-decoration:none; font-family:Arial;">
+                          <a id="linkMobile" href="tel:+66899999999" class="sig-link" style="font-family:Arial, sans-serif;">
                             <span id="textMobile">+66 8 9999 9999</span>
                           </a>
                       </span>
@@ -328,32 +342,32 @@
                       <span id="wrapperTel">
                           &nbsp;|&nbsp;
                           <strong>T.</strong>
-                          <a id="linkTel" href="tel:+66299999999" class="sig-link" style="color:#63666F; text-decoration:none; font-family:Arial;">
+                          <a id="linkTel" href="tel:+66299999999" class="sig-link" style="font-family:Arial, sans-serif;">
                             <span id="textTel">+66 2999 9999</span>
                           </a>
                       </span>
                     </td>
                   </tr>
                   <tr>
-                    <td style="padding-top:10px; padding-bottom:4px; font-family:Arial;">
+                    <td style="padding-top:10px; padding-bottom:4px; font-family:Arial, sans-serif;">
                       <img src="https://static-portal.bgrimm.io/public/logo/B.Grimm%20Logo.png" width="120" border="0" alt="B.Grimm Power Public Company Limited" style="display:block;">
                     </td>
                   </tr>
                   <tr>
-                    <td style="padding-bottom:4px; font-family:Arial;">
-                      <strong style="color:#FF6727; font-family:Arial;">
+                    <td style="padding-bottom:4px; font-family:Arial, sans-serif;">
+                      <strong style="color:#FF6727; font-family:Arial, sans-serif;">
                         B.Grimm Power Public Company Limited
                       </strong>
                     </td>
                   </tr>
                   <tr>
-                    <td style="padding-bottom:4px; line-height:1.2; font-family:Arial;">
+                    <td style="padding-bottom:4px; line-height:1.2; font-family:Arial, sans-serif;">
                       Dr. Gerhard Link Building, 5 Krungthepkreetha Road, Bangkok 10240, Thailand
                     </td>
                   </tr>
                   <tr>
-                    <td style="font-family:Arial;">
-                      <a href="https://www.bgrimmpower.com" class="sig-link" style="color:#63666F; text-decoration:none; font-family:Arial;">
+                    <td style="font-family:Arial, sans-serif;">
+                      <a href="https://www.bgrimmpower.com" class="sig-link" style="font-family:Arial, sans-serif;">
                         www.bgrimmpower.com
                       </a>
                     </td>
@@ -362,7 +376,7 @@
             </div>
 
             <div id="previewMobile">
-                <div class="mobile-preview-container" id="mobContent" style="font-family: Arial, Helvetica, sans-serif; font-size: 14px; color: #000; line-height: 1.5;"></div>
+                <div class="mobile-preview-container" id="mobContent" style="font-family: Arial, sans-serif; font-size: 14px; color: #000; line-height: 1.5;"></div>
             </div>
 
         </div>
