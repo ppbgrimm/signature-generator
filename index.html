@@ -37,14 +37,14 @@
             flex-direction: column;
         }
         
-        h2 { margin-top: 0; color: #FF6727; margin-bottom: 5px; font-size: 24px; }
+        /* Updated Primary Color to #8C704D */
+        h2 { margin-top: 0; color: #8C704D; margin-bottom: 5px; font-size: 24px; }
         .sub-header { font-size: 14px; color: #777; margin-bottom: 20px; font-weight: 400; }
         
-        /* Updated H3 Color to #8C704D */
         h3 { 
             margin: 15px 0 10px; 
             font-size: 15px; 
-            color: #8C704D; /* เปลี่ยนเป็นสีน้ำตาลทอง */
+            color: #8C704D; 
             border-bottom: 1px solid #eee; 
             padding-bottom: 5px; 
             font-weight: 700;
@@ -61,7 +61,7 @@
             box-sizing: border-box;
             transition: border-color 0.3s;
         }
-        input:focus { border-color: #FF6727; outline: none; }
+        input:focus { border-color: #8C704D; outline: none; }
         
         /* Mode Selector */
         .mode-selector {
@@ -86,7 +86,7 @@
         .mode-selector label:hover { background-color: rgba(255,255,255,0.5); }
         .mode-selector input { display: none; }
         .mode-selector input:checked + label {
-            background-color: #8C704D;
+            background-color: #8C704D; /* Primary Gold */
             color: white;
             box-shadow: 0 2px 4px rgba(0,0,0,0.2);
             font-weight: 400 !important;
@@ -117,7 +117,7 @@
         }
         .tab-btn:hover { background-color: rgba(255,255,255,0.5); }
         .tab-btn.active {
-            background-color: #8C704D;
+            background-color: #8C704D; /* Primary Gold */
             color: white;
             box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
@@ -144,9 +144,12 @@
             white-space: pre-wrap;
         }
 
+        /* ======== ANIMATED BUTTON STYLE (New Gold Gradient) ======== */
         .btn-copy {
-            background-image: linear-gradient(45deg, #FF6727 0%, #ff9a44 51%, #FF6727 100%);
+            /* Gradient using #8C704D and #C8B273 */
+            background-image: linear-gradient(45deg, #8C704D 0%, #C8B273 51%, #8C704D 100%);
             background-size: 200% auto;
+            
             color: white;
             border: none;
             padding: 12px 24px;
@@ -156,19 +159,22 @@
             font-weight: 700;
             margin-top: 20px;
             width: 100%;
+            
             transition: 0.5s all ease-in-out;
-            box-shadow: 0 3px 10px rgba(255, 103, 39, 0.2);
+            
+            /* Shadow color matching the gold tone */
+            box-shadow: 0 3px 10px rgba(140, 112, 77, 0.3);
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
         .btn-copy:hover {
             background-position: right center;
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(255, 103, 39, 0.4);
+            box-shadow: 0 6px 20px rgba(140, 112, 77, 0.5);
         }
         .btn-copy:active {
             transform: translateY(1px);
-            box-shadow: 0 2px 5px rgba(255, 103, 39, 0.3);
+            box-shadow: 0 2px 5px rgba(140, 112, 77, 0.3);
         }
 
         .note { font-size: 12px; color: #666; margin-top: 10px; background: #fff3cd; padding: 10px; border-radius: 4px; text-align: center; }
@@ -265,12 +271,18 @@
         <div class="signature-box" id="signatureBox">
             
             <div id="previewDesktop" class="active">
+                
+                <style>
+                    /* Inline styles for the email signature to ensure colors are correct when copied */
+                    a.sig-link:hover { color: #8C704D !important; text-decoration: underline !important; }
+                </style>
+
                 <div style="font-family:Arial, Helvetica, sans-serif; font-size:12px; color:#63666F; margin-bottom: 10px;">--</div>
 
                 <table cellpadding="0" cellspacing="0" border="0" style="font-family:Arial, Helvetica, sans-serif; font-size:12px; color:#63666F;">
                   <tr>
                     <td style="padding-bottom:4px;">
-                      <strong id="sigNameContent" style="font-size:13px; color:#FF6727; font-family:Arial;">
+                      <strong id="sigNameContent" style="font-size:13px; color:#8C704D; font-family:Arial;">
                         Panupong Pumikrai | ภาณุพงศ์ ภูมิไกร
                       </strong>
                     </td>
@@ -312,7 +324,7 @@
                   
                   <tr>
                     <td style="padding-bottom:4px; font-family:Arial;">
-                      <strong style="color:#FF6727; font-family:Arial;">
+                      <strong style="color:#8C704D; font-family:Arial;">
                         B.Grimm Power Public Company Limited
                       </strong>
                     </td>
