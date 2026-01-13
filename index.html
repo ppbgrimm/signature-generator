@@ -34,18 +34,7 @@
             margin-bottom: 40px;
         }
 
-        /* --- GUIDE CONTAINER (Accordion Style) --- */
-        .guide-section-title {
-            width: 100%;
-            max-width: 1100px;
-            margin-bottom: 20px;
-            color: #8C704D;
-            font-size: 20px;
-            font-weight: 700;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #C8B273;
-        }
-
+        /* --- GUIDE CONTAINER --- */
         .guide-container {
             max-width: 1100px;
             width: 100%;
@@ -54,7 +43,43 @@
             gap: 10px;
         }
 
-        /* Accordion Button */
+        .guide-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            max-width: 1100px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #C8B273;
+            padding-bottom: 10px;
+        }
+
+        .guide-section-title {
+            color: #8C704D;
+            font-size: 20px;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .lang-switch {
+            display: flex;
+            gap: 10px;
+            font-size: 14px;
+            font-weight: 700;
+        }
+        .lang-btn {
+            cursor: pointer;
+            color: #989AA5;
+            transition: color 0.2s;
+        }
+        .lang-btn:hover { color: #C8B273; }
+        .lang-btn.active {
+            color: #8C704D;
+            text-decoration: underline;
+        }
+        .lang-divider { color: #C8B273; }
+
+        /* Accordion */
         .accordion {
             background-color: #fff;
             color: #63666F;
@@ -96,19 +121,13 @@
             color: #989AA5;
             transition: transform 0.3s ease;
         }
-        
-        .accordion.active .icon {
-            transform: rotate(180deg);
-            color: #8C704D;
-        }
+        .accordion.active .icon { transform: rotate(180deg); color: #8C704D; }
 
-        /* Accordion Panel */
         .panel {
             padding: 0 25px;
             background-color: white;
             max-height: 0;
             overflow: hidden;
-            transition: max-height 0.3s ease-out;
             border-radius: 0 0 10px 10px;
             border: 1px solid #8C704D;
             border-top: none;
@@ -133,6 +152,9 @@
         .panel strong { color: #8C704D; }
         .panel code { background: #f5f5f5; padding: 2px 6px; border-radius: 4px; color: #333; font-family: monospace; border: 1px solid #989AA5; }
         .panel em { color: #989AA5; font-size: 13px; font-style: italic; }
+
+        [data-lang="th"] { display: block; }
+        [data-lang="en"] { display: none; }
 
 
         /* --- TOOL STYLES --- */
@@ -240,16 +262,16 @@
         </div>
 
         <div id="formPerson" class="form-container active">
-            <h3>ข้อมูลส่วนตัว</h3>
+            <h3>ข้อมูลส่วนตัว (Personal Info)</h3>
             <div class="form-group">
-                <label>ชื่อจริง-นามสกุล (ภาษาอังกฤษ)</label>
+                <label>ชื่อ-นามสกุล ภาษาอังกฤษ (Name - EN)</label>
                 <input type="text" id="pNameEng" placeholder="Panupong Pumikrai" oninput="updateSig()">
             </div>
             <div class="form-group">
-                <label>ชื่อจริง-นามสกุล (ภาษาไทย)</label>
+                <label>ชื่อ-นามสกุล ภาษาไทย (Name - TH)</label>
                 <input type="text" id="pNameTh" placeholder="ภาณุพงศ์ ภูมิไกร" oninput="updateSig()">
             </div>
-            <h3>ตำแหน่งงาน</h3>
+            <h3>ตำแหน่งงาน (Job Details)</h3>
             <div class="form-group">
                 <label>ตำแหน่ง (Position)</label>
                 <input type="text" id="pPosition" placeholder="Digital Visual Designer" oninput="updateSig()">
@@ -261,32 +283,32 @@
         </div>
 
         <div id="formDept" class="form-container">
-            <h3>ข้อมูลหน่วยงาน</h3>
+            <h3>ข้อมูลหน่วยงาน (Department Info)</h3>
             <div class="form-group">
-                <label>ชื่อหน่วยงาน (ภาษาอังกฤษ)</label>
+                <label>ชื่อหน่วยงาน ภาษาอังกฤษ (Dept Name - EN)</label>
                 <input type="text" id="dNameEng" placeholder="Human Resources" oninput="updateSig()">
             </div>
             <div class="form-group">
-                <label>ชื่อหน่วยงาน (ภาษาไทย)</label>
+                <label>ชื่อหน่วยงาน ภาษาไทย (Dept Name - TH)</label>
                 <input type="text" id="dNameTh" placeholder="แผนกทรัพยากรบุคคล (ถ้าว่างจะซ่อน)" oninput="updateSig()">
             </div>
         </div>
 
         <div id="contactSection">
-            <h3>ข้อมูลติดต่อ</h3>
+            <h3>ข้อมูลติดต่อ (Contact Info)</h3>
             <div class="form-group">
                 <label>อีเมล (Email)</label>
                 <input type="email" id="inputEmail" placeholder="example@bgrimmpower.com" oninput="updateSig()">
                 <div id="warnEmail" class="warning-msg"></div>
             </div>
             <div class="form-group">
-                <label>เบอร์มือถือ (M.) <span id="mobileNote" style="font-weight:normal; color:#999; font-size:11px; display:none;">(ถ้าไม่มีให้เว้นว่าง)</span></label>
+                <label>เบอร์มือถือ (Mobile)</label>
                 <input type="text" id="inputMobile" placeholder="0899999999" oninput="updateSig()" maxlength="10">
                 <div class="format-hint">พิมพ์ 10 หลัก (ไม่ต้องใส่ขีด/ไม่ต้องใส่ +66)</div>
                 <div id="warnMobile" class="warning-msg">กรุณากรอกเฉพาะตัวเลขเท่านั้น</div>
             </div>
             <div class="form-group">
-                <label>เบอร์โทรศัพท์ (T.) <span style="font-weight:normal; color:#999; font-size:11px;">(ถ้าไม่มีให้เว้นว่าง)</span></label>
+                <label>เบอร์โทรศัพท์ (Telephone)</label>
                 <input type="text" id="inputTel" placeholder="029999999" oninput="updateSig()" maxlength="9">
                 <div class="format-hint">พิมพ์ 9 หลัก (ไม่ต้องใส่ขีด/ไม่ต้องใส่ +66)</div>
                 <div id="warnTel" class="warning-msg">กรุณากรอกเฉพาะตัวเลขเท่านั้น</div>
@@ -304,84 +326,25 @@
         </div>
 
         <div class="signature-box" id="signatureBox">
-            
             <div id="previewDesktop" class="active">
-                
                 <style>
                     a.sig-link { color:#63666F; text-decoration:none; }
                     a.sig-link:hover { color: #FF6727 !important; text-decoration: underline !important; }
                 </style>
-
                 <div style="font-family:Arial, sans-serif; font-size:12px; color:#63666F; margin-bottom: 10px;">--</div>
-
                 <table cellpadding="0" cellspacing="0" border="0" style="font-family:Arial, sans-serif; font-size:12px; color:#63666F;">
-                  <tr>
-                    <td style="padding-bottom:4px;">
-                      <strong id="sigNameContent" style="font-size:13px; color:#FF6727; font-family:Arial, sans-serif;">
-                        Panupong Pumikrai | ภาณุพงศ์ ภูมิไกร
-                      </strong>
-                    </td>
-                  </tr>
-                  <tr id="rowPosition">
-                    <td style="padding-bottom:4px; line-height:1.2; font-family:Arial, sans-serif;">
-                      <span id="prevPos">Digital Visual Designer</span> | <span id="prevDept">Digital and Energy Solutions</span>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td style="padding-bottom:4px; line-height:1.2; font-family:Arial, sans-serif;">
-                      <strong>E.</strong>
-                      <a id="linkEmail" href="mailto:example@bgrimmpower.com" class="sig-link" style="font-family:Arial, sans-serif;">
-                        <span id="textEmail">example@bgrimmpower.com</span>
-                      </a>
-                      
-                      <span id="wrapperMobile">
-                          &nbsp;|&nbsp;
-                          <strong>M.</strong>
-                          <a id="linkMobile" href="tel:+66899999999" class="sig-link" style="font-family:Arial, sans-serif;">
-                            <span id="textMobile">+66 8 9999 9999</span>
-                          </a>
-                      </span>
-
-                      <span id="wrapperTel">
-                          &nbsp;|&nbsp;
-                          <strong>T.</strong>
-                          <a id="linkTel" href="tel:+66299999999" class="sig-link" style="font-family:Arial, sans-serif;">
-                            <span id="textTel">+66 2999 9999</span>
-                          </a>
-                      </span>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td style="padding-top:10px; padding-bottom:4px; font-family:Arial, sans-serif;">
-                      <img src="https://static-portal.bgrimm.io/public/logo/B.Grimm%20Logo.png" width="120" border="0" alt="B.Grimm Power Public Company Limited" style="display:block;">
-                    </td>
-                  </tr>
-                  <tr>
-                    <td style="padding-bottom:4px; font-family:Arial, sans-serif;">
-                      <strong style="color:#FF6727; font-family:Arial, sans-serif;">
-                        B.Grimm Power Public Company Limited
-                      </strong>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td style="padding-bottom:4px; line-height:1.2; font-family:Arial, sans-serif;">
-                      Dr. Gerhard Link Building, 5 Krungthepkreetha Road, Bangkok 10240, Thailand
-                    </td>
-                  </tr>
-                  <tr>
-                    <td style="font-family:Arial, sans-serif;">
-                      <a href="https://www.bgrimmpower.com" class="sig-link" style="font-family:Arial, sans-serif;">
-                        www.bgrimmpower.com
-                      </a>
-                    </td>
-                  </tr>
+                  <tr><td style="padding-bottom:4px;"><strong id="sigNameContent" style="font-size:13px; color:#FF6727; font-family:Arial, sans-serif;">Panupong Pumikrai | ภาณุพงศ์ ภูมิไกร</strong></td></tr>
+                  <tr id="rowPosition"><td style="padding-bottom:4px; line-height:1.2; font-family:Arial, sans-serif;"><span id="prevPos">Digital Visual Designer</span> | <span id="prevDept">Digital and Energy Solutions</span></td></tr>
+                  <tr><td style="padding-bottom:4px; line-height:1.2; font-family:Arial, sans-serif;"><strong>E.</strong> <a id="linkEmail" href="mailto:example@bgrimmpower.com" class="sig-link" style="font-family:Arial, sans-serif;"><span id="textEmail">example@bgrimmpower.com</span></a><span id="wrapperMobile">&nbsp;|&nbsp;<strong>M.</strong> <a id="linkMobile" href="tel:+66899999999" class="sig-link" style="font-family:Arial, sans-serif;"><span id="textMobile">+66 8 9999 9999</span></a></span><span id="wrapperTel">&nbsp;|&nbsp;<strong>T.</strong> <a id="linkTel" href="tel:+66299999999" class="sig-link" style="font-family:Arial, sans-serif;"><span id="textTel">+66 2999 9999</span></a></span></td></tr>
+                  <tr><td style="padding-top:10px; padding-bottom:4px; font-family:Arial, sans-serif;"><img src="https://static-portal.bgrimm.io/public/logo/B.Grimm%20Logo.png" width="120" border="0" alt="B.Grimm Power Public Company Limited" style="display:block;"></td></tr>
+                  <tr><td style="padding-bottom:4px; font-family:Arial, sans-serif;"><strong style="color:#FF6727; font-family:Arial, sans-serif;">B.Grimm Power Public Company Limited</strong></td></tr>
+                  <tr><td style="padding-bottom:4px; line-height:1.2; font-family:Arial, sans-serif;">Dr. Gerhard Link Building, 5 Krungthepkreetha Road, Bangkok 10240, Thailand</td></tr>
+                  <tr><td style="font-family:Arial, sans-serif;"><a href="https://www.bgrimmpower.com" class="sig-link" style="font-family:Arial, sans-serif;">www.bgrimmpower.com</a></td></tr>
                 </table>
             </div>
-
             <div id="previewMobile">
                 <div class="mobile-preview-container" id="mobContent" style="font-family: Arial, sans-serif; font-size: 14px; color: #000; line-height: 1.5;"></div>
             </div>
-
         </div>
         
         <button class="btn-copy" onclick="copySignature()">Copy to Clipboard</button>
@@ -391,91 +354,213 @@
     </div>
 </div>
 
-<h2 class="guide-section-title">คู่มือการตั้งค่า (Installation Guide)</h2>
+<div class="guide-header-row">
+    <h2 class="guide-section-title" id="guideTitle">คู่มือการตั้งค่า (Installation Guide)</h2>
+    <div class="lang-switch">
+        <span class="lang-btn active" id="btnTh" onclick="setGuideLang('th')">TH</span>
+        <span class="lang-divider">|</span>
+        <span class="lang-btn" id="btnEn" onclick="setGuideLang('en')">EN</span>
+    </div>
+</div>
+
 <div class="guide-container">
     
-    <button class="accordion">1. Microsoft Outlook (Desktop) <span class="icon">▼</span></button>
+    <button class="accordion">
+        <span data-lang="th">1. Microsoft Outlook (Desktop)</span>
+        <span data-lang="en">1. Microsoft Outlook (Desktop)</span>
+        <span class="icon">▼</span>
+    </button>
     <div class="panel">
-        <p><em>เหมาะสำหรับผู้ที่ใช้ Outlook App บน Windows หรือ Mac</em></p>
-        <ol>
-            <li>เปิดโปรแกรม Outlook</li>
-            <li>คลิกที่เมนู <strong>File (ไฟล์)</strong> > <strong>Options (ตัวเลือก)</strong></li>
-            <li>เลือกแถบ <strong>Mail (จดหมาย)</strong> และคลิกปุ่ม <strong>Signatures... (ลายเซ็น...)</strong></li>
-            <li>กดปุ่ม <strong>New (ใหม่)</strong> เพื่อสร้างลายเซ็นใหม่ ตั้งชื่อว่า <strong>"B.Grimm"</strong></li>
-            <li>ในช่องว่างด้านล่าง ให้คลิกขวาแล้วเลือก <strong>Paste (วาง)</strong> หรือกด <code>Ctrl + V</code></li>
-            <li><strong>สำคัญ:</strong> ที่ส่วน <strong>Choose default signature (เลือกลายเซ็นเริ่มต้น)</strong> ด้านขวา
-                <ul>
-                    <li>New messages (ข้อความใหม่): เลือก <strong>"B.Grimm"</strong></li>
-                    <li>Replies/forwards (การตอบกลับ/ส่งต่อ): เลือก <strong>"B.Grimm"</strong></li>
-                </ul>
-            </li>
-            <li>กด <strong>OK</strong> เพื่อบันทึก</li>
-        </ol>
+        <div data-lang="th">
+            <p><em>เหมาะสำหรับผู้ที่ใช้ Outlook App บน Windows หรือ Mac</em></p>
+            <ol>
+                <li>เปิดโปรแกรม Outlook</li>
+                <li>คลิกที่เมนู <strong>File (ไฟล์)</strong> > <strong>Options (ตัวเลือก)</strong></li>
+                <li>เลือกแถบ <strong>Mail (จดหมาย)</strong> และคลิกปุ่ม <strong>Signatures... (ลายเซ็น...)</strong></li>
+                <li>กดปุ่ม <strong>New (ใหม่)</strong> เพื่อสร้างลายเซ็นใหม่ ตั้งชื่อว่า <strong>"B.Grimm"</strong></li>
+                <li>ในช่องว่างด้านล่าง ให้คลิกขวาแล้วเลือก <strong>Paste (วาง)</strong> หรือกด <code>Ctrl + V</code></li>
+                <li><strong>สำคัญ:</strong> ที่ส่วน <strong>Choose default signature (เลือกลายเซ็นเริ่มต้น)</strong> ด้านขวา
+                    <ul>
+                        <li>New messages (ข้อความใหม่): เลือก <strong>"B.Grimm"</strong></li>
+                        <li>Replies/forwards (การตอบกลับ/ส่งต่อ): เลือก <strong>"B.Grimm"</strong></li>
+                    </ul>
+                </li>
+                <li>กด <strong>OK</strong> เพื่อบันทึก</li>
+            </ol>
+        </div>
+        <div data-lang="en">
+            <p><em>Suitable for Outlook App on Windows or Mac</em></p>
+            <ol>
+                <li>Open Outlook.</li>
+                <li>Click <strong>File</strong> > <strong>Options</strong>.</li>
+                <li>Select the <strong>Mail</strong> tab and click <strong>Signatures...</strong></li>
+                <li>Click <strong>New</strong> to create a signature, name it <strong>"B.Grimm"</strong>.</li>
+                <li>In the text box below, right-click and select <strong>Paste</strong> or press <code>Ctrl + V</code>.</li>
+                <li><strong>Important:</strong> Under <strong>Choose default signature</strong> on the right:
+                    <ul>
+                        <li>New messages: Select <strong>"B.Grimm"</strong></li>
+                        <li>Replies/forwards: Select <strong>"B.Grimm"</strong></li>
+                    </ul>
+                </li>
+                <li>Click <strong>OK</strong> to save.</li>
+            </ol>
+        </div>
     </div>
 
-    <button class="accordion">2. Outlook on the Web <span class="icon">▼</span></button>
+    <button class="accordion">
+        <span data-lang="th">2. Outlook on the Web</span>
+        <span data-lang="en">2. Outlook on the Web</span>
+        <span class="icon">▼</span>
+    </button>
     <div class="panel">
-        <p><em>เหมาะสำหรับผู้ที่เช็คอีเมลผ่าน Microsoft 365 บน Chrome/Edge</em></p>
-        <ol>
-            <li>เข้าไปที่หน้าอีเมล Outlook บนเว็บ</li>
-            <li>คลิกไอคอน <strong>Settings (รูปฟันเฟือง ⚙️)</strong> มุมขวาบน</li>
-            <li>ไปที่ <strong>Mail (จดหมาย)</strong> > <strong>Compose and reply (เขียนและตอบกลับ)</strong></li>
-            <li>คลิกปุ่ม <strong>+ New signature (ลายเซ็นใหม่)</strong> ตั้งชื่อว่า <strong>"B.Grimm"</strong></li>
-            <li>คลิกขวาในกล่องข้อความแล้วเลือก <strong>Paste (วาง)</strong> หรือกด <code>Ctrl + V</code></li>
-            <li>เลื่อนลงมาที่หัวข้อ <strong>Select default signatures (เลือกลายเซ็นเริ่มต้น)</strong>
-                <ul>
-                    <li>For New messages: เลือก <strong>"B.Grimm"</strong></li>
-                    <li>For Replies/Forwards: เลือก <strong>"B.Grimm"</strong></li>
-                </ul>
-            </li>
-            <li>กดปุ่ม <strong>Save (บันทึก)</strong></li>
-        </ol>
+        <div data-lang="th">
+            <p><em>เหมาะสำหรับผู้ที่เช็คอีเมลผ่าน Microsoft 365 บน Chrome/Edge</em></p>
+            <ol>
+                <li>เข้าไปที่หน้าอีเมล Outlook บนเว็บ</li>
+                <li>คลิกไอคอน <strong>Settings (รูปฟันเฟือง ⚙️)</strong> มุมขวาบน</li>
+                <li>ไปที่ <strong>Mail (จดหมาย)</strong> > <strong>Compose and reply (เขียนและตอบกลับ)</strong></li>
+                <li>คลิกปุ่ม <strong>+ New signature (ลายเซ็นใหม่)</strong> ตั้งชื่อว่า <strong>"B.Grimm"</strong></li>
+                <li>คลิกขวาในกล่องข้อความแล้วเลือก <strong>Paste (วาง)</strong> หรือกด <code>Ctrl + V</code></li>
+                <li>เลื่อนลงมาที่หัวข้อ <strong>Select default signatures (เลือกลายเซ็นเริ่มต้น)</strong>
+                    <ul>
+                        <li>For New messages: เลือก <strong>"B.Grimm"</strong></li>
+                        <li>For Replies/Forwards: เลือก <strong>"B.Grimm"</strong></li>
+                    </ul>
+                </li>
+                <li>กดปุ่ม <strong>Save (บันทึก)</strong></li>
+            </ol>
+        </div>
+        <div data-lang="en">
+            <p><em>Suitable for Microsoft 365 via Chrome/Edge</em></p>
+            <ol>
+                <li>Go to Outlook on the web.</li>
+                <li>Click the <strong>Settings (gear icon ⚙️)</strong> at the top right.</li>
+                <li>Go to <strong>Mail</strong> > <strong>Compose and reply</strong>.</li>
+                <li>Click <strong>+ New signature</strong>, name it <strong>"B.Grimm"</strong>.</li>
+                <li>Right-click in the text box and select <strong>Paste</strong> or press <code>Ctrl + V</code>.</li>
+                <li>Scroll down to <strong>Select default signatures</strong>:
+                    <ul>
+                        <li>For New messages: Select <strong>"B.Grimm"</strong></li>
+                        <li>For Replies/Forwards: Select <strong>"B.Grimm"</strong></li>
+                    </ul>
+                </li>
+                <li>Click <strong>Save</strong>.</li>
+            </ol>
+        </div>
     </div>
 
-    <button class="accordion">3. Google Workspace (Gmail) <span class="icon">▼</span></button>
+    <button class="accordion">
+        <span data-lang="th">3. Google Workspace (Gmail)</span>
+        <span data-lang="en">3. Google Workspace (Gmail)</span>
+        <span class="icon">▼</span>
+    </button>
     <div class="panel">
-        <p><em>เหมาะสำหรับผู้ที่ใช้งาน Gmail องค์กร</em></p>
-        <ol>
-            <li>เข้าไปที่ Gmail</li>
-            <li>คลิกไอคอน <strong>Settings (รูปฟันเฟือง ⚙️)</strong> มุมขวาบน > เลือก <strong>See all settings (ดูการตั้งค่าทั้งหมด)</strong></li>
-            <li>เลื่อนลงมาหาหัวข้อ <strong>Signature (ลายเซ็น)</strong></li>
-            <li>คลิก <strong>+ Create new (สร้างใหม่)</strong> ตั้งชื่อว่า <strong>"B.Grimm"</strong> แล้วกด Create</li>
-            <li>คลิกขวาในกล่องข้อความด้านขวา แล้วเลือก <strong>Paste (วาง)</strong> หรือกด <code>Ctrl + V</code></li>
-            <li>เลื่อนลงมาที่หัวข้อ <strong>Signature defaults (ค่าเริ่มต้นของลายเซ็น)</strong>
-                <ul>
-                    <li>For new emails use: เลือก <strong>"B.Grimm"</strong></li>
-                    <li>On reply/forward use: เลือก <strong>"B.Grimm"</strong></li>
-                </ul>
-            </li>
-            <li>เลื่อนลงไปล่างสุดของหน้า แล้วกดปุ่ม <strong>Save Changes (บันทึกการเปลี่ยนแปลง)</strong></li>
-        </ol>
+        <div data-lang="th">
+            <p><em>เหมาะสำหรับผู้ที่ใช้งาน Gmail องค์กร</em></p>
+            <ol>
+                <li>เข้าไปที่ Gmail</li>
+                <li>คลิกไอคอน <strong>Settings (รูปฟันเฟือง ⚙️)</strong> มุมขวาบน > เลือก <strong>See all settings (ดูการตั้งค่าทั้งหมด)</strong></li>
+                <li>เลื่อนลงมาหาหัวข้อ <strong>Signature (ลายเซ็น)</strong></li>
+                <li>คลิก <strong>+ Create new (สร้างใหม่)</strong> ตั้งชื่อว่า <strong>"B.Grimm"</strong> แล้วกด Create</li>
+                <li>คลิกขวาในกล่องข้อความด้านขวา แล้วเลือก <strong>Paste (วาง)</strong> หรือกด <code>Ctrl + V</code></li>
+                <li>เลื่อนลงมาที่หัวข้อ <strong>Signature defaults (ค่าเริ่มต้นของลายเซ็น)</strong>
+                    <ul>
+                        <li>For new emails use: เลือก <strong>"B.Grimm"</strong></li>
+                        <li>On reply/forward use: เลือก <strong>"B.Grimm"</strong></li>
+                    </ul>
+                </li>
+                <li>เลื่อนลงไปล่างสุดของหน้า แล้วกดปุ่ม <strong>Save Changes (บันทึกการเปลี่ยนแปลง)</strong></li>
+            </ol>
+        </div>
+        <div data-lang="en">
+            <p><em>Suitable for Corporate Gmail users</em></p>
+            <ol>
+                <li>Go to Gmail.</li>
+                <li>Click <strong>Settings (gear icon ⚙️)</strong> > Select <strong>See all settings</strong>.</li>
+                <li>Scroll down to the <strong>Signature</strong> section.</li>
+                <li>Click <strong>+ Create new</strong>, name it <strong>"B.Grimm"</strong>, and click Create.</li>
+                <li>Right-click in the text box and select <strong>Paste</strong> or press <code>Ctrl + V</code>.</li>
+                <li>Scroll down to <strong>Signature defaults</strong>:
+                    <ul>
+                        <li>For new emails use: Select <strong>"B.Grimm"</strong></li>
+                        <li>On reply/forward use: Select <strong>"B.Grimm"</strong></li>
+                    </ul>
+                </li>
+                <li>Scroll to the bottom and click <strong>Save Changes</strong>.</li>
+            </ol>
+        </div>
     </div>
 
-    <button class="accordion">4. Mobile (iOS / Android) <span class="icon">▼</span></button>
+    <button class="accordion">
+        <span data-lang="th">4. Mobile (iOS / Android)</span>
+        <span data-lang="en">4. Mobile (iOS / Android)</span>
+        <span class="icon">▼</span>
+    </button>
     <div class="panel">
-        <p>หากต้องการตั้งค่าในมือถือ ให้ทำดังนี้:</p>
-        <ol>
-            <li>ในเครื่องมือสร้างลายเซ็น ให้กดเลือก Tab <strong>"📱 Mobile (Plain Text)"</strong> ด้านบน</li>
-            <li>กดปุ่ม <strong>COPY TO CLIPBOARD</strong></li>
-            <li>ไปที่การตั้งค่าลายเซ็นในแอปมือถือของคุณ (Outlook App หรือ iOS Mail)</li>
-            <li>วางข้อความที่คัดลอกลงไป (รูปแบบ Mobile จะไม่มีรูปภาพ เพื่อให้อ่านง่ายและไม่เปลืองดาต้า)</li>
-        </ol>
+        <div data-lang="th">
+            <p>หากต้องการตั้งค่าในมือถือ ให้ทำดังนี้:</p>
+            <ol>
+                <li>ในเครื่องมือสร้างลายเซ็น ให้กดเลือก Tab <strong>"📱 Mobile (Plain Text)"</strong> ด้านบน</li>
+                <li>กดปุ่ม <strong>COPY TO CLIPBOARD</strong></li>
+                <li>ไปที่การตั้งค่าลายเซ็นในแอปมือถือของคุณ (Outlook App หรือ iOS Mail)</li>
+                <li>วางข้อความที่คัดลอกลงไป (รูปแบบ Mobile จะไม่มีรูปภาพ เพื่อให้อ่านง่ายและไม่เปลืองดาต้า)</li>
+            </ol>
+        </div>
+        <div data-lang="en">
+            <p>To set up on mobile devices:</p>
+            <ol>
+                <li>In the signature generator tool, select the <strong>"📱 Mobile (Plain Text)"</strong> tab.</li>
+                <li>Click <strong>COPY TO CLIPBOARD</strong>.</li>
+                <li>Go to the signature settings in your mobile app (Outlook App or iOS Mail).</li>
+                <li>Paste the copied text (Mobile format is text-only for better readability and data saving).</li>
+            </ol>
+        </div>
     </div>
 
-    <div style="background:#fffbf5; border:1px solid #C8B273; padding:15px; border-radius:10px; margin-top:10px; display:flex; align-items:flex-start; gap:10px;">
+    <div style="background:#fffbf5; border:1px solid #C8B273; padding:15px; border-radius:10px; margin-top:20px; display:flex; align-items:flex-start; gap:10px;">
         <span style="font-size:20px;">⚠️</span>
         <div style="font-size:14px; color:#63666F; line-height:1.6;">
-            <strong style="color:#8C704D;">หากพบปัญหา:</strong>
-            <ul style="margin:5px 0 0 20px; padding:0; color:#63666F;">
-                <li><strong>รูปไม่ขึ้น:</strong> ลองกด Copy และ Paste ใหม่อีกครั้ง หรือตรวจสอบการเชื่อมต่ออินเทอร์เน็ต</li>
-                <li><strong>ฟอนต์เพี้ยน:</strong> ระบบถูกตั้งค่าให้ใช้ฟอนต์ Arial เป็นมาตรฐาน หากนำไปวางแล้วฟอนต์เปลี่ยน ให้ลองกดวางแบบ "Keep Source Formatting" (รักษารูปแบบต้นฉบับ)</li>
-            </ul>
+            <div data-lang="th">
+                <strong style="color:#8C704D;">หากพบปัญหา:</strong>
+                <ul style="margin:5px 0 0 20px; padding:0; color:#63666F;">
+                    <li><strong>รูปไม่ขึ้น:</strong> ลองกด Copy และ Paste ใหม่อีกครั้ง หรือตรวจสอบการเชื่อมต่ออินเทอร์เน็ต</li>
+                    <li><strong>ฟอนต์เพี้ยน:</strong> ระบบถูกตั้งค่าให้ใช้ฟอนต์ Arial เป็นมาตรฐาน หากนำไปวางแล้วฟอนต์เปลี่ยน ให้ลองกดวางแบบ "Keep Source Formatting" (รักษารูปแบบต้นฉบับ)</li>
+                </ul>
+            </div>
+            <div data-lang="en">
+                <strong style="color:#8C704D;">Troubleshooting:</strong>
+                <ul style="margin:5px 0 0 20px; padding:0; color:#63666F;">
+                    <li><strong>Image broken:</strong> Try Copy and Paste again or check your internet connection.</li>
+                    <li><strong>Font incorrect:</strong> The system uses Arial by default. If the font changes upon pasting, try selecting "Keep Source Formatting".</li>
+                </ul>
+            </div>
         </div>
     </div>
 
 </div>
 
 <script>
+    // --- LANGUAGE SWITCH LOGIC ---
+    let currentGuideLang = 'th';
+
+    function setGuideLang(lang) {
+        currentGuideLang = lang;
+        
+        const titleEl = document.getElementById('guideTitle');
+        titleEl.innerText = (lang === 'th') ? "คู่มือการตั้งค่า (Installation Guide)" : "Installation Guide";
+
+        document.getElementById('btnTh').classList.toggle('active', lang === 'th');
+        document.getElementById('btnEn').classList.toggle('active', lang === 'en');
+
+        const thElements = document.querySelectorAll('[data-lang="th"]');
+        const enElements = document.querySelectorAll('[data-lang="en"]');
+
+        thElements.forEach(el => el.style.display = (lang === 'th' ? 'block' : 'none'));
+        enElements.forEach(el => el.style.display = (lang === 'en' ? 'block' : 'none'));
+    }
+
+    setGuideLang('th'); // Init
+
     // --- ACCORDION LOGIC ---
     var acc = document.getElementsByClassName("accordion");
     for (var i = 0; i < acc.length; i++) {
