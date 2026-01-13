@@ -42,7 +42,7 @@
             box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
             
             border-radius: 60px; /* Pill Shape */
-            padding: 15px 40px;
+            padding: 12px 30px; /* Reduced padding slightly for better fit */
             z-index: 2000;
             
             transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
@@ -51,32 +51,35 @@
         /* Scrolled State (Shrink) */
         .main-header.scrolled {
             top: 15px;
-            padding: 10px 30px;
-            background: rgba(255, 255, 255, 0.85); /* Slightly less transparent for readability */
+            padding: 8px 25px;
+            background: rgba(255, 255, 255, 0.85); 
             box-shadow: 0 10px 30px 0 rgba(31, 38, 135, 0.15);
-            width: 85%; /* Slightly narrower */
+            width: 85%;
             max-width: 900px;
         }
 
         .header-logo img {
-            height: 50px;
+            /* Responsive Height: Min 30px, Pref 5vw, Max 50px */
+            height: clamp(30px, 5vw, 50px);
             width: auto;
             display: block;
             transition: height 0.4s ease;
         }
 
         .main-header.scrolled .header-logo img {
-            height: 35px; /* Shrink Logo */
+            height: clamp(25px, 4vw, 35px); /* Shrink Logo Responsively */
         }
 
         .header-titles {
             text-align: right;
             transition: all 0.4s ease;
+            white-space: nowrap; /* Prevent line break in pill */
         }
 
         /* === VIVID SLOW MOLTEN ORANGE ANIMATION === */
         .header-title-en {
-            font-size: 26px;
+            /* RESPONSIVE FONT SIZE: Min 14px, Pref 2.5vw, Max 26px */
+            font-size: clamp(14px, 2.5vw, 26px);
             font-weight: 700;
             margin-bottom: 2px;
             letter-spacing: -0.5px;
@@ -101,7 +104,8 @@
         }
 
         .main-header.scrolled .header-title-en {
-            font-size: 18px; /* Shrink Text */
+            /* Scrolled Font Size: Min 12px, Max 18px */
+            font-size: clamp(12px, 2vw, 18px);
         }
 
         @keyframes moltenChaos {
@@ -116,13 +120,15 @@
 
         .header-title-th {
             color: #63666F;
-            font-size: 16px;
+            /* RESPONSIVE FONT SIZE: Min 10px, Pref 1.5vw, Max 16px */
+            font-size: clamp(10px, 1.5vw, 16px);
             font-weight: 400;
             transition: font-size 0.4s ease, opacity 0.4s ease;
         }
 
         .main-header.scrolled .header-title-th {
-            font-size: 12px; /* Shrink Text */
+            /* Scrolled Font Size: Min 9px, Max 12px */
+            font-size: clamp(9px, 1.2vw, 12px);
             opacity: 0.8;
         }
 
@@ -512,7 +518,7 @@
             /* Adjusted for fixed header mobile */
             .main-header {
                 width: 95%; /* Wider on mobile */
-                padding: 12px 20px;
+                padding: 10px 20px;
             }
             .header-titles { text-align: left; }
         }
