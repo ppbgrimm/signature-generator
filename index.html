@@ -13,7 +13,7 @@
             flex-direction: column;
             align-items: center;
             padding: 30px;
-            color: #333;
+            color: #63666F;
             min-height: 100vh;
         }
         
@@ -81,7 +81,7 @@
             margin-bottom: 40px;
         }
 
-        /* --- FLOATING BUBBLE (ELASTIC + AUTO HIDE) --- */
+        /* --- FLOATING BUBBLE --- */
         .float-guide-btn {
             position: fixed;
             bottom: 30px;
@@ -100,24 +100,19 @@
             justify-content: center;
             gap: 10px;
             z-index: 1000;
-            
-            /* Animations */
             animation: floatBounce 3s infinite ease-in-out;
             transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), transform 0.2s ease, opacity 0.4s ease, visibility 0.4s;
-            
-            /* Initial State */
             opacity: 1;
             visibility: visible;
             transform: translateY(0);
         }
 
-        /* Class to hide bubble */
         .float-guide-btn.hidden {
             opacity: 0;
             visibility: hidden;
-            transform: translateY(20px); /* Slide down effect */
-            pointer-events: none; /* Prevent clicking when hidden */
-            animation: none; /* Stop bounce when hidden */
+            transform: translateY(20px);
+            pointer-events: none;
+            animation: none;
         }
 
         .float-guide-btn:hover {
@@ -274,7 +269,7 @@
         .panel ul, .panel ol { padding-left: 20px; color: #63666F; font-size: 14px; line-height: 1.8; }
         .panel li { margin-bottom: 5px; }
         .panel strong { color: #8C704D; }
-        .panel code { background: #f5f5f5; padding: 2px 6px; border-radius: 4px; color: #333; font-family: monospace; border: 1px solid #989AA5; }
+        .panel code { background: #f5f5f5; padding: 2px 6px; border-radius: 4px; color: #63666F; font-family: monospace; border: 1px solid #989AA5; }
         .panel em { color: #989AA5; font-size: 13px; font-style: italic; }
 
         [data-lang="th"] { display: block; }
@@ -297,11 +292,25 @@
         label { display: block; margin-bottom: 5px; font-weight: 700; font-size: 13px; color: #666; }
         
         input {
-            width: 100%; padding: 10px; border: 1px solid #ccc;
+            width: 100%; padding: 10px; padding-right: 35px; /* Add space for checkmark */
+            border: 1px solid #ccc;
             border-radius: 8px; font-size: 14px; box-sizing: border-box; transition: all 0.3s ease;
+            color: #63666F;
         }
         input:focus { border-color: #C8B273; box-shadow: 0 0 0 3px rgba(200, 178, 115, 0.2); outline: none; }
         
+        /* Valid Checkmark Icon */
+        .valid-icon {
+            position: absolute;
+            right: 12px;
+            top: 32px; /* Positioned relative to input */
+            color: #28a745; /* Green color */
+            font-size: 16px;
+            display: none; /* Hidden by default */
+            pointer-events: none;
+            font-weight: bold;
+        }
+
         .mode-selector, .preview-tabs {
             display: flex; background: #f5f5f5; padding: 6px;
             border-radius: 12px; margin-bottom: 25px; gap: 8px;
@@ -322,8 +331,45 @@
         }
 
         input.input-error { border-color: #dc3545 !important; background-color: #fff8f8; }
-        .warning-msg { color: #dc3545; font-size: 12px; margin-top: 4px; display: none; font-weight: 700; }
+        
+        /* === WARNING MESSAGE ANIMATION === */
+        .warning-msg { 
+            color: #dc3545; 
+            font-size: 12px; 
+            margin-top: 4px; 
+            display: none; 
+            font-weight: 700;
+            height: 18px; 
+            overflow: hidden;
+        }
+        
         .format-hint { font-size: 11px; color: #888; margin-top: 2px; }
+
+        .warn-cycle {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .warn-cycle span {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%;
+            opacity: 0;
+            white-space: nowrap;
+            animation: cycleFade 6s infinite ease-in-out;
+        }
+        
+        .warn-cycle span.th { animation-delay: 0s; }
+        .warn-cycle span.en { animation-delay: 3s; }
+
+        @keyframes cycleFade {
+            0% { opacity: 0; transform: translateY(5px); } 
+            10% { opacity: 1; transform: translateY(0); }  
+            40% { opacity: 1; transform: translateY(0); }  
+            50% { opacity: 0; transform: translateY(-5px); } 
+            100% { opacity: 0; transform: translateY(-5px); } 
+        }
         
         .signature-box {
             border: 2px dashed #ccc; padding: 20px; margin-top: 10px;
@@ -419,10 +465,14 @@
             <div class="form-group">
                 <label>ชื่อ-นามสกุล ภาษาอังกฤษ (Name - EN)</label>
                 <input type="text" id="pNameEng" placeholder="Panupong Pumikrai" oninput="updateSig()">
+                <span id="checkNameEng" class="valid-icon">✓</span>
+                <div id="warnNameEng" class="warning-msg"></div>
             </div>
             <div class="form-group">
                 <label>ชื่อ-นามสกุล ภาษาไทย (Name - TH)</label>
                 <input type="text" id="pNameTh" placeholder="ภาณุพงศ์ ภูมิไกร" oninput="updateSig()">
+                <span id="checkNameTh" class="valid-icon">✓</span>
+                <div id="warnNameTh" class="warning-msg"></div>
             </div>
             <h3>ตำแหน่งงาน (Job Details)</h3>
             <div class="form-group">
@@ -440,10 +490,14 @@
             <div class="form-group">
                 <label>ชื่อหน่วยงาน ภาษาอังกฤษ (Dept Name - EN)</label>
                 <input type="text" id="dNameEng" placeholder="Human Resources" oninput="updateSig()">
+                <span id="checkDeptEng" class="valid-icon">✓</span>
+                <div id="warnDeptEng" class="warning-msg"></div>
             </div>
             <div class="form-group">
                 <label>ชื่อหน่วยงาน ภาษาไทย (Dept Name - TH)</label>
                 <input type="text" id="dNameTh" placeholder="แผนกทรัพยากรบุคคล (ถ้าว่างจะซ่อน)" oninput="updateSig()">
+                <span id="checkDeptTh" class="valid-icon">✓</span>
+                <div id="warnDeptTh" class="warning-msg"></div>
             </div>
         </div>
 
@@ -452,19 +506,22 @@
             <div class="form-group">
                 <label>อีเมล (Email)</label>
                 <input type="email" id="inputEmail" placeholder="example@bgrimmpower.com" oninput="updateSig()">
+                <span id="checkEmail" class="valid-icon">✓</span>
                 <div id="warnEmail" class="warning-msg"></div>
             </div>
             <div class="form-group">
                 <label>เบอร์มือถือ (Mobile)</label>
                 <input type="text" id="inputMobile" placeholder="0899999999" oninput="updateSig()" maxlength="10">
+                <span id="checkMobile" class="valid-icon">✓</span>
                 <div class="format-hint">พิมพ์ 10 หลัก (ไม่ต้องใส่ขีด/ไม่ต้องใส่ +66)</div>
-                <div id="warnMobile" class="warning-msg">กรุณากรอกเฉพาะตัวเลขเท่านั้น</div>
+                <div id="warnMobile" class="warning-msg"></div>
             </div>
             <div class="form-group">
                 <label>เบอร์โทรศัพท์ (Telephone)</label>
                 <input type="text" id="inputTel" placeholder="029999999" oninput="updateSig()" maxlength="9">
+                <span id="checkTel" class="valid-icon">✓</span>
                 <div class="format-hint">พิมพ์ 9 หลัก (ไม่ต้องใส่ขีด/ไม่ต้องใส่ +66)</div>
-                <div id="warnTel" class="warning-msg">กรุณากรอกเฉพาะตัวเลขเท่านั้น</div>
+                <div id="warnTel" class="warning-msg"></div>
             </div>
         </div>
     </div>
@@ -496,7 +553,7 @@
                 </table>
             </div>
             <div id="previewMobile">
-                <div class="mobile-preview-container" id="mobContent" style="font-family: Arial, sans-serif; font-size: 14px; color: #000; line-height: 1.5;"></div>
+                <div class="mobile-preview-container" id="mobContent" style="font-family: Arial, sans-serif; font-size: 14px; color: #000000; line-height: 1.5;"></div>
             </div>
         </div>
         
@@ -517,7 +574,6 @@
 </div>
 
 <div class="guide-container">
-    
     <button class="accordion" id="acc-item-1">
         <span data-lang="th">1. Microsoft Outlook (Desktop)</span>
         <span data-lang="en">1. Microsoft Outlook (Desktop)</span>
@@ -697,91 +753,47 @@
 </footer>
 
 <script>
-    // --- BUBBLE AUTO-RESIZE & TEXT CYCLE ---
+    // --- BUBBLE LOGIC ---
     const textWrapper = document.getElementById('bubbleTextWrapper');
     const textMeasurer = document.getElementById('textMeasurer');
     const floatBtn = document.getElementById('floatGuideBtn');
-    
-    // Initial Text
     textWrapper.innerText = "วิธีติดตั้ง?";
     textMeasurer.innerText = "วิธีติดตั้ง?";
-    
-    // Set initial width
-    requestAnimationFrame(() => {
-        textWrapper.style.width = textMeasurer.offsetWidth + 'px';
-    });
-
+    requestAnimationFrame(() => { textWrapper.style.width = textMeasurer.offsetWidth + 'px'; });
     let isThaiBubble = true;
-
     setInterval(() => {
-        // 1. Fade out current text
         textWrapper.classList.add('fading');
-
-        // 2. Wait for fade out to finish (300ms)
         setTimeout(() => {
-            // Swap text logic
             isThaiBubble = !isThaiBubble;
             const newText = isThaiBubble ? "วิธีติดตั้ง?" : "How to install?";
-            
-            // Measure new width using hidden span
             textMeasurer.innerText = newText;
-            const newWidth = textMeasurer.offsetWidth;
-
-            // Apply new width (Elastic CSS will handle the bounce)
-            textWrapper.style.width = newWidth + 'px';
-            
-            // Apply new text
+            textWrapper.style.width = textMeasurer.offsetWidth + 'px';
             textWrapper.innerText = newText;
-
-            // Fade in
             textWrapper.classList.remove('fading');
-
-        }, 300); // Wait 300ms for opacity fade out
-
-    }, 3000); // Change every 3 seconds
-
+        }, 300);
+    }, 3000);
 
     // --- SCROLL TO GUIDE + AUTO OPEN + AUTO HIDE BUBBLE ---
-    
-    // 1. Scroll To Logic
     function scrollToGuide() {
         const anchor = document.getElementById('guide-anchor');
         anchor.scrollIntoView({ behavior: 'smooth' });
-
         const firstBtn = document.getElementById('acc-item-1');
         const firstPanel = firstBtn.nextElementSibling;
-        
         if (!firstBtn.classList.contains('active')) {
-            setTimeout(() => {
-                firstBtn.classList.add('active');
-                firstPanel.classList.add('show');
-            }, 600);
+            setTimeout(() => { firstBtn.classList.add('active'); firstPanel.classList.add('show'); }, 600);
         }
     }
-
-    // 2. Scroll Detection Logic (Hide bubble when reaching guide)
     window.addEventListener('scroll', function() {
         const guideHeader = document.getElementById('guide-anchor');
-        
         if (!guideHeader) return;
-
-        // Get position of the guide header relative to viewport
         const guidePosition = guideHeader.getBoundingClientRect().top;
         const screenHeight = window.innerHeight;
-
-        // If guide header is visible (or slightly above fold), hide button
-        // Offset -50 allows button to disappear just before guide hits bottom
-        if (guidePosition < screenHeight - 100) {
-            floatBtn.classList.add('hidden');
-        } else {
-            floatBtn.classList.remove('hidden');
-        }
+        if (guidePosition < screenHeight - 100) { floatBtn.classList.add('hidden'); } 
+        else { floatBtn.classList.remove('hidden'); }
     });
-
 
     // --- LANGUAGE SWITCH LOGIC ---
     let currentGuideLang = 'th';
-
     function setGuideLang(lang) {
         currentGuideLang = lang;
         const titleEl = document.getElementById('guideTitle');
@@ -801,23 +813,18 @@
         acc[i].addEventListener("click", function() {
             this.classList.toggle("active");
             var panel = this.nextElementSibling;
-            if (panel.classList.contains('show')) {
-                panel.classList.remove('show');
-            } else {
-                panel.classList.add('show');
-            }
+            if (panel.classList.contains('show')) { panel.classList.remove('show'); } 
+            else { panel.classList.add('show'); }
         });
     }
 
     // --- MAIN APP LOGIC ---
     let currentTab = 'desktop';
-
     function switchTab(tab) {
         currentTab = tab;
         const note = document.getElementById('noteText');
         const btns = document.querySelectorAll('.tab-btn');
         btns.forEach(btn => btn.classList.remove('active'));
-        
         if (tab === 'desktop') {
             document.getElementById('previewDesktop').classList.add('active');
             document.getElementById('previewMobile').classList.remove('active');
@@ -835,14 +842,8 @@
         const isPerson = document.getElementById('modePerson').checked;
         const formPerson = document.getElementById('formPerson');
         const formDept = document.getElementById('formDept');
-        
-        if (isPerson) {
-            formPerson.classList.add('active');
-            formDept.classList.remove('active');
-        } else {
-            formPerson.classList.remove('active');
-            formDept.classList.add('active');
-        }
+        if (isPerson) { formPerson.classList.add('active'); formDept.classList.remove('active'); } 
+        else { formPerson.classList.remove('active'); formDept.classList.add('active'); }
         updateSig();
     }
 
@@ -860,23 +861,182 @@
         }
         return input; 
     }
+
+    // --- NEW VALIDATION & WARNING LOGIC (BILINGUAL CYCLE) ---
+    function getDualWarnHTML(th, en) {
+        return `<div class="warn-cycle"><span class="th">${th}</span><span class="en">${en}</span></div>`;
+    }
+
+    // HELPER: Toggle Icon
+    function toggleIcon(id, isValid) {
+        const icon = document.getElementById(id);
+        if(isValid) icon.style.display = 'block';
+        else icon.style.display = 'none';
+    }
+
+    // --- 1. EMAIL VALIDATION ---
     function validateEmail(email) {
         const inputEl = document.getElementById('inputEmail');
         const warnEl = document.getElementById('warnEmail');
-        let msg = "";
-        if(/[\u0E00-\u0E7F]/.test(email)) msg="⚠️ ห้ามภาษาไทย";
-        else if(/\s/.test(email)) msg="⚠️ ห้ามเว้นวรรค";
-        else if(/[A-Z]/.test(email)) msg="⚠️ ใช้พิมพ์เล็ก";
         
-        if(msg) { warnEl.innerText=msg; warnEl.style.display='block'; inputEl.classList.add('input-error'); }
-        else { warnEl.style.display='none'; inputEl.classList.remove('input-error'); }
+        // **FIX**: If empty, hide everything and return
+        if (!email) {
+            toggleIcon('checkEmail', false);
+            warnEl.style.display = 'none';
+            inputEl.classList.remove('input-error');
+            return;
+        }
+        
+        let errsTH = [];
+        let errsEN = [];
+        
+        if(/[\u0E00-\u0E7F]/.test(email)) {
+            errsTH.push("ห้ามใช้ภาษาไทย");
+            errsEN.push("No Thai characters");
+        }
+        
+        if(/\s/.test(email)) {
+            errsTH.push("ห้ามเว้นวรรค");
+            errsEN.push("No spaces");
+        }
+        
+        if(/[A-Z]/.test(email)) {
+            errsTH.push("ควรใช้ตัวพิมพ์เล็ก");
+            errsEN.push("Use lowercase");
+        }
+        
+        // Strict Check for Success Icon
+        const isValid = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/.test(email);
+        toggleIcon('checkEmail', isValid);
+        
+        if(errsTH.length > 0) { 
+            const thMsg = "⚠️ " + errsTH.join(", ");
+            const enMsg = "⚠️ " + errsEN.join(", ");
+            warnEl.innerHTML = getDualWarnHTML(thMsg, enMsg);
+            warnEl.style.display = 'block'; 
+            inputEl.classList.add('input-error'); 
+        } else { 
+            warnEl.style.display = 'none'; 
+            inputEl.classList.remove('input-error'); 
+        }
     }
-    function validatePhone(input, elId, warnId) {
-        const hasNonDigit = /\D/.test(input);
+
+    // --- 2. PHONE VALIDATION ---
+    function validatePhone(input, elId, warnId, iconId, lengthReq) {
         const el = document.getElementById(elId);
         const warn = document.getElementById(warnId);
-        if(hasNonDigit && input.length>0) { warn.style.display='block'; el.classList.add('input-error'); }
-        else { warn.style.display='none'; el.classList.remove('input-error'); }
+        
+        if (!input) {
+            toggleIcon(iconId, false);
+            warn.style.display = 'none';
+            el.classList.remove('input-error');
+            return;
+        }
+
+        let errsTH = [];
+        let errsEN = [];
+
+        if (/-/.test(input)) {
+            errsTH.push("ห้ามขีด (-)");
+            errsEN.push("No hyphens");
+        }
+
+        if (/\s/.test(input)) {
+            errsTH.push("ห้ามเว้นวรรค");
+            errsEN.push("No spaces");
+        }
+
+        if (/[^\d\-\s]/.test(input)) {
+            errsTH.push("ตัวเลขเท่านั้น");
+            errsEN.push("Numbers only");
+        }
+        
+        const isNumsOnly = /^\d+$/.test(input);
+        const isCorrectLen = input.length === lengthReq;
+        toggleIcon(iconId, isNumsOnly && isCorrectLen);
+        
+        if(errsTH.length > 0) { 
+            const thMsg = "⚠️ " + errsTH.join(", ");
+            const enMsg = "⚠️ " + errsEN.join(", ");
+            warn.innerHTML = getDualWarnHTML(thMsg, enMsg);
+            warn.style.display = 'block'; 
+            el.classList.add('input-error'); 
+        } else { 
+            warn.style.display = 'none'; 
+            el.classList.remove('input-error'); 
+        }
+    }
+
+    // --- 3. NAME VALIDATION ---
+    // Added param 'isStrict' (true = require space/2 parts, false = allow 1 part)
+    function validateNameEn(input, elId, warnId, iconId, isStrict) {
+        const el = document.getElementById(elId);
+        const warn = document.getElementById(warnId);
+        
+        if (!input) {
+            toggleIcon(iconId, false);
+            warn.style.display = 'none';
+            el.classList.remove('input-error');
+            return;
+        }
+
+        // Check for Thai characters
+        const hasThai = /[\u0E00-\u0E7F]/.test(input);
+        
+        if(hasThai) {
+            warn.innerHTML = getDualWarnHTML("⚠️ กรุณากรอกเป็นภาษาอังกฤษเท่านั้น", "⚠️ English characters only");
+            warn.style.display = 'block';
+            el.classList.add('input-error');
+            toggleIcon(iconId, false);
+        } else {
+            warn.style.display = 'none';
+            el.classList.remove('input-error');
+            
+            let isValid = false;
+            if (isStrict) {
+                // Must have at least 2 parts (English + Space + English)
+                isValid = /^[a-zA-Z]+(\s[a-zA-Z]+)+$/.test(input);
+            } else {
+                // Just English characters allowed (space optional)
+                isValid = /^[a-zA-Z\s.]+$/.test(input);
+            }
+            toggleIcon(iconId, isValid);
+        }
+    }
+
+    function validateNameTh(input, elId, warnId, iconId, isStrict) {
+        const el = document.getElementById(elId);
+        const warn = document.getElementById(warnId);
+        
+        if (!input) {
+            toggleIcon(iconId, false);
+            warn.style.display = 'none';
+            el.classList.remove('input-error');
+            return;
+        }
+
+        // Check for English characters
+        const hasEng = /[a-zA-Z]/.test(input);
+        
+        if(hasEng) {
+            warn.innerHTML = getDualWarnHTML("⚠️ กรุณากรอกเป็นภาษาไทยเท่านั้น", "⚠️ Thai characters only");
+            warn.style.display = 'block';
+            el.classList.add('input-error');
+            toggleIcon(iconId, false);
+        } else {
+            warn.style.display = 'none';
+            el.classList.remove('input-error');
+            
+            let isValid = false;
+            if (isStrict) {
+                // Must have at least 2 parts
+                isValid = /^[\u0E00-\u0E7F]+(\s[\u0E00-\u0E7F]+)+$/.test(input);
+            } else {
+                // Just Thai characters allowed
+                isValid = /^[\u0E00-\u0E7F\s.]+$/.test(input);
+            }
+            toggleIcon(iconId, isValid);
+        }
     }
 
     function updateSig() {
@@ -886,27 +1046,47 @@
         let posLine = "";
         let deptLine = "";
 
+        // **FIX**: Get Raw Value first
+        const emailRaw = document.getElementById('inputEmail').value; 
+        const email = emailRaw || 'example@bgrimmpower.com'; // Use default for preview
+
         if(isPerson) {
             const en = document.getElementById('pNameEng').value || 'Panupong Pumikrai';
             const th = document.getElementById('pNameTh').value || 'ภาณุพงศ์ ภูมิไกร';
+            
+            // Name Validation (Strict = true for Person)
+            validateNameEn(document.getElementById('pNameEng').value, 'pNameEng', 'warnNameEng', 'checkNameEng', true);
+            validateNameTh(document.getElementById('pNameTh').value, 'pNameTh', 'warnNameTh', 'checkNameTh', true);
+
             nameLine = `${en} | ${th}`;
             posLine = document.getElementById('pPosition').value || 'Digital Visual Designer';
             deptLine = document.getElementById('pDept').value || 'Digital and Energy Solutions';
         } else {
             const en = document.getElementById('dNameEng').value || 'Human Resources';
             const th = document.getElementById('dNameTh').value || '';
+            
+            // Dept Name Validation (Strict = false for Dept)
+            validateNameEn(document.getElementById('dNameEng').value, 'dNameEng', 'warnDeptEng', 'checkDeptEng', false);
+            
+            if(document.getElementById('dNameTh').value) {
+                 validateNameTh(document.getElementById('dNameTh').value, 'dNameTh', 'warnDeptTh', 'checkDeptTh', false);
+            } else {
+                 toggleIcon('checkDeptTh', false);
+                 document.getElementById('warnDeptTh').style.display='none';
+            }
+
             nameLine = th ? `${en} | ${th}` : en;
             posLine = "";
             deptLine = "";
         }
 
-        const email = document.getElementById('inputEmail').value || 'example@bgrimmpower.com';
         const mobRaw = document.getElementById('inputMobile').value;
         const telRaw = document.getElementById('inputTel').value;
 
-        validateEmail(email);
-        validatePhone(mobRaw, 'inputMobile', 'warnMobile');
-        validatePhone(telRaw, 'inputTel', 'warnTel');
+        // Pass RAW email value to validator to fix premature checkmark
+        validateEmail(emailRaw);
+        validatePhone(mobRaw, 'inputMobile', 'warnMobile', 'checkMobile', 10);
+        validatePhone(telRaw, 'inputTel', 'warnTel', 'checkTel', 9);
 
         document.getElementById('sigNameContent').innerHTML = nameLine;
         
