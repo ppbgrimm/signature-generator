@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B.Grimm Signature Generator</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            padding: 40px;
+            color: #333;
+        }
+        .container {
+            display: flex;
+            gap: 30px;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            max-width: 1100px;
+            width: 100%;
+            flex-wrap: wrap;
+        }
+        .input-section {
+            flex: 1;
+            min-width: 320px;
+            border-right: 1px solid #ddd;
+            padding-right: 30px;
+        }
+        .preview-section {
+            flex: 1.5;
+            min-width: 320px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        h2 { margin-top: 0; color: #FF6727; margin-bottom: 5px; font-size: 24px; }
+        .sub-header { font-size: 14px; color: #777; margin-bottom: 20px; font-weight: 400; }
+        h3 { margin: 15px 0 10px; font-size: 15px; color: #444; border-bottom: 1px solid #eee; padding-bottom: 5px; font-weight: 700;}
+        
+        .form-group { margin-bottom: 12px; position: relative; }
+        label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 13px; color: #666; }
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 14px;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+        input:focus { border-color: #FF6727; outline: none; }
+        
+        /* Mode Selector */
+        .mode-selector {
+            display: flex;
+            background: #eee;
+            padding: 5px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+        }
+        .mode-selector label {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 6px;
+            margin: 0;
+            font-size: 14px;
+            transition: all 0.2s;
+            color: #555;
+            font-weight: 400 !important;
+        }
+        .mode-selector label:hover { background-color: rgba(255,255,255,0.5); }
+        .mode-selector input { display: none; }
+        .mode-selector input:checked + label {
+            background-color: #8C704D;
+            color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            font-weight: 400 !important;
+        }
+
+        /* Tabs */
+        .preview-tabs {
+            display: flex;
+            background: #eee;
+            padding: 5px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .tab-btn {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 6px;
+            margin: 0;
+            font-size: 14px;
+            transition: all 0.2s;
+            color: #555;
+            border: none;
+            background: transparent;
+            font-family: inherit;
+            font-weight: 400;
+        }
+        .tab-btn:hover { background-color: rgba(255,255,255,0.5); }
+        .tab-btn.active {
+            background-color: #8C704D;
+            color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        input.input-error { border-color: #dc3545 !important; background-color: #fff8f8; }
+        .warning-msg { color: #dc3545; font-size: 12px; margin-top: 4px; display: none; font-weight: 600; }
+        .format-hint { font-size: 11px; color: #888; margin-top: 2px; }
+        
+        .signature-box {
+            border: 2px dashed #ccc;
+            padding: 20px;
+            margin-top: 10px;
+            border-radius: 8px;
+            background: #fff;
+            min-height: 200px;
+        }
+        .mobile-preview-container {
+            max-width: 320px; 
+            margin: 0 auto;
+            border: 1px solid #eee;
+            padding: 20px;
+            background: #fff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            white-space: pre-wrap;
+        }
+
+        .btn-copy {
+            background-image: linear-gradient(45deg, #FF6727 0%, #ff9a44 51%, #FF6727 100%);
+            background-size: 200% auto;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-size: 14px;
+            cursor: pointer;
+            font-weight: 700;
+            margin-top: 20px;
+            width: 100%;
+            transition: 0.5s all ease-in-out;
+            box-shadow: 0 3px 10px rgba(255, 103, 39, 0.2);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .btn-copy:hover {
+            background-position: right center;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 103, 39, 0.4);
+        }
+        .btn-copy:active {
+            transform: translateY(1px);
+            box-shadow: 0 2px 5px rgba(255, 103, 39, 0.3);
+        }
+
+        .note { font-size: 12px; color: #666; margin-top: 10px; background: #fff3cd; padding: 10px; border-radius: 4px; text-align: center; }
+        .form-container { display: none; }
+        .form-container.active { display: block; animation: fadeIn 0.3s; }
+        #previewDesktop, #previewMobile { display: none; }
+        #previewDesktop.active, #previewMobile.active { display: block; animation: fadeIn 0.3s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+        @media (max-width: 768px) {
+            .container { flex-direction: column; }
+            .input-section { border-right: none; padding-right: 0; border-bottom: 1px solid #ddd; padding-bottom: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="input-section">
+        <h2>Create Digital Signature</h2>
+        <div class="sub-header">กรอกข้อมูลพนักงานหรือหน่วยงาน (Fill in your information)</div>
+
+        <div class="mode-selector">
+            <input type="radio" id="modePerson" name="sigMode" value="person" checked onchange="toggleMode()">
+            <label for="modePerson">👤 พนักงาน (Person)</label>
+            <input type="radio" id="modeDept" name="sigMode" value="dept" onchange="toggleMode()">
+            <label for="modeDept">🏢 หน่วยงาน (Department)</label>
+        </div>
+
+        <div id="formPerson" class="form-container active">
+            <h3>ข้อมูลส่วนตัว</h3>
+            <div class="form-group">
+                <label>ชื่อจริง-นามสกุล (ภาษาอังกฤษ)</label>
+                <input type="text" id="pNameEng" placeholder="Panupong Pumikrai" oninput="updateSig()">
+            </div>
+            <div class="form-group">
+                <label>ชื่อจริง-นามสกุล (ภาษาไทย)</label>
+                <input type="text" id="pNameTh" placeholder="ภาณุพงศ์ ภูมิไกร" oninput="updateSig()">
+            </div>
+            <h3>ตำแหน่งงาน</h3>
+            <div class="form-group">
+                <label>ตำแหน่ง (Position)</label>
+                <input type="text" id="pPosition" placeholder="Digital Visual Designer" oninput="updateSig()">
+            </div>
+            <div class="form-group">
+                <label>ฝ่าย/แผนก (Department/Solutions)</label>
+                <input type="text" id="pDept" placeholder="Digital and Energy Solutions" oninput="updateSig()">
+            </div>
+        </div>
+
+        <div id="formDept" class="form-container">
+            <h3>ข้อมูลหน่วยงาน</h3>
+            <div class="form-group">
+                <label>ชื่อหน่วยงาน (ภาษาอังกฤษ)</label>
+                <input type="text" id="dNameEng" placeholder="Human Resources" oninput="updateSig()">
+            </div>
+            <div class="form-group">
+                <label>ชื่อหน่วยงาน (ภาษาไทย)</label>
+                <input type="text" id="dNameTh" placeholder="แผนกทรัพยากรบุคคล (ถ้าว่างจะซ่อน)" oninput="updateSig()">
+            </div>
+        </div>
+
+        <div id="contactSection">
+            <h3>ข้อมูลติดต่อ</h3>
+            <div class="form-group">
+                <label>อีเมล (Email)</label>
+                <input type="email" id="inputEmail" placeholder="example@bgrimmpower.com" oninput="updateSig()">
+                <div id="warnEmail" class="warning-msg"></div>
+            </div>
+            <div class="form-group">
+                <label>เบอร์มือถือ (M.) <span id="mobileNote" style="font-weight:normal; color:#999; font-size:11px; display:none;">(ถ้าไม่มีให้เว้นว่าง)</span></label>
+                <input type="text" id="inputMobile" placeholder="0899999999" oninput="updateSig()" maxlength="10">
+                <div class="format-hint">พิมพ์ 10 หลัก (ไม่ต้องใส่ขีด/ไม่ต้องใส่ +66)</div>
+                <div id="warnMobile" class="warning-msg">กรุณากรอกเฉพาะตัวเลขเท่านั้น</div>
+            </div>
+            <div class="form-group">
+                <label>เบอร์โทรศัพท์ (T.) <span style="font-weight:normal; color:#999; font-size:11px;">(ถ้าไม่มีให้เว้นว่าง)</span></label>
+                <input type="text" id="inputTel" placeholder="029999999" oninput="updateSig()" maxlength="9">
+                <div class="format-hint">พิมพ์ 9 หลัก (ไม่ต้องใส่ขีด/ไม่ต้องใส่ +66)</div>
+                <div id="warnTel" class="warning-msg">กรุณากรอกเฉพาะตัวเลขเท่านั้น</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="preview-section">
+        <h2>Select Template & Copy</h2>
+        <div class="sub-header">เลือกรูปแบบที่ต้องการแล้วกดปุ่มคัดลอก (Choose style & Copy)</div>
+        
+        <div class="preview-tabs">
+            <button class="tab-btn active" onclick="switchTab('desktop')">💻 Desktop (Standard)</button>
+            <button class="tab-btn" onclick="switchTab('mobile')">📱 Mobile (Plain Text)</button>
+        </div>
+
+        <div class="signature-box" id="signatureBox">
+            
+            <div id="previewDesktop" class="active">
+                <div style="font-family:Arial, Helvetica, sans-serif; font-size:12px; color:#63666F; margin-bottom: 10px;">--</div>
+
+                <table cellpadding="0" cellspacing="0" border="0" style="font-family:Arial, Helvetica, sans-serif; font-size:12px; color:#63666F;">
+                  <tr>
+                    <td style="padding-bottom:4px;">
+                      <strong id="sigNameContent" style="font-size:13px; color:#FF6727; font-family:Arial;">
+                        Panupong Pumikrai | ภาณุพงศ์ ภูมิไกร
+                      </strong>
+                    </td>
+                  </tr>
+                  <tr id="rowPosition">
+                    <td style="padding-bottom:4px; line-height:1.2; font-family:Arial;">
+                      <span id="prevPos">Digital Visual Designer</span> | <span id="prevDept">Digital and Energy Solutions</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="padding-bottom:4px; line-height:1.2; font-family:Arial;">
+                      <strong>E.</strong>
+                      <a id="linkEmail" href="mailto:example@bgrimmpower.com" class="sig-link" style="color:#63666F; text-decoration:none; font-family:Arial;">
+                        <span id="textEmail">example@bgrimmpower.com</span>
+                      </a>
+                      
+                      <span id="wrapperMobile">
+                          &nbsp;|&nbsp;
+                          <strong>M.</strong>
+                          <a id="linkMobile" href="tel:+66899999999" class="sig-link" style="color:#63666F; text-decoration:none; font-family:Arial;">
+                            <span id="textMobile">+66 8 9999 9999</span>
+                          </a>
+                      </span>
+
+                      <span id="wrapperTel">
+                          &nbsp;|&nbsp;
+                          <strong>T.</strong>
+                          <a id="linkTel" href="tel:+66299999999" class="sig-link" style="color:#63666F; text-decoration:none; font-family:Arial;">
+                            <span id="textTel">+66 2999 9999</span>
+                          </a>
+                      </span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="padding-top:10px; padding-bottom:4px; font-family:Arial;">
+                      <img src="https://static-portal.bgrimm.io/public/logo/B.Grimm%20Logo.png" width="120" border="0" alt="B.Grimm Power Public Company Limited" style="display:block;">
+                    </td>
+                  </tr>
+                  
+                  <tr>
+                    <td style="padding-bottom:4px; font-family:Arial;">
+                      <strong style="color:#FF6727; font-family:Arial;">
+                        B.Grimm Power Public Company Limited
+                      </strong>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td style="padding-bottom:4px; line-height:1.2; font-family:Arial;">
+                      Dr. Gerhard Link Building, 5 Krungthepkreetha Road, Bangkok 10240, Thailand
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td style="font-family:Arial;">
+                      <a href="https://www.bgrimmpower.com" class="sig-link" style="color:#63666F; text-decoration:none; font-family:Arial;">
+                        www.bgrimmpower.com
+                      </a>
+                    </td>
+                  </tr>
+                </table>
+            </div>
+
+            <div id="previewMobile">
+                <div class="mobile-preview-container" id="mobContent" style="font-family: Arial, Helvetica, sans-serif; font-size: 14px; color: #000; line-height: 1.5;"></div>
+            </div>
+
+        </div>
+        
+        <button class="btn-copy" onclick="copySignature()">Copy to Clipboard</button>
+        <div class="note">
+            <span id="noteText"><strong>Desktop:</strong> เหมาะสำหรับ Outlook บนคอมพิวเตอร์</span>
+        </div>
+    </div>
+</div>
+
+<script>
+    let currentTab = 'desktop';
+
+    function switchTab(tab) {
+        currentTab = tab;
+        const note = document.getElementById('noteText');
+        const btns = document.querySelectorAll('.tab-btn');
+        
+        btns.forEach(btn => btn.classList.remove('active'));
+        
+        if (tab === 'desktop') {
+            document.getElementById('previewDesktop').classList.add('active');
+            document.getElementById('previewMobile').classList.remove('active');
+            btns[0].classList.add('active');
+            note.innerHTML = "<strong>Desktop:</strong> เหมาะสำหรับ Outlook บนคอมพิวเตอร์";
+        } else {
+            document.getElementById('previewDesktop').classList.remove('active');
+            document.getElementById('previewMobile').classList.add('active');
+            btns[1].classList.add('active');
+            note.innerHTML = "<strong>Mobile:</strong> เหมาะสำหรับ iPhone/Android (ข้อความล้วน)";
+        }
+    }
+
+    function toggleMode() {
+        const isPerson = document.getElementById('modePerson').checked;
+        const formPerson = document.getElementById('formPerson');
+        const formDept = document.getElementById('formDept');
+        const mobileNote = document.getElementById('mobileNote');
+        
+        if (isPerson) {
+            formPerson.classList.add('active');
+            formDept.classList.remove('active');
+            mobileNote.style.display = 'none';
+        } else {
+            formPerson.classList.remove('active');
+            formDept.classList.add('active');
+            mobileNote.style.display = 'inline';
+        }
+        updateSig();
+    }
+
+    function formatMobileNumber(input) {
+        let clean = input.replace(/\D/g, '');
+        if (clean.startsWith('0') && clean.length === 10) {
+            return '+66 ' + clean.substring(1,2) + ' ' + clean.substring(2,6) + ' ' + clean.substring(6);
+        }
+        return input;
+    }
+    function formatOfficeNumber(input) {
+        let clean = input.replace(/\D/g, '');
+        if (clean.startsWith('02') && clean.length === 9) {
+            return '+66 ' + clean.substring(1,5) + ' ' + clean.substring(5);
+        }
+        return input; 
+    }
+    function validateEmail(email) {
+        const inputEl = document.getElementById('inputEmail');
+        const warnEl = document.getElementById('warnEmail');
+        let msg = "";
+        if(/[\u0E00-\u0E7F]/.test(email)) msg="⚠️ ห้ามภาษาไทย";
+        else if(/\s/.test(email)) msg="⚠️ ห้ามเว้นวรรค";
+        else if(/[A-Z]/.test(email)) msg="⚠️ ใช้พิมพ์เล็ก";
+        
+        if(msg) { warnEl.innerText=msg; warnEl.style.display='block'; inputEl.classList.add('input-error'); }
+        else { warnEl.style.display='none'; inputEl.classList.remove('input-error'); }
+    }
+    function validatePhone(input, elId, warnId) {
+        const hasNonDigit = /\D/.test(input);
+        const el = document.getElementById(elId);
+        const warn = document.getElementById(warnId);
+        if(hasNonDigit && input.length>0) { warn.style.display='block'; el.classList.add('input-error'); }
+        else { warn.style.display='none'; el.classList.remove('input-error'); }
+    }
+
+    function updateSig() {
+        const isPerson = document.getElementById('modePerson').checked;
+        
+        let nameEng = "", nameTh = "", pos = "", dept = "";
+        
+        if(isPerson) {
+            nameEng = document.getElementById('pNameEng').value || 'Panupong Pumikrai';
+            nameTh = document.getElementById('pNameTh').value || 'ภาณุพงศ์ ภูมิไกร';
+            pos = document.getElementById('pPosition').value || 'Digital Visual Designer';
+            dept = document.getElementById('pDept').value || 'Digital and Energy Solutions';
+        } else {
+            nameEng = document.getElementById('dNameEng').value || 'Human Resources';
+            const rawTh = document.getElementById('dNameTh').value;
+            nameTh = rawTh ? rawTh : '';
+        }
+
+        const email = document.getElementById('inputEmail').value || 'example@bgrimmpower.com';
+        const mobRaw = document.getElementById('inputMobile').value;
+        const telRaw = document.getElementById('inputTel').value;
+
+        validateEmail(email);
+        validatePhone(mobRaw, 'inputMobile', 'warnMobile');
+        validatePhone(telRaw, 'inputTel', 'warnTel');
+
+        // DESKTOP UPDATE
+        let deskName = (isPerson) ? `${nameEng} | ${nameTh}` : (nameTh ? `${nameEng} | ${nameTh}` : nameEng);
+        document.getElementById('sigNameContent').innerHTML = deskName;
+        
+        if(isPerson) {
+            document.getElementById('rowPosition').style.display = 'table-row';
+            document.getElementById('prevPos').innerText = pos;
+            document.getElementById('prevDept').innerText = dept;
+        } else {
+            document.getElementById('rowPosition').style.display = 'none';
+        }
+
+        document.getElementById('textEmail').innerText = email;
+        document.getElementById('linkEmail').href = "mailto:" + email;
+
+        const deskMobWrap = document.getElementById('wrapperMobile');
+        let finalMob = "";
+        if(!mobRaw) {
+            if(isPerson) {
+                 deskMobWrap.style.display = 'inline';
+                 finalMob = '+66 8 9999 9999';
+                 document.getElementById('textMobile').innerText = finalMob;
+                 document.getElementById('linkMobile').href = "tel:+66899999999";
+            } else { deskMobWrap.style.display = 'none'; }
+        } else {
+            deskMobWrap.style.display = 'inline';
+            finalMob = formatMobileNumber(mobRaw);
+            document.getElementById('textMobile').innerText = finalMob;
+            document.getElementById('linkMobile').href = "tel:"+finalMob.replace(/\D/g,'');
+        }
+
+        const deskTelWrap = document.getElementById('wrapperTel');
+        let finalTel = "";
+        if(!telRaw) { deskTelWrap.style.display = 'none'; } 
+        else {
+            deskTelWrap.style.display = 'inline';
+            finalTel = formatOfficeNumber(telRaw);
+            document.getElementById('textTel').innerText = finalTel;
+            document.getElementById('linkTel').href = "tel:"+finalTel.replace(/\D/g,'');
+        }
+
+        // MOBILE UPDATE (Raw Text)
+        let mText = "--\n\n";
+        mText += (isPerson) ? `${nameEng} | ${nameTh}\n` : (nameTh ? `${nameEng} | ${nameTh}\n` : `${nameEng}\n`);
+        
+        if(isPerson) {
+            mText += `${pos}\n${dept}\n`;
+        }
+        
+        mText += "\n";
+        mText += `E. ${email}\n`;
+        if(finalMob) { mText += `M. ${finalMob}\n`; }
+        if(finalTel) { mText += `T. ${finalTel}\n`; }
+        mText += "\n"; 
+        mText += "B.Grimm Power Public Company Limited\n";
+        mText += "www.bgrimmpower.com";
+
+        document.getElementById('mobContent').innerText = mText;
+    }
+
+    function copySignature() {
+        if (currentTab === 'desktop') {
+            const element = document.getElementById('previewDesktop');
+            const range = document.createRange();
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            range.selectNodeContents(element);
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                alert('คัดลอกแบบ Desktop เรียบร้อย!');
+            } catch (err) { alert('Copy Failed'); }
+            selection.removeAllRanges();
+        } else {
+            const textToCopy = document.getElementById('mobContent').innerText;
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                alert('คัดลอกแบบ Mobile เรียบร้อย!');
+            }).catch(err => {
+                alert('Copy Failed: ' + err);
+            });
+        }
+    }
+
+    updateSig();
+</script>
+
+</body>
+</html>
