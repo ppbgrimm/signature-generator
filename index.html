@@ -63,7 +63,7 @@
         }
         input:focus { 
             border-color: #C8B273; 
-            box-shadow: 0 0 0 3px rgba(200, 178, 115, 0.2);
+            box-shadow: 0 0 0 3px rgba(200, 178, 115, 0.2); 
             outline: none; 
         }
         
@@ -198,18 +198,10 @@
 
         .note { font-size: 12px; color: #666; margin-top: 10px; background: #fff3cd; padding: 10px; border-radius: 4px; text-align: center; }
         
-        /* FORM CONTAINERS (Person/Dept) */
         .form-container { display: none; }
-        .form-container.active { 
-            display: block; 
-            animation: fadeIn 0.5s cubic-bezier(0.25, 0.8, 0.25, 1); 
-        }
+        .form-container.active { display: block; animation: fadeIn 0.5s cubic-bezier(0.25, 0.8, 0.25, 1); }
         
-        /* CONTACT SECTION (Added Animation) */
-        #contactSection {
-            /* เพิ่ม Animation ให้เหมือนกับ Form ด้านบน */
-            animation: fadeIn 0.6s cubic-bezier(0.25, 0.8, 0.25, 1); /* Delay นิดหน่อยหรือช้ากว่านิดนึงเพื่อให้ดูลื่นไหล */
-        }
+        #contactSection { animation: fadeIn 0.6s cubic-bezier(0.25, 0.8, 0.25, 1); }
 
         #previewDesktop, #previewMobile { display: none; }
         #previewDesktop.active, #previewMobile.active { display: block; animation: fadeIn 0.5s cubic-bezier(0.25, 0.8, 0.25, 1); }
@@ -226,7 +218,7 @@
 
 <div class="container">
     <div class="input-section">
-        <h2>Create Digital Signature</h2>
+        <h2>Create Email Signature</h2>
         <div class="sub-header">กรอกข้อมูลพนักงานหรือหน่วยงาน (Fill in your information)</div>
 
         <div class="mode-selector">
