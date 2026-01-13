@@ -14,6 +14,7 @@
             align-items: center;
             padding: 40px;
             color: #333;
+            scroll-behavior: smooth; /* Native smooth scroll */
         }
         
         input, button, .tab-btn, .mode-selector label, h2, h3, h4, .sub-header, li, p {
@@ -34,6 +35,51 @@
             margin-bottom: 40px;
         }
 
+        /* --- FLOATING GUIDE BUBBLE --- */
+        .float-guide-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, #8C704D 0%, #C8B273 100%);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 24px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(140, 112, 77, 0.4);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            z-index: 1000;
+            animation: floatBounce 3s infinite ease-in-out;
+            text-decoration: none; /* For anchor tag look */
+        }
+
+        .float-guide-btn:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 8px 20px rgba(140, 112, 77, 0.6);
+            animation: none; /* Stop bounce on hover */
+        }
+
+        .float-guide-btn .icon-bubble {
+            font-size: 18px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @keyframes floatBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
         /* --- GUIDE CONTAINER --- */
         .guide-container {
             max-width: 1100px;
@@ -41,6 +87,7 @@
             display: flex;
             flex-direction: column;
             gap: 10px;
+            scroll-margin-top: 20px; /* Offset for scrolling */
         }
 
         .guide-header-row {
@@ -52,6 +99,7 @@
             margin-bottom: 20px;
             border-bottom: 2px solid #C8B273;
             padding-bottom: 10px;
+            scroll-margin-top: 60px; /* Space when scrolled to */
         }
 
         .guide-section-title {
@@ -244,10 +292,17 @@
         @media (max-width: 768px) {
             .container { flex-direction: column; }
             .input-section { border-right: none; padding-right: 0; border-bottom: 1px solid #ddd; padding-bottom: 20px; }
+            .float-guide-btn { bottom: 20px; right: 20px; padding: 10px 20px; font-size: 12px; }
         }
     </style>
 </head>
 <body>
+
+<button class="float-guide-btn" onclick="scrollToGuide()">
+    <span class="icon-bubble">?</span>
+    <span data-lang="th">วิธีติดตั้ง?</span>
+    <span data-lang="en">How to install?</span>
+</button>
 
 <div class="container">
     <div class="input-section">
@@ -354,7 +409,7 @@
     </div>
 </div>
 
-<div class="guide-header-row">
+<div class="guide-header-row" id="guide-anchor">
     <h2 class="guide-section-title" id="guideTitle">คู่มือการตั้งค่า (Installation Guide)</h2>
     <div class="lang-switch">
         <span class="lang-btn active" id="btnTh" onclick="setGuideLang('th')">TH</span>
@@ -365,7 +420,7 @@
 
 <div class="guide-container">
     
-    <button class="accordion">
+    <button class="accordion" id="acc-item-1">
         <span data-lang="th">1. Microsoft Outlook (Desktop)</span>
         <span data-lang="en">1. Microsoft Outlook (Desktop)</span>
         <span class="icon">▼</span>
@@ -540,6 +595,23 @@
 </div>
 
 <script>
+    // --- SCROLL TO GUIDE + AUTO OPEN ---
+    function scrollToGuide() {
+        const anchor = document.getElementById('guide-anchor');
+        anchor.scrollIntoView({ behavior: 'smooth' });
+
+        // Auto open the first item if all are closed
+        const firstBtn = document.getElementById('acc-item-1');
+        const firstPanel = firstBtn.nextElementSibling;
+        
+        if (!firstBtn.classList.contains('active')) {
+            setTimeout(() => {
+                firstBtn.classList.add('active');
+                firstPanel.classList.add('show');
+            }, 600); // Wait for scroll to finish
+        }
+    }
+
     // --- LANGUAGE SWITCH LOGIC ---
     let currentGuideLang = 'th';
 
