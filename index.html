@@ -43,16 +43,36 @@
             text-align: right;
         }
 
+        /* === SMOOTH SHIMMER ANIMATION (LIGHT GOLD) === */
         .header-title-en {
-            color: #FF6727; /* KEEP ORANGE */
             font-size: 26px;
             font-weight: 700;
             margin-bottom: 5px;
             letter-spacing: -0.5px;
+            
+            /* Gradient: Orange -> Light Gold -> Orange */
+            background: linear-gradient(
+                110deg, 
+                #FF6727 30%, 
+                #F8E6B8 45%, 
+                #C8B273 50%, 
+                #F8E6B8 55%, 
+                #FF6727 70%
+            );
+            background-size: 250% auto;
+            color: #FF6727;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: smoothShine 5s linear infinite;
+        }
+
+        @keyframes smoothShine {
+            to { background-position: -250% center; }
         }
 
         .header-title-th {
-            color: #63666F; /* Dark Grey */
+            color: #63666F;
             font-size: 16px;
             font-weight: 400;
         }
@@ -71,7 +91,7 @@
             margin-bottom: 40px;
         }
 
-        /* --- FLOATING GUIDE BUBBLE --- */
+        /* --- FLOATING BUBBLE --- */
         .float-guide-btn {
             position: fixed;
             bottom: 30px;
@@ -115,7 +135,7 @@
             50% { transform: translateY(-8px); }
         }
 
-        /* --- GUIDE CONTAINER --- */
+        /* --- GUIDE --- */
         .guide-container {
             max-width: 1100px;
             width: 100%;
@@ -244,9 +264,7 @@
         .input-section { flex: 1; min-width: 320px; border-right: 1px solid #ddd; padding-right: 30px; }
         .preview-section { flex: 1.5; min-width: 320px; display: flex; flex-direction: column; }
         
-        /* Updated inner H2 style to GOLD #8C704D */
         .container h2 { margin-top: 0; color: #8C704D; margin-bottom: 5px; font-size: 22px; }
-        
         .sub-header { font-size: 14px; color: #777; margin-bottom: 20px; font-weight: 400; }
         
         .input-section h3 { 
@@ -324,7 +342,6 @@
         #previewDesktop, #previewMobile { display: none; }
         #previewDesktop.active, #previewMobile.active { display: block; animation: fadeIn 0.5s cubic-bezier(0.25, 0.8, 0.25, 1); }
 
-        /* --- FOOTER SECTION --- */
         .app-footer {
             margin-top: 30px;
             color: #989AA5;
@@ -663,7 +680,6 @@
         const anchor = document.getElementById('guide-anchor');
         anchor.scrollIntoView({ behavior: 'smooth' });
 
-        // Auto open the first item if all are closed
         const firstBtn = document.getElementById('acc-item-1');
         const firstPanel = firstBtn.nextElementSibling;
         
@@ -671,7 +687,7 @@
             setTimeout(() => {
                 firstBtn.classList.add('active');
                 firstPanel.classList.add('show');
-            }, 600); // Wait for scroll to finish
+            }, 600);
         }
     }
 
@@ -680,21 +696,16 @@
 
     function setGuideLang(lang) {
         currentGuideLang = lang;
-        
         const titleEl = document.getElementById('guideTitle');
         titleEl.innerText = (lang === 'th') ? "คู่มือการตั้งค่า (Installation Guide)" : "Installation Guide";
-
         document.getElementById('btnTh').classList.toggle('active', lang === 'th');
         document.getElementById('btnEn').classList.toggle('active', lang === 'en');
-
         const thElements = document.querySelectorAll('[data-lang="th"]');
         const enElements = document.querySelectorAll('[data-lang="en"]');
-
         thElements.forEach(el => el.style.display = (lang === 'th' ? 'block' : 'none'));
         enElements.forEach(el => el.style.display = (lang === 'en' ? 'block' : 'none'));
     }
-
-    setGuideLang('th'); // Init
+    setGuideLang('th');
 
     // --- ACCORDION LOGIC ---
     var acc = document.getElementsByClassName("accordion");
@@ -717,7 +728,6 @@
         currentTab = tab;
         const note = document.getElementById('noteText');
         const btns = document.querySelectorAll('.tab-btn');
-        
         btns.forEach(btn => btn.classList.remove('active'));
         
         if (tab === 'desktop') {
@@ -737,16 +747,13 @@
         const isPerson = document.getElementById('modePerson').checked;
         const formPerson = document.getElementById('formPerson');
         const formDept = document.getElementById('formDept');
-        const mobileNote = document.getElementById('mobileNote');
         
         if (isPerson) {
             formPerson.classList.add('active');
             formDept.classList.remove('active');
-            mobileNote.style.display = 'none';
         } else {
             formPerson.classList.remove('active');
             formDept.classList.add('active');
-            mobileNote.style.display = 'inline';
         }
         updateSig();
     }
@@ -784,45 +791,66 @@
         else { warn.style.display='none'; el.classList.remove('input-error'); }
     }
 
+    // --- RE-WRITTEN UPDATE SIG LOGIC ---
     function updateSig() {
         const isPerson = document.getElementById('modePerson').checked;
         
-        let nameEng = "", nameTh = "", pos = "", dept = "";
-        
+        // 1. GET VALUES BASED ON MODE
+        let nameLine = "";
+        let posLine = "";
+        let deptLine = "";
+
         if(isPerson) {
-            nameEng = document.getElementById('pNameEng').value || 'Panupong Pumikrai';
-            nameTh = document.getElementById('pNameTh').value || 'ภาณุพงศ์ ภูมิไกร';
-            pos = document.getElementById('pPosition').value || 'Digital Visual Designer';
-            dept = document.getElementById('pDept').value || 'Digital and Energy Solutions';
+            // Person Inputs
+            const en = document.getElementById('pNameEng').value || 'Panupong Pumikrai';
+            const th = document.getElementById('pNameTh').value || 'ภาณุพงศ์ ภูมิไกร';
+            nameLine = `${en} | ${th}`;
+            
+            posLine = document.getElementById('pPosition').value || 'Digital Visual Designer';
+            deptLine = document.getElementById('pDept').value || 'Digital and Energy Solutions';
         } else {
-            nameEng = document.getElementById('dNameEng').value || 'Human Resources';
-            const rawTh = document.getElementById('dNameTh').value;
-            nameTh = rawTh ? rawTh : '';
+            // Dept Inputs
+            const en = document.getElementById('dNameEng').value || 'Human Resources';
+            const th = document.getElementById('dNameTh').value || '';
+            
+            // Name Line becomes Dept Name
+            nameLine = th ? `${en} | ${th}` : en;
+            
+            // Pos/Dept Lines are empty for Dept Mode
+            posLine = "";
+            deptLine = "";
         }
 
+        // Common Contact Info
         const email = document.getElementById('inputEmail').value || 'example@bgrimmpower.com';
         const mobRaw = document.getElementById('inputMobile').value;
         const telRaw = document.getElementById('inputTel').value;
 
+        // Validations
         validateEmail(email);
         validatePhone(mobRaw, 'inputMobile', 'warnMobile');
         validatePhone(telRaw, 'inputTel', 'warnTel');
 
-        // DESKTOP UPDATE
-        let deskName = (isPerson) ? `${nameEng} | ${nameTh}` : (nameTh ? `${nameEng} | ${nameTh}` : nameEng);
-        document.getElementById('sigNameContent').innerHTML = deskName;
+        // --- 2. UPDATE DESKTOP PREVIEW ---
         
-        if(isPerson) {
-            document.getElementById('rowPosition').style.display = 'table-row';
-            document.getElementById('prevPos').innerText = pos;
-            document.getElementById('prevDept').innerText = dept;
+        // Name / Dept Header
+        document.getElementById('sigNameContent').innerHTML = nameLine;
+
+        // Position Row (Hide completely if Dept Mode)
+        const rowPos = document.getElementById('rowPosition');
+        if (isPerson) {
+            rowPos.style.display = 'table-row';
+            document.getElementById('prevPos').innerText = posLine;
+            document.getElementById('prevDept').innerText = deptLine;
         } else {
-            document.getElementById('rowPosition').style.display = 'none';
+            rowPos.style.display = 'none';
         }
 
+        // Email
         document.getElementById('textEmail').innerText = email;
         document.getElementById('linkEmail').href = "mailto:" + email;
 
+        // Mobile
         const deskMobWrap = document.getElementById('wrapperMobile');
         let finalMob = "";
         if(!mobRaw) {
@@ -839,6 +867,7 @@
             document.getElementById('linkMobile').href = "tel:"+finalMob.replace(/\D/g,'');
         }
 
+        // Tel
         const deskTelWrap = document.getElementById('wrapperTel');
         let finalTel = "";
         if(!telRaw) { deskTelWrap.style.display = 'none'; } 
@@ -849,12 +878,13 @@
             document.getElementById('linkTel').href = "tel:"+finalTel.replace(/\D/g,'');
         }
 
-        // MOBILE UPDATE (Raw Text)
+        // --- 3. UPDATE MOBILE PREVIEW ---
         let mText = "--\n\n";
-        mText += (isPerson) ? `${nameEng} | ${nameTh}\n` : (nameTh ? `${nameEng} | ${nameTh}\n` : `${nameEng}\n`);
+        mText += nameLine + "\n"; // Name or Dept Name
         
         if(isPerson) {
-            mText += `${pos}\n${dept}\n`;
+            mText += posLine + "\n";
+            mText += deptLine + "\n";
         }
         
         mText += "\n";
