@@ -7,16 +7,8 @@
     <style>
         /* --- GLOBAL SETTINGS --- */
         :root {
-            /* Configuration Variables for perfect spacing */
-            --header-top-gap: 25px;      /* ระยะห่างจากขอบบนจอถึง Pill */
-            --header-bottom-gap: 25px;   /* ระยะห่างจาก Pill ถึง Container */
-            
-            /* Header Height Components (Must match header CSS) */
-            --logo-min-h: 30px;
-            --logo-pref-h: 5vw;
-            --logo-max-h: 50px;
-            --header-v-padding: 30px;    /* 15px top + 15px bottom */
-            --header-border: 2px;
+            --header-gap: 25px; /* ระยะห่างจากขอบจอ และ ระยะห่างระหว่างกล่อง */
+            --header-height-est: 82px; /* ความสูงโดยประมาณของ Pill (50+30+2) */
         }
 
         body {
@@ -26,27 +18,14 @@
             flex-direction: column;
             align-items: center;
             
-            /* --- DYNAMIC SPACING CALCULATION --- */
-            /* Formula: 
-               Top Gap + Header Height (Dynamic Clamp) + Bottom Gap 
-               Height = Clamp(LogoMin, Pref, LogoMax) + Padding + Border
-            */
-            padding-top: calc(
-                var(--header-top-gap) + 
-                clamp(var(--logo-min-h), var(--logo-pref-h), var(--logo-max-h)) + 
-                var(--header-v-padding) + 
-                var(--header-border) + 
-                var(--header-bottom-gap)
-            );
-            /* ----------------------------------- */
-            
+            /* Calculated Padding: Top Gap + Header Height + Bottom Gap */
+            padding-top: calc(var(--header-gap) + var(--header-height-est) + var(--header-gap));
             padding-bottom: 30px;
-            padding-left: 20px;
-            padding-right: 20px;
+            padding-left: 30px;
+            padding-right: 30px;
             
             color: #63666F;
             min-height: 100vh;
-            box-sizing: border-box;
         }
         
         input, button, .tab-btn, h1, h2, h3, h4, .sub-header, li, p {
@@ -58,7 +37,7 @@
             position: fixed;
             
             /* Equal Top Spacing */
-            top: var(--header-top-gap);
+            top: var(--header-gap);
             
             left: 50%;
             transform: translateX(-50%);
@@ -76,18 +55,17 @@
             box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
             
             border-radius: 12px; /* Initial Radius matches Container */
-            padding: 15px 30px; /* Top/Bottom Padding (Total 30px) */
+            padding: 15px 30px; /* Top/Bottom Padding */
             
             z-index: 2000;
             
             /* Smooth transition */
             transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
-            box-sizing: border-box; /* Include padding/border in height */
         }
 
         /* Scrolled State (Shrink + Morph to Pill) */
         .main-header.scrolled {
-            top: 15px; /* Shrink top gap slightly when scrolling to stick nicely */
+            top: 15px; /* Shrink top gap when scrolling */
             padding: 10px 25px; 
             background: rgba(255, 255, 255, 0.85); 
             box-shadow: 0 10px 30px 0 rgba(31, 38, 135, 0.15);
@@ -97,8 +75,7 @@
         }
 
         .header-logo img {
-            /* Matches the clamp in body padding calculation */
-            height: clamp(var(--logo-min-h), var(--logo-pref-h), var(--logo-max-h));
+            height: clamp(30px, 5vw, 50px);
             width: auto;
             display: block;
             transition: height 0.4s ease;
@@ -183,9 +160,6 @@
             width: 100%;
             flex-wrap: wrap;
             margin-bottom: 40px;
-            
-            /* Ensure no extra margins disrupt spacing */
-            margin-top: 0;
         }
 
         /* --- FLOATING BUBBLE --- */
