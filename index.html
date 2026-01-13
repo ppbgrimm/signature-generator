@@ -12,13 +12,49 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 40px;
+            padding: 30px;
             color: #333;
-            scroll-behavior: smooth; /* Native smooth scroll */
+            min-height: 100vh;
         }
         
-        input, button, .tab-btn, .mode-selector label, h2, h3, h4, .sub-header, li, p {
+        input, button, .tab-btn, .mode-selector label, h1, h2, h3, h4, .sub-header, li, p {
             font-family: Arial, sans-serif;
+        }
+
+        /* --- HEADER SECTION --- */
+        .main-header {
+            width: 100%;
+            max-width: 1100px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 25px;
+            margin-bottom: 10px;
+            border-bottom: none;
+        }
+
+        .header-logo img {
+            height: 50px;
+            width: auto;
+            display: block;
+        }
+
+        .header-titles {
+            text-align: right;
+        }
+
+        .header-title-en {
+            color: #FF6727; /* KEEP ORANGE */
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            letter-spacing: -0.5px;
+        }
+
+        .header-title-th {
+            color: #63666F; /* Dark Grey */
+            font-size: 16px;
+            font-weight: 400;
         }
 
         /* --- MAIN CONTAINER --- */
@@ -55,13 +91,12 @@
             transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             z-index: 1000;
             animation: floatBounce 3s infinite ease-in-out;
-            text-decoration: none; /* For anchor tag look */
         }
 
         .float-guide-btn:hover {
             transform: translateY(-5px) scale(1.05);
             box-shadow: 0 8px 20px rgba(140, 112, 77, 0.6);
-            animation: none; /* Stop bounce on hover */
+            animation: none;
         }
 
         .float-guide-btn .icon-bubble {
@@ -87,7 +122,7 @@
             display: flex;
             flex-direction: column;
             gap: 10px;
-            scroll-margin-top: 20px; /* Offset for scrolling */
+            scroll-margin-top: 20px;
         }
 
         .guide-header-row {
@@ -99,7 +134,7 @@
             margin-bottom: 20px;
             border-bottom: 2px solid #C8B273;
             padding-bottom: 10px;
-            scroll-margin-top: 60px; /* Space when scrolled to */
+            scroll-margin-top: 40px;
         }
 
         .guide-section-title {
@@ -209,7 +244,9 @@
         .input-section { flex: 1; min-width: 320px; border-right: 1px solid #ddd; padding-right: 30px; }
         .preview-section { flex: 1.5; min-width: 320px; display: flex; flex-direction: column; }
         
-        h2 { margin-top: 0; color: #FF6727; margin-bottom: 5px; font-size: 24px; }
+        /* Updated inner H2 style to GOLD #8C704D */
+        .container h2 { margin-top: 0; color: #8C704D; margin-bottom: 5px; font-size: 22px; }
+        
         .sub-header { font-size: 14px; color: #777; margin-bottom: 20px; font-weight: 400; }
         
         .input-section h3 { 
@@ -287,16 +324,38 @@
         #previewDesktop, #previewMobile { display: none; }
         #previewDesktop.active, #previewMobile.active { display: block; animation: fadeIn 0.5s cubic-bezier(0.25, 0.8, 0.25, 1); }
 
+        /* --- FOOTER SECTION --- */
+        .app-footer {
+            margin-top: 30px;
+            color: #989AA5;
+            font-size: 13px;
+            text-align: center;
+            width: 100%;
+            padding-bottom: 20px;
+        }
+
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         @media (max-width: 768px) {
             .container { flex-direction: column; }
             .input-section { border-right: none; padding-right: 0; border-bottom: 1px solid #ddd; padding-bottom: 20px; }
             .float-guide-btn { bottom: 20px; right: 20px; padding: 10px 20px; font-size: 12px; }
+            .main-header { flex-direction: column; gap: 15px; align-items: flex-start; }
+            .header-titles { text-align: left; }
         }
     </style>
 </head>
 <body>
+
+<header class="main-header">
+    <div class="header-logo">
+        <img src="https://static-portal.bgrimm.io/public/logo/B.Grimm%20Logo.png" alt="B.Grimm Logo">
+    </div>
+    <div class="header-titles">
+        <div class="header-title-en">Email Signature Generator</div>
+        <div class="header-title-th">เครื่องมือสร้างลายเซ็นอีเมล</div>
+    </div>
+</header>
 
 <button class="float-guide-btn" onclick="scrollToGuide()">
     <span class="icon-bubble">?</span>
@@ -306,7 +365,7 @@
 
 <div class="container">
     <div class="input-section">
-        <h2>Create Email Signature</h2>
+        <h2>Enter Your Information</h2>
         <div class="sub-header">กรอกข้อมูลพนักงานหรือหน่วยงาน (Fill in your information)</div>
 
         <div class="mode-selector">
@@ -593,6 +652,10 @@
     </div>
 
 </div>
+
+<footer class="app-footer">
+    © 2026 B.Grimm, Digital and Energy Solutions
+</footer>
 
 <script>
     // --- SCROLL TO GUIDE + AUTO OPEN ---
