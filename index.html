@@ -5,21 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>B.Grimm Signature Generator</title>
     <style>
-        /* --- 1. GLOBAL FONT: ARIAL --- */
+        /* --- GLOBAL SETTINGS --- */
         body {
-            font-family: Arial, sans-serif; /* เปลี่ยนเป็น Arial ทั้งหมด */
+            font-family: Arial, sans-serif;
             background-color: #f0f2f5;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
+            align-items: center;
             padding: 40px;
             color: #333;
         }
         
-        /* Ensure inputs and buttons inherit Arial */
-        input, button, .tab-btn, .mode-selector label, h2, h3, .sub-header {
+        input, button, .tab-btn, .mode-selector label, h2, h3, h4, .sub-header, li, p {
             font-family: Arial, sans-serif;
         }
 
+        /* --- MAIN CONTAINER --- */
         .container {
             display: flex;
             gap: 30px;
@@ -30,114 +31,148 @@
             max-width: 1100px;
             width: 100%;
             flex-wrap: wrap;
+            margin-bottom: 40px;
         }
-        .input-section {
-            flex: 1;
-            min-width: 320px;
-            border-right: 1px solid #ddd;
-            padding-right: 30px;
+
+        /* --- GUIDE CONTAINER (Accordion Style) --- */
+        .guide-section-title {
+            width: 100%;
+            max-width: 1100px;
+            margin-bottom: 20px;
+            color: #8C704D;
+            font-size: 20px;
+            font-weight: 700;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #C8B273;
         }
-        .preview-section {
-            flex: 1.5;
-            min-width: 320px;
+
+        .guide-container {
+            max-width: 1100px;
+            width: 100%;
             display: flex;
             flex-direction: column;
+            gap: 10px;
         }
+
+        /* Accordion Button */
+        .accordion {
+            background-color: #fff;
+            color: #63666F;
+            cursor: pointer;
+            padding: 18px 25px;
+            width: 100%;
+            border: 1px solid #e0e0e0;
+            text-align: left;
+            outline: none;
+            font-size: 16px;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+        }
+
+        .accordion:hover {
+            color: #8C704D;
+            border-color: #C8B273;
+            background-color: #fffbf5;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        .accordion.active {
+            background-color: #fff;
+            color: #8C704D;
+            border-color: #8C704D;
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+            box-shadow: 0 4px 10px rgba(140, 112, 77, 0.1);
+        }
+
+        .accordion .icon {
+            font-size: 12px;
+            color: #989AA5;
+            transition: transform 0.3s ease;
+        }
+        
+        .accordion.active .icon {
+            transform: rotate(180deg);
+            color: #8C704D;
+        }
+
+        /* Accordion Panel */
+        .panel {
+            padding: 0 25px;
+            background-color: white;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+            border-radius: 0 0 10px 10px;
+            border: 1px solid #8C704D;
+            border-top: none;
+            margin-top: -10px;
+            margin-bottom: 5px;
+            opacity: 0;
+            transform: translateY(-5px);
+            transition: all 0.3s ease;
+        }
+
+        .panel.show {
+            padding: 25px;
+            max-height: 1000px;
+            opacity: 1;
+            transform: translateY(0);
+            margin-bottom: 15px;
+        }
+
+        .panel p { font-size: 14px; color: #63666F; line-height: 1.6; margin-bottom: 10px; }
+        .panel ul, .panel ol { padding-left: 20px; color: #63666F; font-size: 14px; line-height: 1.8; }
+        .panel li { margin-bottom: 5px; }
+        .panel strong { color: #8C704D; }
+        .panel code { background: #f5f5f5; padding: 2px 6px; border-radius: 4px; color: #333; font-family: monospace; border: 1px solid #989AA5; }
+        .panel em { color: #989AA5; font-size: 13px; font-style: italic; }
+
+
+        /* --- TOOL STYLES --- */
+        .input-section { flex: 1; min-width: 320px; border-right: 1px solid #ddd; padding-right: 30px; }
+        .preview-section { flex: 1.5; min-width: 320px; display: flex; flex-direction: column; }
         
         h2 { margin-top: 0; color: #FF6727; margin-bottom: 5px; font-size: 24px; }
         .sub-header { font-size: 14px; color: #777; margin-bottom: 20px; font-weight: 400; }
         
-        h3 { 
-            margin: 15px 0 10px; 
-            font-size: 15px; 
-            color: #8C704D; 
-            border-bottom: 1px solid #eee; 
-            padding-bottom: 5px; 
-            font-weight: 700;
+        .input-section h3 { 
+            margin: 15px 0 10px; font-size: 15px; color: #8C704D; 
+            border-bottom: 1px solid #eee; padding-bottom: 5px; font-weight: 700;
         }
         
         .form-group { margin-bottom: 12px; position: relative; }
         label { display: block; margin-bottom: 5px; font-weight: 700; font-size: 13px; color: #666; }
         
         input {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            font-size: 14px;
-            box-sizing: border-box;
-            transition: all 0.3s ease;
+            width: 100%; padding: 10px; border: 1px solid #ccc;
+            border-radius: 8px; font-size: 14px; box-sizing: border-box; transition: all 0.3s ease;
         }
-        input:focus { 
-            border-color: #C8B273; 
-            box-shadow: 0 0 0 3px rgba(200, 178, 115, 0.2); 
-            outline: none; 
-        }
+        input:focus { border-color: #C8B273; box-shadow: 0 0 0 3px rgba(200, 178, 115, 0.2); outline: none; }
         
-        /* ======== MODERN TABS STYLE ======== */
         .mode-selector, .preview-tabs {
-            display: flex;
-            background: #f5f5f5;
-            padding: 6px;
-            border-radius: 12px;
-            margin-bottom: 25px;
-            gap: 8px;
+            display: flex; background: #f5f5f5; padding: 6px;
+            border-radius: 12px; margin-bottom: 25px; gap: 8px;
         }
-
-        .mode-selector label {
-            flex: 1;
-            text-align: center;
-            padding: 10px;
-            cursor: pointer;
-            border-radius: 8px;
-            margin: 0;
-            font-size: 14px;
-            color: #666;
-            font-weight: 400 !important; /* Not bold */
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            border: 1px solid transparent;
+        .mode-selector label, .tab-btn {
+            flex: 1; text-align: center; padding: 10px; cursor: pointer;
+            border-radius: 8px; margin: 0; font-size: 14px; color: #666;
+            font-weight: 400 !important; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            border: 1px solid transparent; background: transparent;
         }
-        
-        .mode-selector input:not(:checked) + label:hover {
-            color: #8C704D;
-            background-color: rgba(140, 112, 77, 0.05);
+        .mode-selector input:not(:checked) + label:hover, .tab-btn:not(.active):hover {
+            color: #8C704D; background-color: rgba(140, 112, 77, 0.05);
         }
-
         .mode-selector input { display: none; }
-        
-        .mode-selector input:checked + label {
-            background-color: #8C704D;
-            color: white;
-            box-shadow: 0 4px 12px rgba(140, 112, 77, 0.3);
-            transform: translateY(-1px);
-        }
-
-        .tab-btn {
-            flex: 1;
-            text-align: center;
-            padding: 10px;
-            cursor: pointer;
-            border-radius: 8px;
-            margin: 0;
-            font-size: 14px;
-            color: #666;
-            border: 1px solid transparent;
-            background: transparent;
-            font-family: inherit;
-            font-weight: 400; /* Not bold */
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-        }
-
-        .tab-btn:not(.active):hover {
-            color: #8C704D;
-            background-color: rgba(140, 112, 77, 0.05);
-        }
-
-        .tab-btn.active {
-            background-color: #8C704D;
-            color: white;
-            box-shadow: 0 4px 12px rgba(140, 112, 77, 0.3);
-            transform: translateY(-1px);
+        .mode-selector input:checked + label, .tab-btn.active {
+            background-color: #8C704D; color: white;
+            box-shadow: 0 4px 12px rgba(140, 112, 77, 0.3); transform: translateY(-1px);
         }
 
         input.input-error { border-color: #dc3545 !important; background-color: #fff8f8; }
@@ -145,71 +180,40 @@
         .format-hint { font-size: 11px; color: #888; margin-top: 2px; }
         
         .signature-box {
-            border: 2px dashed #ccc;
-            padding: 20px;
-            margin-top: 10px;
-            border-radius: 12px;
-            background: #fff;
-            min-height: 200px;
+            border: 2px dashed #ccc; padding: 20px; margin-top: 10px;
+            border-radius: 12px; background: #fff; min-height: 200px;
         }
         .mobile-preview-container {
-            max-width: 320px; 
-            margin: 0 auto;
-            border: 1px solid #eee;
-            padding: 20px;
-            background: #fff;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            white-space: pre-wrap;
+            max-width: 320px; margin: 0 auto; border: 1px solid #eee;
+            padding: 20px; background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.05); white-space: pre-wrap;
         }
 
-        /* ======== MODERN TACTILE BUTTON ======== */
         .btn-copy {
             background: linear-gradient(180deg, #997b55 0%, #8C704D 100%);
-            color: white;
-            border: none;
-            padding: 14px 24px;
-            border-radius: 50px;
-            font-size: 15px;
-            cursor: pointer;
-            font-weight: 700;
-            margin-top: 20px;
-            width: 100%;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            color: white; border: none; padding: 14px 24px;
+            border-radius: 50px; font-size: 15px; cursor: pointer;
+            font-weight: 700; margin-top: 20px; width: 100%;
+            text-transform: uppercase; letter-spacing: 1px;
             box-shadow: 0 4px 6px rgba(140, 112, 77, 0.2);
             transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
-            position: relative;
-            overflow: hidden;
+            position: relative; overflow: hidden;
         }
-
         .btn-copy:hover {
-            transform: translateY(-2px);
-            background: linear-gradient(180deg, #a3845c 0%, #967853 100%);
+            transform: translateY(-2px); background: linear-gradient(180deg, #a3845c 0%, #967853 100%);
             box-shadow: 0 8px 15px rgba(140, 112, 77, 0.35);
         }
-
-        .btn-copy:active {
-            transform: translateY(1px) scale(0.98);
-            box-shadow: 0 2px 4px rgba(140, 112, 77, 0.2);
-        }
-        
+        .btn-copy:active { transform: translateY(1px) scale(0.98); box-shadow: 0 2px 4px rgba(140, 112, 77, 0.2); }
         .btn-copy::after {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: linear-gradient(rgba(255,255,255,0.1), rgba(255,255,255,0));
-            opacity: 0;
-            transition: opacity 0.2s;
+            opacity: 0; transition: opacity 0.2s;
         }
         .btn-copy:hover::after { opacity: 1; }
 
         .note { font-size: 12px; color: #666; margin-top: 10px; background: #fff3cd; padding: 10px; border-radius: 4px; text-align: center; }
-        
         .form-container { display: none; }
         .form-container.active { display: block; animation: fadeIn 0.5s cubic-bezier(0.25, 0.8, 0.25, 1); }
-        
         #contactSection { animation: fadeIn 0.6s cubic-bezier(0.25, 0.8, 0.25, 1); }
-
         #previewDesktop, #previewMobile { display: none; }
         #previewDesktop.active, #previewMobile.active { display: block; animation: fadeIn 0.5s cubic-bezier(0.25, 0.8, 0.25, 1); }
 
@@ -304,7 +308,6 @@
             <div id="previewDesktop" class="active">
                 
                 <style>
-                    /* Inline styles for signature links to ensure correct behavior when copied */
                     a.sig-link { color:#63666F; text-decoration:none; }
                     a.sig-link:hover { color: #FF6727 !important; text-decoration: underline !important; }
                 </style>
@@ -388,7 +391,106 @@
     </div>
 </div>
 
+<h2 class="guide-section-title">คู่มือการตั้งค่า (Installation Guide)</h2>
+<div class="guide-container">
+    
+    <button class="accordion">1. Microsoft Outlook (Desktop) <span class="icon">▼</span></button>
+    <div class="panel">
+        <p><em>เหมาะสำหรับผู้ที่ใช้ Outlook App บน Windows หรือ Mac</em></p>
+        <ol>
+            <li>เปิดโปรแกรม Outlook</li>
+            <li>คลิกที่เมนู <strong>File (ไฟล์)</strong> > <strong>Options (ตัวเลือก)</strong></li>
+            <li>เลือกแถบ <strong>Mail (จดหมาย)</strong> และคลิกปุ่ม <strong>Signatures... (ลายเซ็น...)</strong></li>
+            <li>กดปุ่ม <strong>New (ใหม่)</strong> เพื่อสร้างลายเซ็นใหม่ ตั้งชื่อว่า <strong>"B.Grimm"</strong></li>
+            <li>ในช่องว่างด้านล่าง ให้คลิกขวาแล้วเลือก <strong>Paste (วาง)</strong> หรือกด <code>Ctrl + V</code></li>
+            <li><strong>สำคัญ:</strong> ที่ส่วน <strong>Choose default signature (เลือกลายเซ็นเริ่มต้น)</strong> ด้านขวา
+                <ul>
+                    <li>New messages (ข้อความใหม่): เลือก <strong>"B.Grimm"</strong></li>
+                    <li>Replies/forwards (การตอบกลับ/ส่งต่อ): เลือก <strong>"B.Grimm"</strong></li>
+                </ul>
+            </li>
+            <li>กด <strong>OK</strong> เพื่อบันทึก</li>
+        </ol>
+    </div>
+
+    <button class="accordion">2. Outlook on the Web <span class="icon">▼</span></button>
+    <div class="panel">
+        <p><em>เหมาะสำหรับผู้ที่เช็คอีเมลผ่าน Microsoft 365 บน Chrome/Edge</em></p>
+        <ol>
+            <li>เข้าไปที่หน้าอีเมล Outlook บนเว็บ</li>
+            <li>คลิกไอคอน <strong>Settings (รูปฟันเฟือง ⚙️)</strong> มุมขวาบน</li>
+            <li>ไปที่ <strong>Mail (จดหมาย)</strong> > <strong>Compose and reply (เขียนและตอบกลับ)</strong></li>
+            <li>คลิกปุ่ม <strong>+ New signature (ลายเซ็นใหม่)</strong> ตั้งชื่อว่า <strong>"B.Grimm"</strong></li>
+            <li>คลิกขวาในกล่องข้อความแล้วเลือก <strong>Paste (วาง)</strong> หรือกด <code>Ctrl + V</code></li>
+            <li>เลื่อนลงมาที่หัวข้อ <strong>Select default signatures (เลือกลายเซ็นเริ่มต้น)</strong>
+                <ul>
+                    <li>For New messages: เลือก <strong>"B.Grimm"</strong></li>
+                    <li>For Replies/Forwards: เลือก <strong>"B.Grimm"</strong></li>
+                </ul>
+            </li>
+            <li>กดปุ่ม <strong>Save (บันทึก)</strong></li>
+        </ol>
+    </div>
+
+    <button class="accordion">3. Google Workspace (Gmail) <span class="icon">▼</span></button>
+    <div class="panel">
+        <p><em>เหมาะสำหรับผู้ที่ใช้งาน Gmail องค์กร</em></p>
+        <ol>
+            <li>เข้าไปที่ Gmail</li>
+            <li>คลิกไอคอน <strong>Settings (รูปฟันเฟือง ⚙️)</strong> มุมขวาบน > เลือก <strong>See all settings (ดูการตั้งค่าทั้งหมด)</strong></li>
+            <li>เลื่อนลงมาหาหัวข้อ <strong>Signature (ลายเซ็น)</strong></li>
+            <li>คลิก <strong>+ Create new (สร้างใหม่)</strong> ตั้งชื่อว่า <strong>"B.Grimm"</strong> แล้วกด Create</li>
+            <li>คลิกขวาในกล่องข้อความด้านขวา แล้วเลือก <strong>Paste (วาง)</strong> หรือกด <code>Ctrl + V</code></li>
+            <li>เลื่อนลงมาที่หัวข้อ <strong>Signature defaults (ค่าเริ่มต้นของลายเซ็น)</strong>
+                <ul>
+                    <li>For new emails use: เลือก <strong>"B.Grimm"</strong></li>
+                    <li>On reply/forward use: เลือก <strong>"B.Grimm"</strong></li>
+                </ul>
+            </li>
+            <li>เลื่อนลงไปล่างสุดของหน้า แล้วกดปุ่ม <strong>Save Changes (บันทึกการเปลี่ยนแปลง)</strong></li>
+        </ol>
+    </div>
+
+    <button class="accordion">4. Mobile (iOS / Android) <span class="icon">▼</span></button>
+    <div class="panel">
+        <p>หากต้องการตั้งค่าในมือถือ ให้ทำดังนี้:</p>
+        <ol>
+            <li>ในเครื่องมือสร้างลายเซ็น ให้กดเลือก Tab <strong>"📱 Mobile (Plain Text)"</strong> ด้านบน</li>
+            <li>กดปุ่ม <strong>COPY TO CLIPBOARD</strong></li>
+            <li>ไปที่การตั้งค่าลายเซ็นในแอปมือถือของคุณ (Outlook App หรือ iOS Mail)</li>
+            <li>วางข้อความที่คัดลอกลงไป (รูปแบบ Mobile จะไม่มีรูปภาพ เพื่อให้อ่านง่ายและไม่เปลืองดาต้า)</li>
+        </ol>
+    </div>
+
+    <div style="background:#fffbf5; border:1px solid #C8B273; padding:15px; border-radius:10px; margin-top:10px; display:flex; align-items:flex-start; gap:10px;">
+        <span style="font-size:20px;">⚠️</span>
+        <div style="font-size:14px; color:#63666F; line-height:1.6;">
+            <strong style="color:#8C704D;">หากพบปัญหา:</strong>
+            <ul style="margin:5px 0 0 20px; padding:0; color:#63666F;">
+                <li><strong>รูปไม่ขึ้น:</strong> ลองกด Copy และ Paste ใหม่อีกครั้ง หรือตรวจสอบการเชื่อมต่ออินเทอร์เน็ต</li>
+                <li><strong>ฟอนต์เพี้ยน:</strong> ระบบถูกตั้งค่าให้ใช้ฟอนต์ Arial เป็นมาตรฐาน หากนำไปวางแล้วฟอนต์เปลี่ยน ให้ลองกดวางแบบ "Keep Source Formatting" (รักษารูปแบบต้นฉบับ)</li>
+            </ul>
+        </div>
+    </div>
+
+</div>
+
 <script>
+    // --- ACCORDION LOGIC ---
+    var acc = document.getElementsByClassName("accordion");
+    for (var i = 0; i < acc.length; i++) {
+        acc[i].addEventListener("click", function() {
+            this.classList.toggle("active");
+            var panel = this.nextElementSibling;
+            if (panel.classList.contains('show')) {
+                panel.classList.remove('show');
+            } else {
+                panel.classList.add('show');
+            }
+        });
+    }
+
+    // --- MAIN APP LOGIC ---
     let currentTab = 'desktop';
 
     function switchTab(tab) {
