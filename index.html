@@ -37,14 +37,13 @@
             flex-direction: column;
         }
         
-        /* --- REVERTED TO ORANGE BRAND COLOR --- */
         h2 { margin-top: 0; color: #FF6727; margin-bottom: 5px; font-size: 24px; }
         .sub-header { font-size: 14px; color: #777; margin-bottom: 20px; font-weight: 400; }
         
         h3 { 
             margin: 15px 0 10px; 
             font-size: 15px; 
-            color: #444; /* กลับมาใช้สีเข้มมาตรฐาน หรือจะใช้สีส้มก็ได้ แต่สีเข้มอ่านง่ายกว่าสำหรับหัวข้อ */
+            color: #8C704D; 
             border-bottom: 1px solid #eee; 
             padding-bottom: 5px; 
             font-weight: 700;
@@ -52,75 +51,93 @@
         
         .form-group { margin-bottom: 12px; position: relative; }
         label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 13px; color: #666; }
+        
         input {
             width: 100%;
             padding: 10px;
             border: 1px solid #ccc;
-            border-radius: 6px;
+            border-radius: 8px; /* ปรับมนขึ้นเล็กน้อยให้ดู modern */
             font-size: 14px;
             box-sizing: border-box;
-            transition: border-color 0.3s;
+            transition: all 0.3s ease;
         }
-        input:focus { border-color: #FF6727; outline: none; }
+        input:focus { 
+            border-color: #C8B273; 
+            box-shadow: 0 0 0 3px rgba(200, 178, 115, 0.2); /* เพิ่ม Focus ring สวยๆ */
+            outline: none; 
+        }
         
-        /* Mode Selector - ORANGE */
-        .mode-selector {
+        /* ======== MODERN TABS STYLE ======== */
+        .mode-selector, .preview-tabs {
             display: flex;
-            background: #eee;
-            padding: 5px;
-            border-radius: 8px;
+            background: #f5f5f5; /* สีพื้นหลัง Tab จางลง */
+            padding: 6px; /* เพิ่มพื้นที่หายใจ */
+            border-radius: 12px; /* ความมนแบบสมัยใหม่ */
             margin-bottom: 25px;
+            gap: 8px; /* เว้นระยะห่างระหว่างปุ่ม */
         }
+
+        /* --- Mode Selector Items --- */
         .mode-selector label {
             flex: 1;
             text-align: center;
             padding: 10px;
             cursor: pointer;
-            border-radius: 6px;
+            border-radius: 8px;
             margin: 0;
             font-size: 14px;
-            transition: all 0.2s;
-            color: #555;
-            font-weight: 400 !important;
+            color: #666;
+            font-weight: 500 !important; /* น้ำหนักกลางๆ ดูดีกว่าบางเกินไป */
+            
+            /* Modern Transition */
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            border: 1px solid transparent;
         }
-        .mode-selector label:hover { background-color: rgba(255,255,255,0.5); }
-        .mode-selector input { display: none; }
-        .mode-selector input:checked + label {
-            background-color: #FF6727; /* Orange */
-            color: white;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-            font-weight: 400 !important;
+        
+        .mode-selector input:not(:checked) + label:hover {
+            color: #8C704D;
+            background-color: rgba(140, 112, 77, 0.05);
         }
 
-        /* Tabs - ORANGE */
-        .preview-tabs {
-            display: flex;
-            background: #eee;
-            padding: 5px;
-            border-radius: 8px;
-            margin-bottom: 20px;
+        .mode-selector input { display: none; }
+        
+        /* Active State: Clean, Shadowed, Pop */
+        .mode-selector input:checked + label {
+            background-color: #8C704D;
+            color: white;
+            box-shadow: 0 4px 12px rgba(140, 112, 77, 0.3); /* เงาฟุ้งแบบ Soft UI */
+            transform: translateY(-1px); /* ลอยขึ้นนิดเดียว */
         }
+
+        /* --- Preview Tabs Items (Same Logic) --- */
         .tab-btn {
             flex: 1;
             text-align: center;
             padding: 10px;
             cursor: pointer;
-            border-radius: 6px;
+            border-radius: 8px;
             margin: 0;
             font-size: 14px;
-            transition: all 0.2s;
-            color: #555;
-            border: none;
+            color: #666;
+            border: 1px solid transparent;
             background: transparent;
             font-family: inherit;
-            font-weight: 400;
+            font-weight: 500;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
-        .tab-btn:hover { background-color: rgba(255,255,255,0.5); }
+
+        .tab-btn:not(.active):hover {
+            color: #8C704D;
+            background-color: rgba(140, 112, 77, 0.05);
+        }
+
         .tab-btn.active {
-            background-color: #FF6727; /* Orange */
+            background-color: #8C704D;
             color: white;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 12px rgba(140, 112, 77, 0.3);
+            transform: translateY(-1px);
         }
+        /* =================================== */
 
         input.input-error { border-color: #dc3545 !important; background-color: #fff8f8; }
         .warning-msg { color: #dc3545; font-size: 12px; margin-top: 4px; display: none; font-weight: 600; }
@@ -130,7 +147,7 @@
             border: 2px dashed #ccc;
             padding: 20px;
             margin-top: 10px;
-            border-radius: 8px;
+            border-radius: 12px;
             background: #fff;
             min-height: 200px;
         }
@@ -144,39 +161,58 @@
             white-space: pre-wrap;
         }
 
-        /* ======== SPECIAL BUTTON STYLE (GOLD GRADIENT ONLY HERE) ======== */
+        /* ======== MODERN TACTILE BUTTON ======== */
         .btn-copy {
-            /* Gradient using #8C704D and #C8B273 */
-            background-image: linear-gradient(45deg, #8C704D 0%, #C8B273 51%, #8C704D 100%);
-            background-size: 200% auto;
-            
+            /* Solid gradient-like appearance but cleaner */
+            background: linear-gradient(180deg, #997b55 0%, #8C704D 100%);
             color: white;
             border: none;
-            padding: 12px 24px;
-            border-radius: 25px;
-            font-size: 14px;
+            
+            padding: 14px 24px;
+            border-radius: 50px; /* Full rounded */
+            font-size: 15px;
             cursor: pointer;
-            font-weight: 700;
+            font-weight: 600;
             margin-top: 20px;
             width: 100%;
-            
-            transition: 0.5s all ease-in-out;
-            
-            /* Shadow color matching the gold tone */
-            box-shadow: 0 3px 10px rgba(140, 112, 77, 0.3);
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 1px;
+            
+            /* Initial Shadow */
+            box-shadow: 0 4px 6px rgba(140, 112, 77, 0.2);
+            
+            /* The Animation Magic */
+            transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: relative;
+            overflow: hidden;
         }
+
+        /* Hover: Lift and Glow */
         .btn-copy:hover {
-            background-position: right center;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(140, 112, 77, 0.5);
+            transform: translateY(-2px); /* Lift */
+            background: linear-gradient(180deg, #a3845c 0%, #967853 100%); /* Slightly lighter */
+            box-shadow: 0 8px 15px rgba(140, 112, 77, 0.35); /* Deeper shadow */
         }
+
+        /* Active: Press Down (Tactile Feel) */
         .btn-copy:active {
-            transform: translateY(1px);
-            box-shadow: 0 2px 5px rgba(140, 112, 77, 0.3);
+            transform: translateY(1px) scale(0.98); /* Press down and shrink slightly */
+            box-shadow: 0 2px 4px rgba(140, 112, 77, 0.2); /* Smaller shadow */
         }
-        /* ============================================================== */
+        
+        /* Subtle Shine Effect */
+        .btn-copy::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(rgba(255,255,255,0.1), rgba(255,255,255,0));
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .btn-copy:hover::after {
+            opacity: 1;
+        }
+        /* ======================================= */
 
         .note { font-size: 12px; color: #666; margin-top: 10px; background: #fff3cd; padding: 10px; border-radius: 4px; text-align: center; }
         .form-container { display: none; }
@@ -272,11 +308,6 @@
         <div class="signature-box" id="signatureBox">
             
             <div id="previewDesktop" class="active">
-                
-                <style>
-                    a.sig-link:hover { color: #FF6727 !important; text-decoration: underline !important; }
-                </style>
-
                 <div style="font-family:Arial, Helvetica, sans-serif; font-size:12px; color:#63666F; margin-bottom: 10px;">--</div>
 
                 <table cellpadding="0" cellspacing="0" border="0" style="font-family:Arial, Helvetica, sans-serif; font-size:12px; color:#63666F;">
@@ -321,7 +352,6 @@
                       <img src="https://static-portal.bgrimm.io/public/logo/B.Grimm%20Logo.png" width="120" border="0" alt="B.Grimm Power Public Company Limited" style="display:block;">
                     </td>
                   </tr>
-                  
                   <tr>
                     <td style="padding-bottom:4px; font-family:Arial;">
                       <strong style="color:#FF6727; font-family:Arial;">
@@ -329,13 +359,11 @@
                       </strong>
                     </td>
                   </tr>
-
                   <tr>
                     <td style="padding-bottom:4px; line-height:1.2; font-family:Arial;">
                       Dr. Gerhard Link Building, 5 Krungthepkreetha Road, Bangkok 10240, Thailand
                     </td>
                   </tr>
-
                   <tr>
                     <td style="font-family:Arial;">
                       <a href="https://www.bgrimmpower.com" class="sig-link" style="color:#63666F; text-decoration:none; font-family:Arial;">
