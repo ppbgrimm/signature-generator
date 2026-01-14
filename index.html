@@ -364,6 +364,7 @@
             margin-bottom: 15px;
         }
 
+        .panel h4 { color: #8C704D; margin: 15px 0 5px; font-size: 15px; } /* Added for new guide headers */
         .panel p { font-size: 14px; color: #63666F; line-height: 1.6; margin-bottom: 10px; }
         .panel ul, .panel ol { padding-left: 20px; color: #63666F; font-size: 14px; line-height: 1.8; }
         .panel li { margin-bottom: 5px; }
@@ -606,11 +607,11 @@
             </div>
             <div class="form-group">
                 <label>แผนก/ส่วนงาน (Section/Solutions)</label>
-                <input type="text" id="pDept" placeholder="Digital Project Office" oninput="updateSig()">
+                <input type="text" id="pDept" placeholder="ถ้าว่างจะซ่อน" oninput="updateSig()">
             </div>
             <div class="form-group">
                 <label>ฝ่าย (Department)</label>
-                <input type="text" id="pMainDept" placeholder="Digital and Energy Solutions" oninput="updateSig()">
+                <input type="text" id="pMainDept" placeholder="ถ้าว่างจะซ่อน" oninput="updateSig()">
             </div>
         </div>
 
@@ -624,7 +625,7 @@
             </div>
             <div class="form-group">
                 <label>ชื่อหน่วยงาน ภาษาไทย (Dept Name - TH)</label>
-                <input type="text" id="dNameTh" placeholder="แผนกทรัพยากรบุคคล (ถ้าว่างจะซ่อน)" oninput="updateSig()">
+                <input type="text" id="dNameTh" placeholder="ถ้าว่างจะซ่อน" oninput="updateSig()">
                 <span id="checkDeptTh" class="valid-icon">✓</span>
                 <div id="warnDeptTh" class="warning-msg"></div>
             </div>
@@ -642,14 +643,14 @@
                 <label>เบอร์มือถือ (Mobile)</label>
                 <input type="text" id="inputMobile" placeholder="0899999999" oninput="updateSig()" maxlength="10">
                 <span id="checkMobile" class="valid-icon">✓</span>
-                <div class="format-hint">พิมพ์ 10 หลัก (ไม่ต้องใส่ขีด/ไม่ต้องใส่ +66)</div>
+                <div class="format-hint">พิมพ์ 10 หลัก (ไม่ต้องใส่ขีด)</div>
                 <div id="warnMobile" class="warning-msg"></div>
             </div>
             <div class="form-group">
                 <label>เบอร์โทรศัพท์ (Telephone)</label>
                 <input type="text" id="inputTel" placeholder="029999999" oninput="updateSig()" maxlength="9">
                 <span id="checkTel" class="valid-icon">✓</span>
-                <div class="format-hint">พิมพ์ 9 หลัก (ไม่ต้องใส่ขีด/ไม่ต้องใส่ +66)</div>
+                <div class="format-hint">พิมพ์ 9 หลัก (ไม่ต้องใส่ขีด)</div>
                 <div id="warnTel" class="warning-msg"></div>
             </div>
         </div>
@@ -705,23 +706,75 @@
 
 <div class="guide-container">
     <button class="accordion" id="acc-item-1">
-        <span data-lang="th">1. Microsoft Outlook (Desktop)</span>
-        <span data-lang="en">1. Microsoft Outlook (Desktop)</span>
+        <span data-lang="th">1. Microsoft Outlook (Desktop App)</span>
+        <span data-lang="en">1. Microsoft Outlook (Desktop App)</span>
         <span class="icon">▼</span>
     </button>
     <div class="panel">
-        <div data-lang="th"><p><em>เหมาะสำหรับผู้ที่ใช้ Outlook App บน Windows หรือ Mac</em></p><ol><li>เปิดโปรแกรม Outlook</li><li>คลิกที่เมนู <strong>File (ไฟล์)</strong> > <strong>Options (ตัวเลือก)</strong></li><li>เลือกแถบ <strong>Mail (จดหมาย)</strong> และคลิกปุ่ม <strong>Signatures... (ลายเซ็น...)</strong></li><li>กดปุ่ม <strong>New (ใหม่)</strong> เพื่อสร้างลายเซ็นใหม่ ตั้งชื่อว่า <strong>"B.Grimm"</strong></li><li>ในช่องว่างด้านล่าง ให้คลิกขวาแล้วเลือก <strong>Paste (วาง)</strong> หรือกด <code>Ctrl + V</code></li><li><strong>สำคัญ:</strong> ที่ส่วน <strong>Choose default signature (เลือกลายเซ็นเริ่มต้น)</strong> ด้านขวา<ul><li>New messages (ข้อความใหม่): เลือก <strong>"B.Grimm"</strong></li><li>Replies/forwards (การตอบกลับ/ส่งต่อ): เลือก <strong>"B.Grimm"</strong></li></ul></li><li>กด <strong>OK</strong> เพื่อบันทึก</li></ol></div>
-        <div data-lang="en"><p><em>Suitable for Outlook App on Windows or Mac</em></p><ol><li>Open Outlook.</li><li>Click <strong>File</strong> > <strong>Options</strong>.</li><li>Select the <strong>Mail</strong> tab and click <strong>Signatures...</strong></li><li>Click <strong>New</strong> to create a signature, name it <strong>"B.Grimm"</strong>.</li><li>In the text box below, right-click and select <strong>Paste</strong> or press <code>Ctrl + V</code>.</li><li><strong>Important:</strong> Under <strong>Choose default signature</strong> on the right:<ul><li>New messages: Select <strong>"B.Grimm"</strong></li><li>Replies/forwards: Select <strong>"B.Grimm"</strong></li></ul></li><li>Click <strong>OK</strong> to save.</li></ol></div>
+        <div data-lang="th">
+            <h4>สำหรับ New Outlook (เวอร์ชันล่าสุด)</h4>
+            <ol>
+                <li>คลิกไอคอน <strong>Settings (รูปฟันเฟือง ⚙️)</strong> ที่มุมขวาบนของหน้าต่าง</li>
+                <li>ไปที่เมนู <strong>Accounts</strong> > <strong>Signatures</strong></li>
+                <li>คลิกปุ่ม <strong>+ New Signature</strong> และตั้งชื่อว่า "B.Grimm"</li>
+                <li>ในกล่องข้อความ ให้กด <code>Ctrl + V</code> เพื่อวางลายเซ็น</li>
+                <li>ที่หัวข้อ <strong>Select default signatures</strong> เลือก "B.Grimm" ทั้งสำหรับข้อความใหม่และการตอบกลับ</li>
+                <li>กด <strong>Save</strong> เพื่อบันทึก</li>
+            </ol>
+            <h4>สำหรับ Classic Outlook</h4>
+            <ol>
+                <li>ไปที่เมนู <strong>File</strong> > <strong>Options</strong> > <strong>Mail</strong></li>
+                <li>คลิกปุ่ม <strong>Signatures...</strong></li>
+                <li>คลิก <strong>New</strong> ตั้งชื่อลายเซ็น แล้ววางข้อความลงในกล่องด้านล่าง</li>
+                <li>เลือกชื่อลายเซ็นในช่อง <strong>New messages</strong> และ <strong>Replies/forwards</strong></li>
+            </ol>
+        </div>
+        <div data-lang="en">
+            <h4>For New Outlook (Latest Version)</h4>
+            <ol>
+                <li>Click the <strong>Settings (Gear icon ⚙️)</strong> in the top right corner.</li>
+                <li>Go to <strong>Accounts</strong> > <strong>Signatures</strong>.</li>
+                <li>Click <strong>+ New Signature</strong> and name it "B.Grimm".</li>
+                <li>Paste the signature in the text box using <code>Ctrl + V</code>.</li>
+                <li>Under <strong>Select default signatures</strong>, choose "B.Grimm" for both new messages and replies.</li>
+                <li>Click <strong>Save</strong>.</li>
+            </ol>
+            <h4>For Classic Outlook</h4>
+            <ol>
+                <li>Go to <strong>File</strong> > <strong>Options</strong> > <strong>Mail</strong>.</li>
+                <li>Click the <strong>Signatures...</strong> button.</li>
+                <li>Click <strong>New</strong>, name it, and paste your signature into the box.</li>
+                <li>Select the signature name for <strong>New messages</strong> and <strong>Replies/forwards</strong>.</li>
+            </ol>
+        </div>
     </div>
 
     <button class="accordion">
-        <span data-lang="th">2. Outlook on the Web</span>
-        <span data-lang="en">2. Outlook on the Web</span>
+        <span data-lang="th">2. Outlook on the Web (Office 365)</span>
+        <span data-lang="en">2. Outlook on the Web (Office 365)</span>
         <span class="icon">▼</span>
     </button>
     <div class="panel">
-         <div data-lang="th"><p><em>เหมาะสำหรับผู้ที่เช็คอีเมลผ่าน Microsoft 365 บน Chrome/Edge</em></p><ol><li>เข้าไปที่หน้าอีเมล Outlook บนเว็บ</li><li>คลิกไอคอน <strong>Settings (รูปฟันเฟือง ⚙️)</strong> มุมขวาบน</li><li>ไปที่ <strong>Mail (จดหมาย)</strong> > <strong>Compose and reply (เขียนและตอบกลับ)</strong></li><li>คลิกปุ่ม <strong>+ New signature (ลายเซ็นใหม่)</strong> ตั้งชื่อว่า <strong>"B.Grimm"</strong></li><li>คลิกขวาในกล่องข้อความแล้วเลือก <strong>Paste (วาง)</strong> หรือกด <code>Ctrl + V</code></li><li>เลื่อนลงมาที่หัวข้อ <strong>Select default signatures (เลือกลายเซ็นเริ่มต้น)</strong><ul><li>For New messages: เลือก <strong>"B.Grimm"</strong></li><li>For Replies/Forwards: เลือก <strong>"B.Grimm"</strong></li></ul></li><li>กดปุ่ม <strong>Save (บันทึก)</strong></li></ol></div>
-         <div data-lang="en"><p><em>Suitable for Microsoft 365 via Chrome/Edge</em></p><ol><li>Go to Outlook on the web.</li><li>Click the <strong>Settings (gear icon ⚙️)</strong> at the top right.</li><li>Go to <strong>Mail</strong> > <strong>Compose and reply</strong>.</li><li>Click <strong>+ New signature</strong>, name it <strong>"B.Grimm"</strong>.</li><li>Right-click in the text box and select <strong>Paste</strong> or press <code>Ctrl + V</code>.</li><li>Scroll down to <strong>Select default signatures</strong>:<ul><li>For New messages: Select <strong>"B.Grimm"</strong></li><li>For Replies/Forwards: Select <strong>"B.Grimm"</strong></li></ul></li><li>Click <strong>Save</strong>.</li></ol></div>
+        <div data-lang="th">
+            <ol>
+                <li>ลงชื่อเข้าใช้ Outlook ผ่าน Web Browser</li>
+                <li>คลิกไอคอน <strong>Settings (รูปฟันเฟือง ⚙️)</strong> มุมขวาบน</li>
+                <li>ไปที่เมนู <strong>Mail</strong> > <strong>Compose and reply</strong></li>
+                <li>คลิก <strong>+ New signature</strong> และวางลายเซ็นที่คัดลอกมา</li>
+                <li><strong>สำคัญ:</strong> ตรวจสอบให้แน่ใจว่าเลือกใช้ลายเซ็นนี้เป็นค่าเริ่มต้นสำหรับข้อความใหม่และการตอบกลับ</li>
+                <li>กด <strong>Save</strong></li>
+            </ol>
+        </div>
+        <div data-lang="en">
+            <ol>
+                <li>Sign in to Outlook via your web browser.</li>
+                <li>Click the <strong>Settings (Gear icon ⚙️)</strong> in the top right corner.</li>
+                <li>Go to <strong>Mail</strong> > <strong>Compose and reply</strong>.</li>
+                <li>Click <strong>+ New signature</strong> and paste your copied signature.</li>
+                <li><strong>Important:</strong> Set it as the default for both New messages and Replies/Forwards.</li>
+                <li>Click <strong>Save</strong>.</li>
+            </ol>
+        </div>
     </div>
 
     <button class="accordion">
@@ -730,18 +783,54 @@
         <span class="icon">▼</span>
     </button>
     <div class="panel">
-        <div data-lang="th"><p><em>เหมาะสำหรับผู้ที่ใช้งาน Gmail องค์กร</em></p><ol><li>เข้าไปที่ Gmail</li><li>คลิกไอคอน <strong>Settings (รูปฟันเฟือง ⚙️)</strong> มุมขวาบน > เลือก <strong>See all settings (ดูการตั้งค่าทั้งหมด)</strong></li><li>เลื่อนลงมาหาหัวข้อ <strong>Signature (ลายเซ็น)</strong></li><li>คลิก <strong>+ Create new (สร้างใหม่)</strong> ตั้งชื่อว่า <strong>"B.Grimm"</strong> แล้วกด Create</li><li>คลิกขวาในกล่องข้อความด้านขวา แล้วเลือก <strong>Paste (วาง)</strong> หรือกด <code>Ctrl + V</code></li><li>เลื่อนลงมาที่หัวข้อ <strong>Signature defaults (ค่าเริ่มต้นของลายเซ็น)</strong><ul><li>For new emails use: เลือก <strong>"B.Grimm"</strong></li><li>On reply/forward use: เลือก <strong>"B.Grimm"</strong></li></ul></li><li>เลื่อนลงไปล่างสุดของหน้า แล้วกดปุ่ม <strong>Save Changes (บันทึกการเปลี่ยนแปลง)</strong></li></ol></div>
-        <div data-lang="en"><p><em>Suitable for Corporate Gmail users</em></p><ol><li>Go to Gmail.</li><li>Click <strong>Settings (gear icon ⚙️)</strong> > Select <strong>See all settings</strong>.</li><li>Scroll down to the <strong>Signature</strong> section.</li><li>Click <strong>+ Create new</strong>, name it <strong>"B.Grimm"</strong>, and click Create.</li><li>Right-click in the text box and select <strong>Paste</strong> or press <code>Ctrl + V</code>.</li><li>Scroll down to <strong>Signature defaults</strong>:<ul><li>For new emails use: Select <strong>"B.Grimm"</strong></li><li>On reply/forward use: Select <strong>"B.Grimm"</strong></li></ul></li><li>Scroll to the bottom and click <strong>Save Changes</strong>.</li></ol></div>
+        <div data-lang="th">
+            <ol>
+                <li>เปิด Gmail และคลิกไอคอน <strong>Settings (ฟันเฟือง ⚙️)</strong> > <strong>See all settings</strong></li>
+                <li>ที่แถบ <strong>General</strong> เลื่อนลงไปที่หัวข้อ <strong>Signature</strong></li>
+                <li>คลิก <strong>+ Create new</strong> และตั้งชื่อว่า "B.Grimm"</li>
+                <li>วางลายเซ็นลงในกล่องข้อความด้านขวา</li>
+                <li>ที่ส่วน <strong>Signature defaults</strong> เลือก "B.Grimm" สำหรับทั้งอีเมลใหม่และการตอบกลับ</li>
+                <li>เลื่อนลงไปล่างสุดของหน้าแล้วกด <strong>Save Changes</strong></li>
+            </ol>
+        </div>
+        <div data-lang="en">
+            <ol>
+                <li>Open Gmail and click <strong>Settings (Gear ⚙️)</strong> > <strong>See all settings</strong>.</li>
+                <li>In the <strong>General</strong> tab, scroll down to the <strong>Signature</strong> section.</li>
+                <li>Click <strong>+ Create new</strong> and name it "B.Grimm".</li>
+                <li>Paste the signature into the text box.</li>
+                <li>Under <strong>Signature defaults</strong>, select "B.Grimm" for both new emails and replies.</li>
+                <li>Scroll to the bottom and click <strong>Save Changes</strong>.</li>
+            </ol>
+        </div>
     </div>
 
     <button class="accordion">
-        <span data-lang="th">4. Mobile (iOS / Android)</span>
-        <span data-lang="en">4. Mobile (iOS / Android)</span>
+        <span data-lang="th">4. Mobile (Outlook App)</span>
+        <span data-lang="en">4. Mobile (Outlook App)</span>
         <span class="icon">▼</span>
     </button>
     <div class="panel">
-        <div data-lang="th"><p>หากต้องการตั้งค่าในมือถือ ให้ทำดังนี้:</p><ol><li>ในเครื่องมือสร้างลายเซ็น ให้กดเลือก Tab <strong>"📱 Mobile (Plain Text)"</strong> ด้านบน</li><li>กดปุ่ม <strong>COPY TO CLIPBOARD</strong></li><li>ไปที่การตั้งค่าลายเซ็นในแอปมือถือของคุณ (Outlook App หรือ iOS Mail)</li><li>วางข้อความที่คัดลอกลงไป (รูปแบบ Mobile จะไม่มีรูปภาพ เพื่อให้อ่านง่ายและไม่เปลืองดาต้า)</li></ol></div>
-        <div data-lang="en"><p>To set up on mobile devices:</p><ol><li>In the signature generator tool, select the <strong>"📱 Mobile (Plain Text)"</strong> tab.</li><li>Click <strong>COPY TO CLIPBOARD</strong>.</li><li>Go to the signature settings in your mobile app (Outlook App or iOS Mail).</li><li>Paste the copied text (Mobile format is text-only for better readability and data saving).</li></ol></div>
+        <div data-lang="th">
+            <p><em>แนะนำให้ใช้รูปแบบ Mobile (Plain Text) เพื่อความสวยงามบนหน้าจอมือถือ</em></p>
+            <ol>
+                <li>เปิดแอป <strong>Outlook</strong> บนมือถือของคุณ</li>
+                <li>แตะรูปโปรไฟล์ของคุณที่มุมซ้ายบน แล้วแตะไอคอน <strong>Settings (ฟันเฟือง ⚙️)</strong> ด้านล่าง</li>
+                <li>เลื่อนหาเมนู <strong>Signature</strong></li>
+                <li>ลบข้อความเดิมออก แล้วกดค้างเพื่อ <strong>Paste (วาง)</strong> ลายเซ็นใหม่</li>
+                <li>แตะเครื่องหมายถูก หรือย้อนกลับเพื่อบันทึก</li>
+            </ol>
+        </div>
+        <div data-lang="en">
+            <p><em>Recommend using the "Mobile (Plain Text)" tab for the best look on small screens.</em></p>
+            <ol>
+                <li>Open the <strong>Outlook app</strong> on your mobile device.</li>
+                <li>Tap your profile icon (top left) and tap the <strong>Settings (Gear ⚙️)</strong> icon.</li>
+                <li>Scroll down to find the <strong>Signature</strong> menu.</li>
+                <li>Remove any existing text, then tap and hold to <strong>Paste</strong> your new signature.</li>
+                <li>Tap the checkmark or back button to save.</li>
+            </ol>
+        </div>
     </div>
 </div>
 
