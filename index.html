@@ -13,6 +13,8 @@
             --logo-max-h: 50px;
             --primary-orange: #FF6727;
             --gold-theme: #8C704D;
+            /* Super Elastic Spring Bezier */
+            --elastic-spring: cubic-bezier(0.47, 1.64, 0.41, 0.8);
         }
 
         body {
@@ -61,9 +63,9 @@
             font-size: clamp(14px, 2.5vw, 26px); font-weight: 700; margin-bottom: 2px; letter-spacing: -0.5px;
             background: linear-gradient(120deg, #FF6727 0%, #FF8C00 15%, #FF6727 30%, #FFE3B3 45%, #FF6727 60%, #FF4500 75%, #FF6727 90%);
             background-size: 400% 400%; color: #FF6727; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
-            animation: moltenChaos 25s ease infinite; transition: font-size 0.6s var(--elastic-bezier);
+            animation: moltenChaos 25s ease infinite; transition: font-size 0.6s var(--elastic-spring);
         }
-        .header-title-th { font-size: clamp(10px, 1.5vw, 16px); color: #63666F; transition: font-size 0.6s var(--elastic-bezier); }
+        .header-title-th { font-size: clamp(10px, 1.5vw, 16px); color: #63666F; transition: font-size 0.6s var(--elastic-spring); }
         .main-header.scrolled .header-title-en { font-size: clamp(12px, 2vw, 18px); }
         .main-header.scrolled .header-title-th { font-size: clamp(9px, 1.2vw, 12px); opacity: 0.8; }
         @keyframes moltenChaos { 0% { background-position: 10% 15%; } 50% { background-position: 15% 60%; } 100% { background-position: 10% 15%; } }
@@ -83,52 +85,60 @@
         input:focus { border-color: #C8B273; box-shadow: 0 0 0 3px rgba(200, 178, 115, 0.2); outline: none; }
         input.input-error { border-color: #dc3545 !important; background-color: #fff8f8; }
         
-        /* Standard Placeholder */
         ::placeholder { color: #a8a8a8; opacity: 1; }
         
         .valid-icon { position: absolute; right: 12px; top: 32px; color: #28a745; font-size: 16px; display: none; pointer-events: none; font-weight: bold; }
+        
+        /* === GLOBAL SYNCED ANIMATION SYSTEM === */
+        .warning-msg { position: relative; height: 20px; overflow: hidden; color: #dc3545; font-size: 12px; font-weight: 700; margin-top: 4px; display: none; }
+        .custom-placeholder { position: absolute; top: 32px; left: 11px; pointer-events: none; width: 85%; height: 20px; overflow: hidden; z-index: 5; }
+        
+        .warning-msg span, .custom-placeholder span {
+            position: absolute; top: 0; left: 0; width: 100%; 
+            white-space: nowrap; transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .custom-placeholder span { font-size: 14px; color: #a8a8a8; font-family: Arial, sans-serif; }
+        .warning-msg span { font-size: 12px; color: #dc3545; font-weight: 700; }
+
+        body[data-lang-state="th"] .custom-placeholder .th, body[data-lang-state="th"] .warning-msg .th { opacity: 1; transform: translateY(0); }
+        body[data-lang-state="th"] .custom-placeholder .en, body[data-lang-state="th"] .warning-msg .en { opacity: 0; transform: translateY(10px); }
+        body[data-lang-state="en"] .custom-placeholder .th, body[data-lang-state="en"] .warning-msg .th { opacity: 0; transform: translateY(-10px); }
+        body[data-lang-state="en"] .custom-placeholder .en, body[data-lang-state="en"] .warning-msg .en { opacity: 1; transform: translateY(0); }
+
         .format-hint { font-size: 11px; color: #888; margin-top: 2px; }
 
-        /* === ANIMATION SYSTEM === */
-        .anim-wrapper {
-            position: absolute; top: 32px; left: 11px; pointer-events: none; width: 85%; height: 20px; overflow: hidden; z-index: 5;
-        }
-        .anim-wrapper.warning-mode {
-            position: relative; top: 0; left: 0; width: 100%; margin-top: 4px; display: none;
-        }
-        
-        .anim-wrapper span {
-            position: absolute; top: 0; left: 0; width: 100%; white-space: nowrap;
-            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-            font-family: Arial, sans-serif;
-        }
-
-        /* Placeholder Style */
-        .custom-placeholder span { font-size: 14px; color: #a8a8a8; }
-        /* Warning Style */
-        .warning-msg span { font-size: 12px; color: #dc3545; font-weight: 700; }
-        
-        /* GLOBAL STATE CONTROL */
-        body[data-lang-state="th"] .anim-wrapper .th { opacity: 1; transform: translateY(0); }
-        body[data-lang-state="th"] .anim-wrapper .en { opacity: 0; transform: translateY(10px); }
-        
-        body[data-lang-state="en"] .anim-wrapper .th { opacity: 0; transform: translateY(-10px); }
-        body[data-lang-state="en"] .anim-wrapper .en { opacity: 1; transform: translateY(0); }
-
-        /* Bubble Text */
-        .bubble-text-wrapper { display: inline-block; white-space: nowrap; overflow: hidden; width: 85px; position: relative; height: 20px; }
-        .bubble-text-wrapper span { position: absolute; top: 0; left: 0; transition: all 0.6s ease; }
-
-        /* --- TABS --- */
+        /* --- TABS (SMOOTH SLIDE) --- */
         .toggle-container { position: relative; display: flex; background: #f5f5f5; padding: 6px; border-radius: 12px; margin-bottom: 25px; }
-        .tab-btn { flex: 1; text-align: center; padding: 10px; cursor: pointer; border-radius: 8px; margin: 0; font-size: 14px; color: #666; font-weight: 400 !important; border: 1px solid transparent; background: transparent; z-index: 2; position: relative; transition: color 0.3s ease; }
+        .tab-btn { 
+            flex: 1; text-align: center; padding: 10px; cursor: pointer; border-radius: 8px; margin: 0; 
+            font-size: 14px; color: #666; font-weight: 400 !important; 
+            border: 1px solid transparent; background: transparent; z-index: 2; position: relative; 
+            transition: color 0.3s ease; 
+        }
         .tab-btn.active { color: white; }
-        .tab-slider { position: absolute; top: 6px; left: 6px; bottom: 6px; background-color: #8C704D; border-radius: 8px; z-index: 1; transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); width: 0; }
+        .tab-slider { 
+            position: absolute; top: 6px; left: 6px; bottom: 6px; 
+            background-color: #8C704D; border-radius: 8px; z-index: 1; 
+            transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); 
+            width: 0; 
+        }
 
         /* --- PREVIEW BOX --- */
         .signature-box { border: 2px dashed #ccc; padding: 20px; margin-top: 10px; border-radius: 12px; background: #fff; min-height: 200px; }
-        .mobile-preview-container { max-width: 320px; margin: 0 auto; border: 1px solid #eee; padding: 20px; background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.05); white-space: pre-wrap; font-family: Arial, sans-serif; }
-        .btn-copy { background: linear-gradient(180deg, #997b55 0%, #8C704D 100%); color: white; border: none; padding: 14px 24px; border-radius: 50px; font-size: 15px; cursor: pointer; font-weight: 700; margin-top: 20px; width: 100%; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 4px 6px rgba(140, 112, 77, 0.2); transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1); position: relative; overflow: hidden; }
+        .mobile-preview-container { max-width: 320px; margin: 0 auto; border: 1px solid #eee; padding: 15px; background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.05); white-space: pre-wrap; font-family: Arial, sans-serif; font-size: 12px; line-height: 1.4; color: #000; }
+        
+        /* COPY BUTTON STYLE */
+        .btn-copy { 
+            background: linear-gradient(180deg, #997b55 0%, #8C704D 100%); 
+            color: white; border: none; padding: 14px 24px; border-radius: 50px; 
+            font-size: 15px; cursor: pointer; font-weight: 700; 
+            margin-top: 20px; width: 100%; 
+            letter-spacing: 0.5px; 
+            box-shadow: 0 4px 6px rgba(140, 112, 77, 0.2); 
+            transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1); 
+            position: relative; overflow: hidden; 
+        }
         .btn-copy:hover { transform: translateY(-2px); background: linear-gradient(180deg, #a3845c 0%, #967853 100%); box-shadow: 0 8px 15px rgba(140, 112, 77, 0.35); }
         .btn-copy:active { transform: translateY(1px) scale(0.98); box-shadow: 0 2px 4px rgba(140, 112, 77, 0.2); }
         .btn-copy::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(rgba(255,255,255,0.1), rgba(255,255,255,0)); opacity: 0; transition: opacity 0.2s; }
@@ -141,13 +151,53 @@
         #previewDesktop, #previewMobile { display: none; }
         #previewDesktop.active, #previewMobile.active { display: block; animation: fadeIn 0.5s cubic-bezier(0.25, 0.8, 0.25, 1); }
 
-        /* --- FLOAT BTN --- */
-        .float-guide-btn { position: fixed; bottom: 30px; right: 30px; background: linear-gradient(135deg, #8C704D 0%, #C8B273 100%); color: white; border: none; border-radius: 50px; padding: 12px 20px; font-weight: 700; font-size: 14px; box-shadow: 0 6px 20px rgba(140, 112, 77, 0.4); cursor: pointer; z-index: 1000; display: flex; align-items: center; justify-content: center; gap: 10px; animation: floatBounce 3s infinite ease-in-out; transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); opacity: 1; visibility: visible; transform: translateY(0); }
-        .float-guide-btn.hidden { opacity: 0; visibility: hidden; transform: translateY(20px); pointer-events: none; animation: none; }
-        .float-guide-btn:hover { transform: scale(1.05); animation-play-state: paused; }
-        .icon-bubble { font-size: 18px; background: rgba(255,255,255,0.2); border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-        @keyframes floatBounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+        /* --- FLOAT BTN (PREMIUM SOFT JELLY) --- */
+        .float-wrapper {
+            position: fixed; bottom: 30px; right: 30px; z-index: 1000;
+            animation: slowFloat 6s ease-in-out infinite; 
+            pointer-events: auto;
+            transition: opacity 0.4s ease, visibility 0.4s ease, transform 0.4s ease;
+        }
+        .float-wrapper.hidden { opacity: 0; visibility: hidden; pointer-events: none; transform: translateY(20px); }
 
+        .float-guide-btn { 
+            background: linear-gradient(135deg, #8C704D 0%, #C8B273 100%); 
+            color: white; border: none; border-radius: 50px; 
+            padding: 12px 20px; font-weight: 700; font-size: 14px; 
+            box-shadow: 0 6px 20px rgba(140, 112, 77, 0.4); 
+            cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
+            transition: box-shadow 0.3s ease, background 0.3s ease;
+            transform-origin: center bottom;
+        }
+
+        .float-guide-btn:hover { box-shadow: 0 12px 30px rgba(140, 112, 77, 0.5); }
+
+        .jelly-pop { animation: premiumJelly 0.6s cubic-bezier(0.25, 1.5, 0.5, 1) forwards; }
+
+        @keyframes premiumJelly {
+            0% { transform: scale(1, 1); }
+            30% { transform: scale(1.08, 0.92); } 
+            50% { transform: scale(0.95, 1.05); } 
+            70% { transform: scale(1.02, 0.98); } 
+            100% { transform: scale(1, 1); }
+        }
+        
+        @keyframes slowFloat { 
+            0%, 100% { transform: translateY(0); } 
+            50% { transform: translateY(-8px); } 
+        }
+        
+        .icon-bubble { font-size: 18px; background: rgba(255,255,255,0.2); border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        
+        .bubble-text-wrapper { 
+            display: inline-block; white-space: nowrap; overflow: hidden; 
+            position: relative; height: 20px; 
+            transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); 
+            vertical-align: middle;
+        }
+        .bubble-text-wrapper span { position: absolute; top: 2px; left: 0; transition: opacity 0.3s ease; }
+
+        /* --- GUIDE --- */
         .guide-container { width: 100%; max-width: 1100px; display: flex; flex-direction: column; gap: 10px; scroll-margin-top: 20px; }
         .guide-header-row { display: flex; justify-content: space-between; align-items: center; width: 100%; max-width: 1100px; margin-bottom: 20px; border-bottom: 2px solid #C8B273; padding-bottom: 10px; scroll-margin-top: 40px; }
         .guide-section-title { color: #8C704D; font-size: 20px; font-weight: 700; margin: 0; }
@@ -158,12 +208,21 @@
         .accordion.active .icon { transform: rotate(180deg); color: #8C704D; }
         .panel { padding: 0 25px; background-color: #fff; max-height: 0; overflow: hidden; border: 1px solid #8C704D; border-top: none; border-radius: 0 0 10px 10px; margin-top: -10px; margin-bottom: 5px; opacity: 0; transform: translateY(-5px); transition: all 0.3s ease; }
         .panel.show { padding: 25px; max-height: 1000px; opacity: 1; transform: translateY(0); margin-bottom: 15px; }
-        .panel h4 { color: #8C704D; margin: 15px 0 5px; font-size: 15px; }
+        .panel h4 { color: #8C704D; margin: 15px 0 5px; font-size: 15px; font-weight: 700; }
         .panel p { font-size: 14px; color: #63666F; line-height: 1.6; margin-bottom: 10px; }
         .panel ul, .panel ol { padding-left: 20px; color: #63666F; font-size: 14px; line-height: 1.8; }
         .panel li { margin-bottom: 5px; }
-        .panel code { background: #f5f5f5; padding: 2px 6px; border-radius: 4px; color: #63666F; font-family: monospace; border: 1px solid #989AA5; }
+        .panel code { background: #f5f5f5; padding: 2px 6px; border-radius: 4px; color: #63666F; font-family: monospace; border: 1px solid #989AA5; font-weight: 700; }
         .panel em { color: #989AA5; font-size: 13px; font-style: italic; }
+        
+        /* UI TAGS FOR BUTTONS IN GUIDE */
+        .ui-tag {
+            display: inline-block; padding: 1px 6px; background-color: #f8f9fa;
+            border: 1px solid #c8b273; border-radius: 4px;
+            color: #555; font-size: 11px; font-weight: 700;
+            box-shadow: 0 1px 0 rgba(0,0,0,0.1); margin: 0 2px;
+        }
+
         .lang-switch { display: flex; gap: 10px; font-size: 14px; font-weight: 700; }
         .lang-btn { cursor: pointer; color: #989AA5; transition: color 0.2s; }
         .lang-btn:hover { color: #C8B273; }
@@ -188,12 +247,15 @@
     </div>
 </header>
 
-<button id="floatGuideBtn" class="float-guide-btn" onclick="scrollToGuide()">
-    <span class="icon-bubble">?</span> 
-    <div class="anim-wrapper bubble-text-wrapper">
-        <span class="th">วิธีติดตั้ง?</span><span class="en">How to install?</span>
-    </div>
-</button>
+<div id="floatWrapper" class="float-wrapper">
+    <button id="floatGuideBtn" class="float-guide-btn" onclick="scrollToGuide()">
+        <span class="icon-bubble">?</span> 
+        <div class="bubble-text-wrapper" id="bubbleTextWrapper">
+            <span id="bubbleText">วิธีติดตั้ง?</span>
+        </div>
+    </button>
+</div>
+<span id="textMeasurer" style="visibility: hidden; position: absolute; font-size: 14px; font-weight: 700; font-family: Arial; white-space: nowrap;">วิธีติดตั้ง?</span>
 
 <div class="container">
     <div class="input-section">
@@ -201,8 +263,8 @@
         <div class="sub-header">กรอกข้อมูลพนักงานหรือหน่วยงาน</div>
         <div class="toggle-container" id="modeSelector">
             <div class="tab-slider" id="modeSlider"></div>
-            <button class="tab-btn active" onclick="setMode('person', this)">👤 พนักงาน</button>
-            <button class="tab-btn" onclick="setMode('dept', this)">🏢 หน่วยงาน</button>
+            <button class="tab-btn active" id="btnPerson" onclick="setMode('person', this)">พนักงาน (Person)</button>
+            <button class="tab-btn" id="btnDept" onclick="setMode('dept', this)">หน่วยงาน (Department)</button>
         </div>
 
         <div id="formPerson" class="form-container active">
@@ -243,10 +305,7 @@
 
         <div id="formDept" class="form-container">
             <h3>ข้อมูลหน่วยงาน (Department Info)</h3>
-            <div class="form-group"><label>ชื่อหน่วยงาน ภาษาอังกฤษ (Dept Name - EN)</label>
-                <input type="text" id="dNameEng" placeholder="Human Resources" oninput="updateSig()">
-                <span id="checkDeptEng" class="valid-icon">✓</span><div class="anim-wrapper warning-msg warning-mode" id="warnDeptEng"></div>
-            </div>
+            <div class="form-group"><label>ชื่อหน่วยงาน ภาษาอังกฤษ (Dept Name - EN)</label><input type="text" id="dNameEng" placeholder="Human Resources" oninput="updateSig()"><span id="checkDeptEng" class="valid-icon">✓</span><div class="anim-wrapper warning-msg warning-mode" id="warnDeptEng"></div></div>
             <div class="form-group"><label>ชื่อหน่วยงาน ภาษาไทย (Dept Name - TH)</label>
                 <input type="text" id="dNameTh" oninput="checkPh(this); updateSig()">
                 <div class="anim-wrapper custom-placeholder" id="ph_dNameTh"><span class="th">ถ้าว่างจะซ่อน</span><span class="en">Hidden if empty</span></div>
@@ -255,26 +314,32 @@
         </div>
 
         <div id="contactSection">
-            <h3>ข้อมูลติดต่อ (Contact Info)</h3>
-            <div class="form-group"><label>อีเมล (Email)</label>
-                <input type="email" id="inputEmail" placeholder="example@bgrimmpower.com" oninput="updateSig()">
-                <span id="checkEmail" class="valid-icon">✓</span><div class="anim-wrapper warning-msg warning-mode" id="warnEmail"></div>
+            <h3>ข้อมูลองค์กร & ที่อยู่ (Organization & Location)</h3>
+            <div class="form-group">
+                <label>ชื่อบริษัท (Company Name) <span style="font-weight:normal; color:#888;">(Optional)</span></label>
+                <input type="text" id="inputCompany" oninput="checkPh(this); updateSig();">
+                <div class="anim-wrapper custom-placeholder" id="ph_inputCompany"><span class="th">ว่าง = B.Grimm Power PCL</span><span class="en">Empty = B.Grimm Power PCL</span></div>
             </div>
             <div class="form-group">
-                <label>เบอร์มือถือ (Mobile)</label>
-                <input type="text" id="inputMobile" maxlength="10" oninput="checkPh(this); updateSig()">
+                <label>ที่อยู่ (Address) <span style="font-weight:normal; color:#888;">(Optional)</span></label>
+                <input type="text" id="inputAddress" oninput="checkPh(this); updateSig();">
+                <div class="anim-wrapper custom-placeholder" id="ph_inputAddress"><span class="th">ว่าง = ใช้ที่อยู่ สนญ.</span><span class="en">Empty = Default HQ</span></div>
+            </div>
+
+            <h3>ช่องทางติดต่อ (Contact Channels)</h3>
+            <div class="form-group"><label>เบอร์มือถือ (Mobile)</label><input type="text" id="inputMobile" maxlength="10" oninput="checkPh(this); updateSig()">
                 <div class="anim-wrapper custom-placeholder" id="ph_inputMobile"><span class="th">ถ้าว่างจะซ่อน</span><span class="en">Hidden if empty</span></div>
-                <span id="checkMobile" class="valid-icon">✓</span>
-                <div class="format-hint">พิมพ์ 10 หลัก (ไม่ต้องใส่ขีด)</div>
-                <div class="anim-wrapper warning-msg warning-mode" id="warnMobile"></div>
+                <span id="checkMobile" class="valid-icon">✓</span><div class="format-hint">พิมพ์ 10 หลัก (ไม่ต้องใส่ขีด)</div><div class="anim-wrapper warning-msg warning-mode" id="warnMobile"></div>
             </div>
-            <div class="form-group">
-                <label>เบอร์โทรศัพท์ (Telephone)</label>
-                <input type="text" id="inputTel" maxlength="9" oninput="checkPh(this); updateSig()">
+            <div class="form-group"><label>เบอร์โทรศัพท์ (Telephone)</label><input type="text" id="inputTel" maxlength="9" oninput="checkPh(this); updateSig()">
                 <div class="anim-wrapper custom-placeholder" id="ph_inputTel"><span class="th">ถ้าว่างจะซ่อน</span><span class="en">Hidden if empty</span></div>
-                <span id="checkTel" class="valid-icon">✓</span>
-                <div class="format-hint">พิมพ์ 9 หลัก (ไม่ต้องใส่ขีด)</div>
-                <div class="anim-wrapper warning-msg warning-mode" id="warnTel"></div>
+                <span id="checkTel" class="valid-icon">✓</span><div class="format-hint">พิมพ์ 9 หลัก (ไม่ต้องใส่ขีด)</div><div class="anim-wrapper warning-msg warning-mode" id="warnTel"></div>
+            </div>
+            <div class="form-group"><label>อีเมล (Email)</label><input type="email" id="inputEmail" placeholder="example@bgrimmpower.com" oninput="updateSig()"><span id="checkEmail" class="valid-icon">✓</span><div class="anim-wrapper warning-msg warning-mode" id="warnEmail"></div></div>
+            <div class="form-group">
+                <label>เว็บไซต์ (Website) <span style="font-weight:normal; color:#888;">(Optional)</span></label>
+                <input type="text" id="inputWebsite" oninput="checkPh(this); updateSig();">
+                <div class="anim-wrapper custom-placeholder" id="ph_inputWebsite"><span class="th">ว่าง = www.bgrimmpower.com</span><span class="en">Empty = www.bgrimmpower.com</span></div>
             </div>
         </div>
     </div>
@@ -284,8 +349,8 @@
         <div class="sub-header">เลือกรูปแบบที่ต้องการแล้วกดปุ่มคัดลอก</div>
         <div class="toggle-container preview-tabs" id="previewTabs">
             <div class="tab-slider" id="previewSlider"></div>
-            <button class="tab-btn active" onclick="switchTab('desktop', this)">💻 Desktop</button>
-            <button class="tab-btn" onclick="switchTab('mobile', this)">📱 Mobile</button>
+            <button class="tab-btn active" id="btnDesktop" onclick="switchTab('desktop', this)">Desktop</button>
+            <button class="tab-btn" id="btnMobile" onclick="switchTab('mobile', this)">Mobile</button>
         </div>
 
         <div class="signature-box" id="signatureBox">
@@ -296,9 +361,9 @@
                   <tr><td style="padding-bottom:12px;"><img src="https://static-portal.bgrimm.io/public/logo/B.Grimm%20Logo.png" width="120" alt="B.Grimm Logo" border="0" style="display:block;"></td></tr>
                   <tr><td style="padding-bottom:2px;"><strong id="sigNameContent" style="font-size:12px; color:#FF6727;"></strong></td></tr>
                   <tr id="rowPosition"><td style="padding-bottom:2px;"><span id="prevPos"></span></td></tr>
-                  <tr><td style="padding-bottom:2px;"><strong style="color:#63666F;">B.Grimm Power PCL</strong> <span style="color:#63666F;">|</span> Dr. Gerhard Link Building, 5 Krungthepkreetha Road, Bangkok 10240, Thailand</td></tr>
+                  <tr><td style="padding-bottom:2px;"><strong style="color:#63666F;" id="sigCompany">B.Grimm Power PCL</strong> <span style="color:#63666F;">&nbsp;|&nbsp;</span> <span id="sigAddress">Dr. Gerhard Link Building, 5 Krungthepkreetha Road, Bangkok 10240, Thailand</span></td></tr>
                   <tr id="rowPhones"><td style="padding-bottom:2px;"><span id="wrapMob"><strong>Mobile</strong> <a id="linkMobile" href="#" class="sig-link"></a></span><span id="wrapTel"></span></td></tr>
-                  <tr><td><strong>Email</strong> <a id="linkEmail" href="#" class="sig-link"></a> <span style="color:#63666F;">|</span> <a href="https://www.bgrimmpower.com" class="sig-link">www.bgrimmpower.com</a></td></tr>
+                  <tr><td><strong>Email</strong> <a id="linkEmail" href="#" class="sig-link"></a> <span style="color:#63666F;">&nbsp;|&nbsp;</span> <a href="https://www.bgrimmpower.com" class="sig-link" id="sigWebsite">www.bgrimmpower.com</a></td></tr>
                 </table>
             </div>
             <div id="previewMobile">
@@ -320,105 +385,147 @@
 <div class="guide-container">
     <button class="accordion" id="acc-item-1"><span data-lang="th">1. Microsoft Outlook (Desktop App)</span><span data-lang="en">1. Microsoft Outlook (Desktop App)</span><span class="icon">▼</span></button>
     <div class="panel">
-        <div data-lang="th"><h4>สำหรับ New Outlook</h4><ol><li>คลิก Settings ⚙️ > Accounts > Signatures</li><li>+ New Signature ตั้งชื่อ "B.Grimm"</li><li>วางลายเซ็น (Ctrl+V) เลือก Default > Save</li></ol><h4>สำหรับ Classic Outlook</h4><ol><li>File > Options > Mail > Signatures</li><li>New > วางลายเซ็น > เลือก Default > OK</li></ol></div>
-        <div data-lang="en"><h4>For New Outlook</h4><ol><li>Settings ⚙️ > Accounts > Signatures</li><li>+ New > Paste > Set Default > Save</li></ol></div>
+        <div data-lang="th"><h4>สำหรับ New Outlook (เวอร์ชันใหม่)</h4><ol><li>คลิก <span class="ui-tag">Settings ⚙️</span> > <span class="ui-tag">Accounts</span> > <span class="ui-tag">Signatures</span></li><li><span class="ui-tag">+ New Signature</span> ตั้งชื่อ "B.Grimm"</li><li>ในกล่องข้อความให้กดปุ่ม <code>Ctrl + V</code> เพื่อวางลายเซ็น</li><li>เลือก Default Signature ทั้ง New/Replies เป็น "B.Grimm" แล้วกด <span class="ui-tag">Save</span></li></ol><h4>สำหรับ Classic Outlook</h4><ol><li><span class="ui-tag">File</span> > <span class="ui-tag">Options</span> > <span class="ui-tag">Mail</span> > <span class="ui-tag">Signatures</span></li><li><span class="ui-tag">New</span> > ตั้งชื่อ > วางลายเซ็นโดยกดปุ่ม <code>Ctrl + V</code></li><li>เลือก Default แล้วกด <span class="ui-tag">OK</span></li></ol></div>
+        <div data-lang="en"><h4>For New Outlook</h4><ol><li><span class="ui-tag">Settings ⚙️</span> > <span class="ui-tag">Accounts</span> > <span class="ui-tag">Signatures</span></li><li><span class="ui-tag">New</span> > Paste by pressing <code>Ctrl + V</code> > Set Default > <span class="ui-tag">Save</span></li></ol></div>
     </div>
-    <button class="accordion"><span data-lang="th">2. Outlook on the Web</span><span data-lang="en">2. Outlook on the Web</span><span class="icon">▼</span></button>
-    <div class="panel"><div data-lang="th"><ol><li>Settings ⚙️ > Mail > Compose and reply</li><li>+ New signature > วาง > ตั้ง Default > Save</li></ol></div><div data-lang="en"><ol><li>Settings ⚙️ > Mail > Compose and reply</li><li>New > Paste > Set Default > Save</li></ol></div></div>
+    <button class="accordion"><span data-lang="th">2. Outlook on the Web (Microsoft 365)</span><span data-lang="en">2. Outlook on the Web (Microsoft 365)</span><span class="icon">▼</span></button>
+    <div class="panel">
+        <div data-lang="th">
+            <ol>
+                <li>ไปที่ Outlook บนเว็บ คลิก <span class="ui-tag">Settings ⚙️</span> ที่มุมขวาบน</li>
+                <li>เลือกเมนู <span class="ui-tag">Mail</span> ทางด้านซ้าย แล้วเลือก <span class="ui-tag">Compose and reply</span></li>
+                <li><em>หมายเหตุ: หากไม่พบเมนูนี้ ให้ลองไปที่ <span class="ui-tag">Accounts</span> > <span class="ui-tag">Signatures</span></em></li>
+                <li>ที่หัวข้อ <strong>Email signature</strong> ให้คลิกปุ่ม <span class="ui-tag">+ New signature</span></li>
+                <li>ตั้งชื่อลายเซ็น แล้วคลิกในกล่องข้อความเพื่อวางข้อมูลโดยกดปุ่ม <code>Ctrl + V</code></li>
+                <li>ที่หัวข้อ <strong>Select default signatures</strong> ให้เลือกชื่อลายเซ็นใหม่ของคุณในทั้ง 2 ช่อง</li>
+                <li>กดปุ่ม <span class="ui-tag">Save</span></li>
+            </ol>
+        </div>
+        <div data-lang="en">
+            <ol>
+                <li>Go to Outlook Web > Click <span class="ui-tag">Settings ⚙️</span> (top right)</li>
+                <li>Select <span class="ui-tag">Mail</span> > <span class="ui-tag">Compose and reply</span></li>
+                <li><em>Note: If missing, check <span class="ui-tag">Accounts</span> > <span class="ui-tag">Signatures</span></em></li>
+                <li>Under <strong>Email signature</strong>, click <span class="ui-tag">+ New signature</span></li>
+                <li>Name it, then click inside the box and paste by pressing <code>Ctrl + V</code></li>
+                <li>Under <strong>Select default signatures</strong>, choose your new signature for both options</li>
+                <li>Click <span class="ui-tag">Save</span></li>
+            </ol>
+        </div>
+    </div>
     <button class="accordion"><span data-lang="th">3. Google Workspace (Gmail)</span><span data-lang="en">3. Google Workspace (Gmail)</span><span class="icon">▼</span></button>
-    <div class="panel"><div data-lang="th"><ol><li>Settings ⚙️ > See all settings</li><li>Signature > + Create new > วาง</li><li>Signature defaults > Save Changes</li></ol></div><div data-lang="en"><ol><li>Settings ⚙️ > All settings > Signature</li><li>Create > Paste > Set Defaults > Save</li></ol></div></div>
+    <div class="panel">
+        <div data-lang="th"><ol><li><span class="ui-tag">Settings ⚙️</span> > <span class="ui-tag">See all settings</span></li><li><span class="ui-tag">Signature</span> > <span class="ui-tag">+ Create new</span> > วางโดยกดปุ่ม <code>Ctrl + V</code></li><li>Signature defaults เลือกชื่อลายเซ็น > <span class="ui-tag">Save Changes</span></li></ol></div>
+        <div data-lang="en"><ol><li><span class="ui-tag">Settings ⚙️</span> > <span class="ui-tag">All settings</span> > <span class="ui-tag">Signature</span></li><li><span class="ui-tag">Create</span> > Paste by pressing <code>Ctrl + V</code> > Set Defaults > <span class="ui-tag">Save</span></li></ol></div>
+    </div>
     <button class="accordion"><span data-lang="th">4. Mobile (Outlook App)</span><span data-lang="en">4. Mobile (Outlook App)</span><span class="icon">▼</span></button>
-    <div class="panel"><div data-lang="th"><ol><li>แตะรูปโปรไฟล์ > Settings ⚙️</li><li>Signature > ลบของเก่า > กดวาง (Paste)</li></ol></div><div data-lang="en"><ol><li>Profile > Settings ⚙️ > Signature</li><li>Paste signature > Save</li></ol></div></div>
+    <div class="panel">
+        <div data-lang="th"><ol><li>เปลี่ยน Tab ด้านบนเป็น <strong>Mobile</strong> แล้วกด <span class="ui-tag">Copy to Clipboard</span></li><li>ในแอป Outlook แตะรูปโปรไฟล์ > <span class="ui-tag">Settings ⚙️</span></li><li><span class="ui-tag">Signature</span> > ลบของเก่า > กดวาง (Paste)</li></ol></div>
+        <div data-lang="en"><ol><li>Switch to <strong>Mobile</strong> tab > <span class="ui-tag">Copy to Clipboard</span></li><li>Outlook App > <span class="ui-tag">Settings</span> > <span class="ui-tag">Signature</span> > Paste</li></ol></div>
+    </div>
 </div>
 
 <footer class="app-footer">© 2026 B.Grimm, Digital and Energy Solutions</footer>
 
 <script>
-    /* --- SYNC ANIMATION LOOP --- */
+    /* SYNC ANIMATION */
     setInterval(() => {
         const body = document.body;
-        if(body.getAttribute('data-lang-state') === 'th') {
-            body.setAttribute('data-lang-state', 'en');
-        } else {
-            body.setAttribute('data-lang-state', 'th');
-        }
+        body.setAttribute('data-lang-state', body.getAttribute('data-lang-state') === 'th' ? 'en' : 'th');
     }, 3000);
 
-    /* --- INIT --- */
+    /* UI LOGIC (Accordion) */
+    document.addEventListener("DOMContentLoaded", function() {
+        const acc = document.getElementsByClassName("accordion");
+        for (let i = 0; i < acc.length; i++) {
+            acc[i].addEventListener("click", function() {
+                this.classList.toggle("active");
+                const panel = this.nextElementSibling;
+                panel.classList.toggle("show");
+            });
+        }
+    });
+
+    /* MAIN APP LOGIC */
     window.onload = function() {
+        const pBtn = document.getElementById('btnPerson');
+        if(pBtn) setMode('person', pBtn);
+        const dBtn = document.getElementById('btnDesktop');
+        if(dBtn) switchTab('desktop', dBtn);
+
         adjustLayout();
         updateSig();
-        updateTab('modeSelector');
-        updateTab('previewTabs');
         document.querySelectorAll('input').forEach(el => checkPh(el));
         setTimeout(() => { updateTab('modeSelector'); updateTab('previewTabs'); }, 100);
     };
 
     window.onresize = function() { adjustLayout(); updateTab('modeSelector'); updateTab('previewTabs'); };
     window.onscroll = function() {
-        const header = document.getElementById('stickyHeader');
-        const guide = document.getElementById('guide-anchor');
-        const btn = document.getElementById('floatGuideBtn');
-        if (window.scrollY > 30) header.classList.add('scrolled'); else header.classList.remove('scrolled');
-        if (guide && guide.getBoundingClientRect().top < window.innerHeight) btn.classList.add('hidden'); else btn.classList.remove('hidden');
+        const h = document.getElementById('stickyHeader');
+        const w = document.getElementById('floatWrapper');
+        const g = document.getElementById('guide-anchor');
+        if(window.scrollY>30) h.classList.add('scrolled'); else h.classList.remove('scrolled');
+        if(g && g.getBoundingClientRect().top < window.innerHeight) w.classList.add('hidden'); else w.classList.remove('hidden');
     };
-
     function adjustLayout() { document.body.style.paddingTop = (document.querySelector('.main-header').offsetHeight + 30) + 'px'; }
-
     function updateTab(id) {
-        const container = document.getElementById(id);
-        const activeBtn = container.querySelector('.tab-btn.active');
-        const slider = container.querySelector('.tab-slider');
-        if (activeBtn && slider) { slider.style.width = activeBtn.offsetWidth + 'px'; slider.style.left = activeBtn.offsetLeft + 'px'; }
+        const c = document.getElementById(id); const b = c.querySelector('.tab-btn.active'); const s = c.querySelector('.tab-slider');
+        if(b && s) { s.style.width = b.offsetWidth + 'px'; s.style.left = b.offsetLeft + 'px'; }
+    }
+
+    /* === JELLY INTERACTION LOGIC === */
+    function triggerJelly(element) {
+        element.classList.remove('jelly-pop');
+        void element.offsetWidth; // Force Reflow
+        element.classList.add('jelly-pop');
     }
 
     let currentMode = 'person';
     let currentTab = 'desktop';
 
-    function setMode(mode, btnElement) {
+    function setMode(mode, btn) {
         currentMode = mode;
-        const container = document.getElementById('modeSelector');
-        container.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        btnElement.classList.add('active');
-        updateTab('modeSelector');
+        const c = document.getElementById('modeSelector');
+        c.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active'); updateTab('modeSelector');
+        
+        // Target Slider instead of Button
+        const slider = c.querySelector('.tab-slider');
+        triggerJelly(slider);
+
         document.getElementById('formPerson').classList.toggle('active', mode === 'person');
         document.getElementById('formDept').classList.toggle('active', mode === 'dept');
         updateSig();
         document.querySelectorAll('input').forEach(el => checkPh(el));
     }
 
-    function switchTab(tab, btnElement) {
+    function switchTab(tab, btn) {
         currentTab = tab;
-        const container = document.getElementById('previewTabs');
-        container.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        btnElement.classList.add('active');
-        updateTab('previewTabs');
+        const c = document.getElementById('previewTabs');
+        c.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active'); updateTab('previewTabs');
+        
+        // Target Slider instead of Button
+        const slider = c.querySelector('.tab-slider');
+        triggerJelly(slider);
+
         document.getElementById('previewDesktop').style.display = (tab === 'desktop') ? 'block' : 'none';
         document.getElementById('previewMobile').style.display = (tab === 'mobile') ? 'block' : 'none';
-        const note = document.getElementById('noteText');
-        note.innerHTML = (tab === 'desktop') ? '<strong>Desktop:</strong> เหมาะสำหรับ Outlook บนคอมพิวเตอร์' : '<strong>Mobile:</strong> เหมาะสำหรับ iPhone/Android (ข้อความล้วน)';
+        document.getElementById('noteText').innerHTML = (tab === 'desktop') ? '<strong>Desktop:</strong> เหมาะสำหรับ Outlook บนคอมพิวเตอร์' : '<strong>Mobile:</strong> เหมาะสำหรับ iPhone/Android (ข้อความล้วน)';
     }
 
-    // --- PLACEHOLDER & WARNING TOGGLE ---
+    /* PLACEHOLDER & WARN TOGGLE */
     function checkPh(input) {
         const ph = input.parentElement.querySelector('.custom-placeholder');
-        
-        // Position Warning Logic
         if(input.id === 'pPosition' && currentMode === 'person') {
             const warn = document.getElementById('warnPos');
-            const secVal = document.getElementById('pSection').value;
-            const deptVal = document.getElementById('pDepartment').value;
-            
-            // Show warning ONLY if Position is empty AND (Section OR Dept is filled)
-            if(!input.value && (secVal || deptVal)) {
-                warn.style.display = 'block';
-                if(ph) ph.style.display = 'none';
+            const hasDept = document.getElementById('pSection').value || document.getElementById('pDepartment').value;
+            if(!input.value && hasDept) {
+                warn.style.display = 'block'; if(ph) ph.style.display = 'none';
             } else {
-                warn.style.display = 'none';
-                if(ph) ph.style.display = input.value ? 'none' : 'block';
+                warn.style.display = 'none'; if(ph) ph.style.display = input.value ? 'none' : 'block';
             }
         } else {
-            // General Logic
             if(ph) {
                 const warn = input.parentElement.querySelector('.warning-msg');
                 const isWarn = warn && warn.style.display === 'block';
@@ -427,18 +534,79 @@
         }
     }
 
-    function scrollToGuide() {
-        document.getElementById('guide-anchor').scrollIntoView({behavior: 'smooth'});
-        const firstBtn = document.getElementById('acc-item-1');
-        if (!firstBtn.classList.contains('active')) firstBtn.click();
+    /* COPY FUNCTION */
+    function copySignature() {
+        const btn = document.querySelector('.btn-copy');
+        const originalText = btn.innerText;
+        let range, selection;
+
+        if (currentTab === 'desktop') {
+            const node = document.getElementById('previewDesktop');
+            selection = window.getSelection();
+            range = document.createRange();
+            range.selectNodeContents(node);
+            selection.removeAllRanges();
+            selection.addRange(range);
+        } else {
+            // Mobile (Plain Text)
+            const node = document.getElementById('mobContent');
+            selection = window.getSelection();
+            range = document.createRange();
+            range.selectNodeContents(node);
+            selection.removeAllRanges();
+            selection.addRange(range);
+        }
+
+        try {
+            document.execCommand('copy');
+            // Feedback
+            btn.innerText = "Copied!";
+            btn.style.background = "linear-gradient(180deg, #28a745 0%, #218838 100%)";
+            setTimeout(() => {
+                btn.innerText = originalText;
+                btn.style.background = ""; 
+                window.getSelection().removeAllRanges();
+            }, 2000);
+        } catch (err) {
+            console.error('Unable to copy', err);
+            alert('Copy failed. Please select and copy manually.');
+        }
     }
 
-    document.querySelectorAll('.accordion').forEach(btn => {
-        btn.addEventListener('click', function() {
-            this.classList.toggle('active');
-            this.nextElementSibling.classList.toggle('show');
-        });
-    });
+    /* SOFT JELLY BUBBLE LOGIC */
+    const textWrapper = document.getElementById('bubbleTextWrapper');
+    const bubbleText = document.getElementById('bubbleText');
+    const textMeasurer = document.getElementById('textMeasurer');
+    let isThaiBubble = true;
+
+    function updateBubble() {
+        const btn = document.getElementById('floatGuideBtn');
+        const nextText = isThaiBubble ? "How to install?" : "วิธีติดตั้ง?";
+        textMeasurer.innerText = nextText;
+        const newW = textMeasurer.offsetWidth;
+        
+        bubbleText.style.opacity = '0';
+        setTimeout(() => {
+            isThaiBubble = !isThaiBubble;
+            bubbleText.innerText = nextText;
+            textWrapper.style.width = newW + 'px';
+            bubbleText.style.opacity = '1';
+            
+            triggerJelly(btn);
+            
+        }, 300);
+    }
+    
+    // Init
+    textMeasurer.innerText = "วิธีติดตั้ง?";
+    textWrapper.style.width = textMeasurer.offsetWidth + 'px';
+    setInterval(updateBubble, 3000);
+
+    function scrollToGuide() {
+        document.getElementById('guide-anchor').scrollIntoView({behavior: 'smooth'});
+        const btn = document.getElementById('acc-item-1');
+        if (!btn.classList.contains('active')) btn.click();
+    }
 
     function setGuideLang(lang) {
         document.getElementById('btnTh').classList.toggle('active', lang === 'th');
@@ -448,7 +616,7 @@
     }
     setGuideLang('th');
 
-    // --- LOGIC: Mobile Format ---
+    /* LOGIC */
     function formatSpecialPhone(input) {
         let clean = input.replace(/\D/g, '');
         if (clean.length === 10 && clean.startsWith('0')) return '+66 (0) ' + clean.substring(1, 5) + ' ' + clean.substring(5);
@@ -456,47 +624,27 @@
         return input;
     }
 
-    // Validation (Empty = Clean State)
     function validateInput(el, type) {
         const val = el.value;
         const icon = el.parentElement.querySelector('.valid-icon');
         const warn = el.parentElement.querySelector('.warning-msg');
-        
         if(!icon) return;
-
-        // Reset first
         icon.style.display = 'none';
         if(warn && el.id !== 'pPosition') warn.style.display = 'none'; 
         el.classList.remove('input-error');
-
-        // Check if empty -> CLEAN STATE (Return)
         if(!val) return; 
 
         let errorObj = null;
-        if(type === 'en-name') {
-            if(!/^[a-zA-Z]+(\s+[a-zA-Z]+)+$/.test(val)) errorObj = {th: "กรุณากรอกชื่อและนามสกุล (ภาษาอังกฤษ)", en: "Full name required (English)"};
-        } 
-        else if(type === 'th-name') {
-            if(!/^[ก-๙]+(\s+[ก-๙]+)+$/.test(val)) errorObj = {th: "กรุณากรอกชื่อและนามสกุล (ภาษาไทย)", en: "Full name required (Thai)"};
-        }
-        else if(type === 'en') {
-            if(/[\u0E00-\u0E7F]/.test(val)) errorObj = {th: "กรุณากรอกภาษาอังกฤษ", en: "English characters only"};
-        } 
-        else if(type === 'th') {
-            if(/[a-zA-Z]/.test(val)) errorObj = {th: "กรุณากรอกภาษาไทย", en: "Thai characters only"};
-        } 
-        else if(type === 'email') {
+        if(type === 'en-name') { if(!/^[a-zA-Z]+(\s+[a-zA-Z]+)+$/.test(val)) errorObj = {th: "กรุณากรอกชื่อและนามสกุล (ภาษาอังกฤษ)", en: "Full name required (English)"}; } 
+        else if(type === 'th-name') { if(!/^[ก-๙]+(\s+[ก-๙]+)+$/.test(val)) errorObj = {th: "กรุณากรอกชื่อและนามสกุล (ภาษาไทย)", en: "Full name required (Thai)"}; }
+        else if(type === 'en') { if(/[\u0E00-\u0E7F]/.test(val)) errorObj = {th: "กรุณากรอกภาษาอังกฤษ", en: "English characters only"}; } 
+        else if(type === 'th') { if(/[a-zA-Z]/.test(val)) errorObj = {th: "กรุณากรอกภาษาไทย", en: "Thai characters only"}; } 
+        else if(type === 'email') { 
             if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) errorObj = {th: "รูปแบบอีเมลไม่ถูกต้อง", en: "Invalid Email format"};
             if(/[\u0E00-\u0E7F]/.test(val)) errorObj = {th: "ห้ามใช้ภาษาไทย", en: "No Thai characters"};
         } 
-        else if(type === 'mobile') {
-            const nums = val.replace(/\D/g, '');
-            if(nums.length !== 10) errorObj = {th: "กรุณากรอกเบอร์มือถือ 10 หลัก", en: "Mobile number must be 10 digits"};
-        }
-        else if(type === 'tel') {
-            const nums = val.replace(/\D/g, '');
-            if(nums.length !== 9) errorObj = {th: "กรุณากรอกเบอร์โทรศัพท์ 9 หลัก", en: "Phone number must be 9 digits"};
-        }
+        else if(type === 'mobile') { if(val.replace(/\D/g, '').length !== 10) errorObj = {th: "กรุณากรอกเบอร์มือถือ 10 หลัก", en: "Mobile number must be 10 digits"}; }
+        else if(type === 'tel') { if(val.replace(/\D/g, '').length !== 9) errorObj = {th: "กรุณากรอกเบอร์โทรศัพท์ 9 หลัก", en: "Phone number must be 9 digits"}; }
 
         if(errorObj) {
             if(warn) {
@@ -511,105 +659,185 @@
         }
     }
 
-    // --- MAIN UPDATE ---
     function updateSig() {
-        const email = document.getElementById('inputEmail').value || 'example@bgrimmpower.com';
-        
-        // 1. NAME
-        let enName, thName, nameHTML;
-        if (currentMode === 'person') {
-            const rawEn = document.getElementById('pNameEng').value || 'Somchai Jaidee';
-            enName = rawEn.toUpperCase(); 
-            thName = document.getElementById('pNameTh').value || 'สมชาย ใจดี';
+        try {
+            const rawEmail = document.getElementById('inputEmail').value;
+            const email = (rawEmail ? rawEmail.toLowerCase() : 'example@bgrimmpower.com');
+            const customWeb = document.getElementById('inputWebsite').value;
+            const customAddr = document.getElementById('inputAddress').value;
+            const customComp = document.getElementById('inputCompany').value;
             
-            // Allow checking of values
-            validateInput(document.getElementById('pNameEng'), 'en-name');
-            validateInput(document.getElementById('pNameTh'), 'th-name');
-        } else {
-            const rawEn = document.getElementById('dNameEng').value || 'Human Resources';
-            enName = rawEn.toUpperCase(); 
-            thName = document.getElementById('dNameTh').value || '';
-            if(document.getElementById('dNameEng').value) validateInput(document.getElementById('dNameEng'), 'en');
-        }
-        nameHTML = enName;
-        if(thName) nameHTML += ` <span style="color:#FF6727;">|</span> ${thName}`;
-        document.getElementById('sigNameContent').innerHTML = nameHTML;
-
-        // 2. POSITION
-        if (currentMode === 'person') {
-            const pos = document.getElementById('pPosition').value;
-            const sec = document.getElementById('pSection').value;
-            const mainDep = document.getElementById('pDepartment').value;
-            checkPh(document.getElementById('pPosition')); 
-            if(!pos) {
-                document.getElementById('rowPosition').style.display = 'none';
+            let enName, thName, nameHTML;
+            if (currentMode === 'person') {
+                const rawEn = document.getElementById('pNameEng').value || 'Somchai Jaidee';
+                enName = rawEn.toUpperCase(); 
+                thName = document.getElementById('pNameTh').value || 'สมชาย ใจดี';
+                validateInput(document.getElementById('pNameEng'), 'en-name');
+                validateInput(document.getElementById('pNameTh'), 'th-name');
             } else {
-                document.getElementById('rowPosition').style.display = 'table-row';
-                let deptStr = '';
-                if(sec && mainDep) deptStr = `${sec}, ${mainDep}`;
-                else if(sec) deptStr = sec;
-                else if(mainDep) deptStr = mainDep;
-                let posHTML = pos;
-                if(deptStr) posHTML += ` <span style="color:#63666F;">|</span> ${deptStr}`;
-                document.getElementById('prevPos').innerHTML = posHTML;
+                const rawEn = document.getElementById('dNameEng').value || 'Human Resources';
+                enName = rawEn.toUpperCase(); 
+                thName = document.getElementById('dNameTh').value || '';
+                if(document.getElementById('dNameEng').value) validateInput(document.getElementById('dNameEng'), 'en');
             }
-        } else {
-            document.getElementById('rowPosition').style.display = 'none';
-        }
+            nameHTML = enName;
+            if(thName) nameHTML += ` <span style="color:#FF6727;">&nbsp;|&nbsp;</span> ${thName}`;
+            document.getElementById('sigNameContent').innerHTML = nameHTML;
 
-        // PHONES
-        const rawMob = document.getElementById('inputMobile').value;
-        const rawTel = document.getElementById('inputTel').value;
-        validateInput(document.getElementById('inputMobile'), 'mobile');
-        validateInput(document.getElementById('inputTel'), 'tel');
+            if (currentMode === 'person') {
+                const pos = document.getElementById('pPosition').value;
+                const sec = document.getElementById('pSection').value;
+                const mainDep = document.getElementById('pDepartment').value;
+                checkPh(document.getElementById('pPosition')); 
+                if(!pos) {
+                    document.getElementById('rowPosition').style.display = 'none';
+                } else {
+                    document.getElementById('rowPosition').style.display = 'table-row';
+                    let deptStr = '';
+                    if(sec && mainDep) deptStr = `${sec}, ${mainDep}`;
+                    else if(sec) deptStr = sec;
+                    else if(mainDep) deptStr = mainDep;
+                    let posHTML = pos;
+                    if(deptStr) posHTML += ` <span style="color:#63666F;">&nbsp;|&nbsp;</span> ${deptStr}`;
+                    document.getElementById('prevPos').innerHTML = posHTML;
+                }
+            } else {
+                document.getElementById('rowPosition').style.display = 'none';
+            }
 
-        let fMob = '', fTel = '';
-        if(rawMob && rawMob.replace(/\D/g,'').length === 10) fMob = formatSpecialPhone(rawMob);
-        if(rawTel && rawTel.replace(/\D/g,'').length === 9) fTel = formatSpecialPhone(rawTel);
+            const rawMob = document.getElementById('inputMobile').value;
+            const rawTel = document.getElementById('inputTel').value;
+            validateInput(document.getElementById('inputMobile'), 'mobile');
+            validateInput(document.getElementById('inputTel'), 'tel');
 
-        const wrapMob = document.getElementById('wrapMob');
-        const wrapTel = document.getElementById('wrapTel');
-        const lnkMob = document.getElementById('linkMobile');
+            const cleanMob = rawMob.replace(/\D/g, '');
+            let displayMob = rawMob;
+            if(cleanMob.length === 10 && cleanMob.startsWith('0')) {
+                displayMob = formatSpecialPhone(rawMob);
+            }
 
-        // UNLOCKED: Show Mobile if valid
-        if (fMob) {
-            wrapMob.style.display = 'inline';
-            lnkMob.innerText = fMob;
-            lnkMob.href = 'tel:' + fMob.replace(/[^0-9+]/g, '');
-        } else {
-            wrapMob.style.display = 'none';
-        }
+            const cleanTel = rawTel.replace(/\D/g, '');
+            let displayTel = rawTel;
+            if(cleanTel.length === 9 && cleanTel.startsWith('0')) {
+                displayTel = formatSpecialPhone(rawTel);
+            }
 
-        if (fTel) {
-            let telHTML = '';
-            if (fMob) telHTML += ` <span style="color:#63666F;">|</span> `;
-            telHTML += `<strong>Phone</strong> <a href="tel:${fTel.replace(/[^0-9+]/g, '')}" class="sig-link">${fTel}</a>`;
-            wrapTel.innerHTML = telHTML;
-            wrapTel.style.display = 'inline';
-        } else {
-            wrapTel.style.display = 'none';
-        }
+            const wrapMob = document.getElementById('wrapMob');
+            const wrapTel = document.getElementById('wrapTel');
+            const lnkMob = document.getElementById('linkMobile');
 
-        if (!fMob && !fTel) document.getElementById('rowPhones').style.display = 'none';
-        else document.getElementById('rowPhones').style.display = 'table-row';
+            if (displayMob && (rawMob || currentMode === 'person')) {
+                wrapMob.style.display = 'inline';
+                lnkMob.innerText = displayMob;
+                lnkMob.href = 'tel:' + displayMob.replace(/[^0-9+]/g, '');
+            } else {
+                wrapMob.style.display = 'none';
+            }
 
-        document.getElementById('linkEmail').innerText = email;
-        document.getElementById('linkEmail').href = 'mailto:' + email;
-        validateInput(document.getElementById('inputEmail'), 'email');
+            if (displayTel) {
+                let telHTML = '';
+                if (wrapMob.style.display !== 'none') telHTML += ` <span style="color:#63666F;">&nbsp;|&nbsp;</span> `;
+                telHTML += `<strong>Phone</strong> <a href="tel:${displayTel.replace(/[^0-9+]/g, '')}" class="sig-link">${displayTel}</a>`;
+                wrapTel.innerHTML = telHTML;
+                wrapTel.style.display = 'inline';
+            } else {
+                wrapTel.style.display = 'none';
+            }
 
-        let mText = `--\n\n${enName}`;
-        if(thName) mText += ` | ${thName}`;
-        mText += `\n`;
-        if(currentMode === 'person' && document.getElementById('rowPosition').style.display !== 'none') {
-             mText += document.getElementById('prevPos').innerText.replace('|', '|') + `\n`;
-        }
-        mText += `B.Grimm Power PCL | Dr. Gerhard Link Building, 5 Krungthepkreetha Road, Bangkok 10240, Thailand\n`;
-        if(fMob) mText += `Mobile ${fMob}`;
-        if(fMob && fTel) mText += ` | `;
-        if(fTel) mText += `Phone ${fTel}`;
-        if(fMob || fTel) mText += `\n`;
-        mText += `Email ${email} | www.bgrimmpower.com`;
-        document.getElementById('mobContent').innerText = mText;
+            if (wrapMob.style.display === 'none' && wrapTel.style.display === 'none') {
+                 document.getElementById('rowPhones').style.display = 'none';
+            } else {
+                 document.getElementById('rowPhones').style.display = 'table-row';
+            }
+
+            document.getElementById('linkEmail').innerText = email;
+            document.getElementById('linkEmail').href = 'mailto:' + email;
+            validateInput(document.getElementById('inputEmail'), 'email');
+
+            // WEBSITE LOGIC (SMART)
+            const defaultWeb = "www.bgrimmpower.com";
+            let finalWeb = defaultWeb; 
+
+            if (customWeb) {
+                let cleanWeb = customWeb.toLowerCase().trim();
+                cleanWeb = cleanWeb.replace(/^https?:\/\//, ''); 
+                
+                if(cleanWeb.startsWith('www.')) {
+                    cleanWeb = cleanWeb.substring(4);
+                }
+
+                const parts = cleanWeb.split('.');
+                const dotCount = parts.length - 1;
+                
+                let shouldAddWww = false;
+                if(dotCount === 1) shouldAddWww = true; 
+                else if(dotCount === 2 && cleanWeb.endsWith('.th')) shouldAddWww = true; 
+
+                if(shouldAddWww) {
+                    finalWeb = 'www.' + cleanWeb;
+                } else {
+                    finalWeb = cleanWeb;
+                }
+            }
+
+            let finalHref = finalWeb;
+            if(!finalHref.startsWith('http')) finalHref = 'https://' + finalHref;
+
+            const webEl = document.getElementById('sigWebsite');
+            if(webEl) {
+                webEl.innerText = finalWeb;
+                webEl.href = finalHref;
+            }
+
+            // COMPANY & ADDRESS
+            const defaultComp = "B.Grimm Power PCL";
+            const finalComp = customComp || defaultComp;
+            
+            const defaultAddr = "Dr. Gerhard Link Building, 5 Krungthepkreetha Road, Bangkok 10240, Thailand";
+            const finalAddr = customAddr || defaultAddr;
+            
+            const compEl = document.getElementById('sigCompany');
+            if(compEl) compEl.innerText = finalComp;
+            
+            const addrEl = document.getElementById('sigAddress');
+            if(addrEl) addrEl.innerText = finalAddr;
+
+            // --- MOBILE PREVIEW ---
+            let mText = "--\n";
+            mText += enName;
+            if(thName) mText += ` | ${thName}`;
+            mText += `\n`;
+            
+            if(currentMode === 'person') {
+                const pos = document.getElementById('pPosition').value;
+                const sec = document.getElementById('pSection').value;
+                const mainDep = document.getElementById('pDepartment').value;
+                if(pos) {
+                    mText += pos;
+                    if(sec || mainDep) {
+                        let deptStr = '';
+                        if(sec && mainDep) deptStr = `${sec}, ${mainDep}`;
+                        else if(sec) deptStr = sec;
+                        else if(mainDep) deptStr = mainDep;
+                        mText += ` | ${deptStr}`;
+                    }
+                    mText += `\n`;
+                }
+            }
+            
+            mText += `${finalComp} | ${finalAddr}\n`;
+            
+            let phoneLine = "";
+            if(displayMob && (rawMob || currentMode === 'person')) phoneLine += `Mobile ${displayMob}`;
+            if(phoneLine && displayTel) phoneLine += ` | `;
+            if(displayTel) phoneLine += `Phone ${displayTel}`;
+            
+            if(phoneLine) mText += phoneLine + `\n`;
+            
+            mText += `Email ${email} | ${finalWeb}`;
+            document.getElementById('mobContent').innerText = mText;
+
+        } catch(e) { console.log("Init render skip"); }
     }
     
     document.querySelectorAll('input').forEach(i => {
