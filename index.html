@@ -13,8 +13,6 @@
             --logo-max-h: 50px;
             --primary-orange: #FF6727;
             --gold-theme: #8C704D;
-            /* Super Elastic Spring Bezier */
-            --elastic-spring: cubic-bezier(0.47, 1.64, 0.41, 0.8);
         }
 
         body {
@@ -63,9 +61,9 @@
             font-size: clamp(14px, 2.5vw, 26px); font-weight: 700; margin-bottom: 2px; letter-spacing: -0.5px;
             background: linear-gradient(120deg, #FF6727 0%, #FF8C00 15%, #FF6727 30%, #FFE3B3 45%, #FF6727 60%, #FF4500 75%, #FF6727 90%);
             background-size: 400% 400%; color: #FF6727; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
-            animation: moltenChaos 25s ease infinite; transition: font-size 0.6s var(--elastic-spring);
+            animation: moltenChaos 25s ease infinite; transition: font-size 0.6s;
         }
-        .header-title-th { font-size: clamp(10px, 1.5vw, 16px); color: #63666F; transition: font-size 0.6s var(--elastic-spring); }
+        .header-title-th { font-size: clamp(10px, 1.5vw, 16px); color: #63666F; transition: font-size 0.6s; }
         .main-header.scrolled .header-title-en { font-size: clamp(12px, 2vw, 18px); }
         .main-header.scrolled .header-title-th { font-size: clamp(9px, 1.2vw, 12px); opacity: 0.8; }
         @keyframes moltenChaos { 0% { background-position: 10% 15%; } 50% { background-position: 15% 60%; } 100% { background-position: 10% 15%; } }
@@ -77,15 +75,11 @@
             border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
             width: 100%; max-width: 1100px; 
             flex-wrap: wrap; margin-bottom: 40px; margin-top: 0; 
-            
-            /* FORCE TOP ALIGNMENT */
-            align-items: flex-start; 
+            align-items: flex-start;
         }
-        
         .input-section { flex: 1; min-width: 320px; border-right: 1px solid #ddd; padding-right: 30px; }
         .preview-section { flex: 1.5; min-width: 320px; display: flex; flex-direction: column; }
-        
-        h2 { margin: 0; color: #8C704D; font-size: 22px; margin-bottom: 5px; line-height: 1.3; }
+        h2 { margin: 0; color: #8C704D; font-size: 22px; margin-bottom: 5px; }
         .sub-header { color: #777; font-size: 14px; margin-bottom: 20px; font-weight: 400; }
         .input-section h3 { margin: 15px 0 10px; font-size: 15px; color: #8C704D; border-bottom: 1px solid #eee; padding-bottom: 5px; font-weight: 700; }
 
@@ -119,7 +113,7 @@
 
         .format-hint { font-size: 11px; color: #888; margin-top: 2px; }
 
-        /* --- TABS (SMOOTH SLIDE) --- */
+        /* --- TABS (SMOOTH SLIDE - NO BOUNCE) --- */
         .toggle-container { position: relative; display: flex; background: #f5f5f5; padding: 6px; border-radius: 12px; margin-bottom: 25px; }
         .tab-btn { 
             flex: 1; text-align: center; padding: 10px; cursor: pointer; border-radius: 8px; margin: 0; 
@@ -131,7 +125,8 @@
         .tab-slider { 
             position: absolute; top: 6px; left: 6px; bottom: 6px; 
             background-color: #8C704D; border-radius: 8px; z-index: 1; 
-            transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); 
+            /* Smooth Cubic Bezier without Overshoot */
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1); 
             width: 0; 
         }
 
@@ -253,7 +248,6 @@
         }
         @media (min-width: 769px) {
             .preview-section {
-                /* STICKY CONFIGURATION */
                 position: sticky;
                 top: 130px; /* Offset below header */
                 align-self: flex-start;
@@ -344,6 +338,7 @@
             <div class="form-group">
                 <label>ชื่อบริษัท (Company Name) <span style="font-weight:normal; color:#888;">(Optional)</span></label>
                 <input type="text" id="inputCompany" oninput="checkPh(this); updateSig();">
+                <span id="checkCompany" class="valid-icon">✓</span><div class="anim-wrapper warning-msg warning-mode" id="warnCompany"></div>
                 <div class="anim-wrapper custom-placeholder" id="ph_inputCompany"><span class="th">ว่าง = B.Grimm Power PCL</span><span class="en">Empty = B.Grimm Power PCL</span></div>
             </div>
             <div class="form-group">
@@ -515,10 +510,6 @@
         c.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active'); updateTab('modeSelector');
         
-        // Target Slider instead of Button
-        const slider = c.querySelector('.tab-slider');
-        triggerJelly(slider);
-
         document.getElementById('formPerson').classList.toggle('active', mode === 'person');
         document.getElementById('formDept').classList.toggle('active', mode === 'dept');
         updateSig();
@@ -531,10 +522,6 @@
         c.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active'); updateTab('previewTabs');
         
-        // Target Slider instead of Button
-        const slider = c.querySelector('.tab-slider');
-        triggerJelly(slider);
-
         document.getElementById('previewDesktop').style.display = (tab === 'desktop') ? 'block' : 'none';
         document.getElementById('previewMobile').style.display = (tab === 'mobile') ? 'block' : 'none';
         document.getElementById('noteText').innerHTML = (tab === 'desktop') ? '<strong>Desktop:</strong> เหมาะสำหรับ Outlook บนคอมพิวเตอร์' : '<strong>Mobile:</strong> เหมาะสำหรับ iPhone/Android (ข้อความล้วน)';
@@ -704,7 +691,10 @@
                 const rawEn = document.getElementById('dNameEng').value || 'Human Resources';
                 enName = rawEn.toUpperCase(); 
                 thName = document.getElementById('dNameTh').value || '';
+                
+                // DEPT VALIDATION
                 if(document.getElementById('dNameEng').value) validateInput(document.getElementById('dNameEng'), 'en');
+                if(document.getElementById('dNameTh').value) validateInput(document.getElementById('dNameTh'), 'th'); // Added TH validation
             }
             nameHTML = enName;
             if(thName) nameHTML += ` <span style="color:#FF6727;">&nbsp;|&nbsp;</span> ${thName}`;
@@ -819,11 +809,14 @@
             const defaultComp = "B.Grimm Power PCL";
             const finalComp = customComp || defaultComp;
             
+            // VALIDATE COMPANY (NEW)
+            if(customComp) validateInput(document.getElementById('inputCompany'), 'en');
+
             const defaultAddr = "Dr. Gerhard Link Building, 5 Krungthepkreetha Road, Bangkok 10240, Thailand";
             const finalAddr = customAddr || defaultAddr;
             
             const compEl = document.getElementById('sigCompany');
-            if(compEl) compEl.innerText = finalComp;
+            if(compEl) compEl.innerText = finalComp; // Removed .toUpperCase()
             
             const addrEl = document.getElementById('sigAddress');
             if(addrEl) addrEl.innerText = finalAddr;
